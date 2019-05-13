@@ -1,0 +1,38 @@
+/**
+ * JobProcessSequenceRelation.js
+ *
+ * @description :: A model definition represents a database table/collection.
+ * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
+ */
+
+module.exports = {
+
+  attributes: {
+    jobId:{
+      model:'JobCard'
+    },
+    processSequenceId:{
+      model:'Processsequence'
+    },
+    machineId:{
+      model:'AppMachine'
+    },
+    locationId:{
+      model:'Location'
+    },
+    quantity:{
+      type:'number'
+    },
+    note:{
+      type:'string'
+    },
+    status:{
+      type:'string'
+    },
+    createdBy:{
+      model:'AppUser'
+    },
+  },
+
+};
+
