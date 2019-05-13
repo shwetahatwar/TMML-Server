@@ -9,10 +9,10 @@ module.exports = {
 
   attributes: {
     processSequenceId:{
-      model:'Processsequence'
+      model:'ProcessSequence'
     },
     machineId:{
-      model:'AppMachine'
+      model:'Machine'
     }
   },
 

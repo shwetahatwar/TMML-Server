@@ -8,7 +8,9 @@
 module.exports = {
 
   attributes: {
-    
+    partNumber:{
+      type:'number'
+    },
     description:{
       type:'string'
     },
@@ -19,7 +21,7 @@ module.exports = {
       type:'string'
     },
     rawMaterialId:{
-      model:'Rawmaterial'
+      model:'RawMaterial'
     },
     createdBy: {
       model:'AppUser'

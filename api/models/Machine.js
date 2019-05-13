@@ -12,10 +12,10 @@ module.exports = {
       model:'MachineType'
     },
     machineGroupId:{
-      model:'Machinegroup'
+      model:'MachineGroup'
     },
     costCenterId:{
-      model:'Costcenter'
+      model:'CostCenter'
     },
     capacity:{
       type:'number'
@@ -29,6 +29,9 @@ module.exports = {
     status:{
       type:'string'
     },
+    barcodeSerial:{
+      type:'string'
+    },
     createdBy: {
       model:'AppUser'
     },
@@ -39,7 +42,7 @@ module.exports = {
       type:'number'
     },
     lastMaintenanceOn:{
-      type:'string'
+      type:'number'
     },
     lastMaintenanceBy:{
       model:'AppUser'

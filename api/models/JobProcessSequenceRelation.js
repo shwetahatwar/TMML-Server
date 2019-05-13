@@ -12,10 +12,10 @@ module.exports = {
       model:'JobCard'
     },
     processSequenceId:{
-      model:'Processsequence'
+      model:'ProcessSequence'
     },
     machineId:{
-      model:'AppMachine'
+      model:'Machine'
     },
     locationId:{
       model:'Location'

@@ -15,7 +15,7 @@ module.exports = {
       type:'string'
     },
     materialTypeId:{
-      model:'Materialtype'
+      model:'MaterialType'
     },
     createdBy: {
       model:'AppUser'

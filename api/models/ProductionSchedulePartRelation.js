@@ -12,10 +12,10 @@ module.exports = {
       model:'ProductionSchedule'
     },
     partNumberId:{
-      model:'Partnumber'
+      model:'PartNumber'
     },
     requestedQuantity:{
-      type:'string'
+      type:'number'
     },
     status:{
       type:'string'
@@ -24,7 +24,7 @@ module.exports = {
       model:'AppUser'
     },
     estimatedCompletionDate:{
-      type:'string'
+      type:'number'
     }
   },
 

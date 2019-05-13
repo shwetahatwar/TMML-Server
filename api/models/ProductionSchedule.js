@@ -12,10 +12,10 @@ module.exports = {
       model:'AppUser'
     },
     estimatedCompletionDate:{
-      type:'string'
+      type:'number'
     },
     actualCompletionDate:{
-      type:'string'
+      type:'number'
     },
     status:{
       type:'string'

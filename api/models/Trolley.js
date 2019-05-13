@@ -15,7 +15,7 @@ module.exports = {
       model:'TrolleyType'
     },
     machineTypeId:{
-      model:'Machinetype'
+      model:'MachineType'
     },
     barcodeSerial:{
       type:'string'

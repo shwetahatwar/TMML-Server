@@ -12,13 +12,13 @@ module.exports = {
       model:'JobCard'
     },
     fromProcessSequenceId:{
-      model:'Processsequence'
+      model:'ProcessSequence'
     },
     toJobId:{
       model:'JobCard'
     },
     toProcessSequenceId:{
-      model:'Processsequence'
+      model:'ProcessSequence'
     },
     quantity:{
       type:'number'

@@ -9,10 +9,10 @@ module.exports = {
 
   attributes: {
     machineId:{
-      model:'AppMachine'
+      model:'Machine'
     },
     maintenanceOn:{
-      type:'string'
+      type:'number'
     },
     maintenanceBy:{
       model:'AppUser'

@@ -12,7 +12,7 @@ module.exports = {
       model:'ProductionSchedulePartRelation'
     },
     trolleyId:{
-      model:'AppTrolley'
+      model:'Trolley'
     },
     requestedQuantity:{
       type:'number'
@@ -21,9 +21,12 @@ module.exports = {
       type:'number'
     },
     status:{
-      type:'number'
+      type:'string'
     },
     estimatedDate:{
+      type:'number'
+    },
+    barcodeSerial:{
       type:'string'
     },
     createdBy:{

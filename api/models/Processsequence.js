@@ -9,25 +9,25 @@ module.exports = {
 
   attributes: {
     partId:{
-      model:'Partnumber'
+      model:'PartNumber'
     },
     sequenceNumber:{
-      type:'string'
+      type:'number'
     },
     loadingTime:{
-      type:'string'
+      type:'number'
     },
     processTime:{
-      type:'string'
+      type:'number'
     },
     unloadingTime:{
-      type:'string'
+      type:'number'
     },
     machineGroupId:{
-      model:'Machinegroup'
+      model:'MachineGroup'
     },
     isGroup:{
-      type:'string'
+      type:'boolean'
     }
   },
 
