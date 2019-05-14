@@ -38,7 +38,7 @@ module.exports = {
     updatedBy: {
       model:'AppUser'
     },
-    frequenceyInDays:{
+    frequencyInDays:{
       type:'number'
     },
     lastMaintenanceOn:{
