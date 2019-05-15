@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt-nodejs');
 module.exports = {
 
   attributes: {
-    userName: {
+    username: {
       type: 'string',
       unique: true
     },
@@ -29,11 +29,11 @@ module.exports = {
   customToJSON: function() {
     return _.omit(this, ['password','createdAt','updatedAt','department'])
   },
-  beforeCreate: function(appuser, cb){
+  beforeCreate: function(user, cb){
     bcrypt.genSalt(10, function(err, salt){
-      bcrypt.hash(appuser.password, salt, null, function(err, hash){
+      bcrypt.hash(user.password, salt, null, function(err, hash){
         if(err) return cb(err);
-        appuser.password = hash;
+        user.password = hash;
         return cb();
       });
     });
