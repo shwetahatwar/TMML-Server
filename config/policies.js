@@ -17,10 +17,76 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  '*': 'isLoggedIn',
-  'login':true,
+  // '*': 'isLoggedIn',
+  // 'login':true,
   // 'login': true,
-  // AuthController:{
-  // 	'*':true
-  // }
+  AccessLevelController:{
+  	'*':'isLoggedIn'
+  },
+  AppUserController:{
+    '*':'isLoggedIn'
+  },
+  CellController:{
+    '*':'isLoggedIn'
+  },
+  CostCenterController:{
+    '*':'isLoggedIn'
+  },
+  JobCardController:{
+    '*':'isLoggedIn'
+  },
+  JobProcessSequenceRelationController:{
+    '*':'isLoggedIn'
+  },
+  JobToJobReroutingController:{
+    '*':'isLoggedIn'
+  },
+  LocationController:{
+    '*':'isLoggedIn'
+  },
+  MachineController:{
+    '*':'isLoggedIn'
+  },
+  MachineGroupController:{
+    '*':'isLoggedIn'
+  },
+  MachineTypeController:{
+    '*':'isLoggedIn'
+  },
+  MaintenanceTransactionController:{
+    '*':'isLoggedIn'
+  },
+  MaterialTypeController:{
+    '*':'isLoggedIn'
+  },
+  PartNumberController:{
+    '*':'isLoggedIn'
+  },
+  ProcessSequenceController:{
+    '*':'isLoggedIn'
+  },
+  ProcessSequenceMachineRelationController:{
+    '*':'isLoggedIn'
+  },
+  ProductionScheduleController:{
+    '*':'isLoggedIn'
+  },
+  ProductionSchedulePartRelationController:{
+    '*':'isLoggedIn'
+  },
+  RawMaterialController:{
+    '*':'isLoggedIn'
+  },
+  RoleAccessRelationController:{
+    '*':'isLoggedIn'
+  },
+  TrolleyController:{
+    '*':'isLoggedIn'
+  },
+  TrolleyTypeController:{
+    '*':'isLoggedIn'
+  },
+  UserMasterController:{
+    '*':'isLoggedIn'
+  },
 };
