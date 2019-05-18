@@ -30,6 +30,7 @@ module.exports = {
     return _.omit(this, ['password','createdAt','updatedAt','department'])
   },
   beforeCreate: function(user, cb){
+    console.log("Before");
     bcrypt.genSalt(10, function(err, salt){
       bcrypt.hash(user.password, salt, null, function(err, hash){
         if(err) return cb(err);

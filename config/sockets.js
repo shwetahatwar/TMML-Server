@@ -50,7 +50,7 @@ module.exports.sockets = {
   //
   // },
 
-
+  onlyAllowOrigins: ["https://tata-marcopolo-iiot-poc-server.herokuapp.com"]
   /***************************************************************************
   *                                                                          *
   * `afterDisconnect`                                                        *

@@ -1,5 +1,5 @@
 /**
- * Machinegroup.js
+ * Department.js
  *
  * @description :: A model definition represents a database table/collection.
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
@@ -8,8 +8,8 @@
 module.exports = {
 
   attributes: {
-    name:{
-      type:'string',
+    name: {
+      type: 'string',
       unique: true
     },
     createdBy: {
@@ -17,7 +17,7 @@ module.exports = {
     },
     updatedBy: {
       model:'AppUser'
-    },
+    }
   },
 
 };

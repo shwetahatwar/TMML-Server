@@ -1,10 +1,11 @@
-const passport = require('passport');
+var passport = require('passport');
 module.exports = {
 	login: function(req, res) {
     // var user = req.body;
-    console.log("At authenticate: ", req.body);
+    console.log("In");
+    // console.log("At authenticate: ", req.body);
     passport.authenticate('local', function(err, user, info){
-      console.log("inside authenticate " , user, "\n", err, "\n", info);
+      // console.log("inside authenticate " , user, "\n", err, "\n", info);
       if((err) || (!user)) {
         return res.send({
           message: info.message,

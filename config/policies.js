@@ -89,4 +89,13 @@ module.exports.policies = {
   UserMasterController:{
     '*':'isLoggedIn'
   },
+  UserController:{
+    '*':'isLoggedIn'
+  },
+  DepartmentController:{
+    '*':'isLoggedIn'
+  },
+  EmployeeController:{
+    '*':'isLoggedIn'
+  },
 };

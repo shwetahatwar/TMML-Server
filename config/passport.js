@@ -1,13 +1,13 @@
-const passport = require('passport'),
-LocalStrategy = require('passport-local').Strategy,
-bcrypt = require('bcrypt-nodejs');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var bcrypt = require('bcrypt-nodejs');
 var jwt = require('jsonwebtoken');
 passport.serializeUser(function(user, cb) {
 	cb(null, user.id);
 });
 passport.deserializeUser(function(id, cb){
 	User.findOne({id}, function(err, user) {
-		cb(err, users);
+		cb(err, user);
 	});
 });
 passport.use(new LocalStrategy({
