@@ -1,18 +1,6 @@
 var XLSX = require('xlsx'),
     xls_utils = XLSX.utils;
 
-var multer = require('multer');
-
-var Storage = multer.diskStorage({
-	destination: function(req,file,cb){
-		cb(null,'C:\\All Projects\\TMML\\New Server\\server\\uploads/')
-	},
-	filename: function(req,file,cb){
-		cb(null,file.fieldname + '-' + Date.now())
-	}
-});
-
-var upload = multer({storage:Storage}).array("uploadFile", 3);
 module.exports={
 
 	test : async function(req,res){
