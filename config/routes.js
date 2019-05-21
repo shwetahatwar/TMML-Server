@@ -21,7 +21,7 @@ module.exports.routes = {
 
   '/': { view: 'pages/homepage' },
   'POST /login': 'AuthController.login',
-  'GET /testupload':'TestUploadController.test'
+  'POST /testupload':'TestUploadController.test'
   // 'GET  /logout': 'AuthController.logout',
 
   /***************************************************************************
