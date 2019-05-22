@@ -8,6 +8,10 @@
 module.exports = {
 
   attributes: {
+    rawMaterialNumber:{
+      type:'number',
+      unique: true
+    },
     name:{
       type:'string',
       unique: true
