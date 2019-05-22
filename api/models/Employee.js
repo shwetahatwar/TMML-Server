@@ -18,7 +18,7 @@ module.exports = {
     email:{
       type:'string'
     },
-    number:{
+    mobileNumber:{
       type:'number'
     },
     createdBy: {

@@ -23,7 +23,8 @@ module.exports.routes = {
   'POST /login': 'AuthController.login',
   'POST /testupload':'TestUploadController.test',
   'POST /trolleyBulkUpload':'TrolleyBulkUploadController.test',
-  'POST /rawMaterialBulkUpload':'RawMaterialBulkUploadController.test'
+  'POST /rawMaterialBulkUpload':'RawMaterialBulkUploadController.test',
+  'POST /employeeBulkUpload':'EmployeeBulkUploadController.test'
   // 'GET  /logout': 'AuthController.logout',
 
   /***************************************************************************
