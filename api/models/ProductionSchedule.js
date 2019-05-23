@@ -8,6 +8,10 @@
 module.exports = {
 
   attributes: {
+    productionScheduleId:{
+      type:'string',
+      unique: true
+    },
     createdBy:{
       model:'AppUser'
     },

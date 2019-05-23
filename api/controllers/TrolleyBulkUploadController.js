@@ -3,7 +3,7 @@ var XLSX = require('xlsx'),
 
 module.exports={
 
-  test : async function(req,res){
+  upload : async function(req,res){
     
     const mediaFile = req.file('media')
     if (!mediaFile._files[0]) {

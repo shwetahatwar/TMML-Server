@@ -22,9 +22,11 @@ module.exports.routes = {
   '/': { view: 'pages/homepage' },
   'POST /login': 'AuthController.login',
   'POST /testupload':'TestUploadController.test',
-  'POST /trolleyBulkUpload':'TrolleyBulkUploadController.test',
-  'POST /rawMaterialBulkUpload':'RawMaterialBulkUploadController.test',
-  'POST /employeeBulkUpload':'EmployeeBulkUploadController.test'
+  'POST /trolleyBulkUpload':'TrolleyBulkUploadController.upload',
+  'POST /rawMaterialBulkUpload':'RawMaterialBulkUploadController.upload',
+  'POST /employeeBulkUpload':'EmployeeBulkUploadController.upload',
+  'POST /productionScheduleBulkUpload': 'ProductionScheduleBulkUpload.upload',
+  'POST /partNumberBulkUpload': 'PartNumberBulkUpload.upload'
   // 'GET  /logout': 'AuthController.logout',
 
   /***************************************************************************
