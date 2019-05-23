@@ -36,7 +36,6 @@ module.exports={
           var newSMHValue = sheet[SMH];
           var rawMaterial = xls_utils.encode_cell({c:4, r:i});
           var rawMaterialValue = sheet[rawMaterial];
-          // console.log(descriptionValue);
           var rawMaterialNameIdValue;
 
           await RawMaterial.findOne({
@@ -57,9 +56,7 @@ module.exports={
             checkFlag = 0;
           else
             checkFlag = 1;
-          // console.log(checkFlag);
           if(checkFlag == 0){
-            // console.log("In Check");
             var count=0;
             for(var j = 5; j <= 100; j=j+5){
               
@@ -67,7 +64,6 @@ module.exports={
               var sequenceNumberValue = sheet[sequenceNumber];
               console.log(sequenceNumber)
               if(sequenceNumberValue != null){
-                // console.log("In");
                 count++;
                 console.log(count);
                 var loadingTime = xls_utils.encode_cell({c:j+1, r:i});
@@ -82,7 +78,6 @@ module.exports={
                 var machineGroupIdValue = sheet[machineGroupId];
                 var machineGroupIdNameValue;
                 var isGroupName;
-                console.log(unloadingTimeValue);
                 await MachineGroup.findOne({
                   where:{'name':machineGroupIdValue['v']}
                 })
@@ -96,7 +91,6 @@ module.exports={
                   .then((newMachineGroupIdNameValue)=>{machineGroupIdNameValue = newMachineGroupIdNameValue["id"],isGroupName=false})
                   .catch(error=>{console.log("No Machine")})
                 }
-                // console.log()
                 ProcessSequence.create({
                   partId:newPartNumberId["id"],
                   sequenceNumber:count,
@@ -109,7 +103,6 @@ module.exports={
                 .catch(error=>{console.log(error)});
               }
               else{
-                // console.log("Out");
                 break;
               }
             }
