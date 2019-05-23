@@ -52,18 +52,24 @@ module.exports={
             rawMaterialId:rawMaterialNameIdValue
           })
           .fetch()
-          .catch(error=>{rejectedPart.push(partNumberValue['v']),checkFlag = 1});
+          .catch(error=>{rejectedPart.push(partNumberValue['v'])});
+          if(newPartNumberId != null)
+            checkFlag = 0;
+          else
+            checkFlag = 1;
           // console.log(checkFlag);
           if(checkFlag == 0){
             // console.log("In Check");
+            var count=0;
             for(var j = 5; j <= 100; j=j+5){
-              var count=0;
+              
               var sequenceNumber = xls_utils.encode_cell({c:j, r:i});
               var sequenceNumberValue = sheet[sequenceNumber];
               console.log(sequenceNumber)
               if(sequenceNumberValue != null){
                 // console.log("In");
                 count++;
+                console.log(count);
                 var loadingTime = xls_utils.encode_cell({c:j+1, r:i});
                 var loadingTimeValue = sheet[loadingTime];
                 var processTime = xls_utils.encode_cell({c:j+2, r:i});
@@ -76,6 +82,7 @@ module.exports={
                 var machineGroupIdValue = sheet[machineGroupId];
                 var machineGroupIdNameValue;
                 var isGroupName;
+                console.log(unloadingTimeValue);
                 await MachineGroup.findOne({
                   where:{'name':machineGroupIdValue['v']}
                 })
