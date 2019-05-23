@@ -15,7 +15,7 @@ module.exports = {
       type:'number'
     },
     maintenanceBy:{
-      model:'AppUser'
+      model:'User'
     },
     remarks:{
       type:'string'

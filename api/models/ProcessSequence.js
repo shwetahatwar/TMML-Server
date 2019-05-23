@@ -23,6 +23,9 @@ module.exports = {
     unloadingTime:{
       type:'number'
     },
+    cycleTime:{
+      type:'number'
+    },
     machineGroupId:{
       model:'MachineGroup'
     },

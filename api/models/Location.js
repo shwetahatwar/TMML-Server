@@ -16,7 +16,7 @@ module.exports = {
       type:'string'
     },
     createdBy: {
-      model:'AppUser'
+      model:'User'
     }
   },
 

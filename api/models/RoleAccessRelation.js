@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
 
     userId: {
-      model:'AppUser'
+      model:'User'
     },
     accessId:{
         model:'AccessLevel'

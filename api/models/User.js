@@ -17,13 +17,13 @@ module.exports = {
       required: true
     },
     createdBy: {
-      model:'AppUser'
+      model:'User'
     },
     updatedBy: {
-      model:'AppUser'
+      model:'User'
     },
     department:{
-      model:'AppUser'
+      model:'User'
     }
   },
   customToJSON: function() {

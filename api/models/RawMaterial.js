@@ -23,10 +23,10 @@ module.exports = {
       model:'MaterialType'
     },
     createdBy: {
-      model:'AppUser'
+      model:'User'
     },
     updatedBy: {
-      model:'AppUser'
+      model:'User'
     },
   },
 

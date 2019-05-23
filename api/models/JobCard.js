@@ -30,10 +30,10 @@ module.exports = {
       type:'string'
     },
     createdBy:{
-      model:'AppUser'
+      model:'User'
     },
     updatedBy:{
-      model:'AppUser'
+      model:'User'
     }
   },
 

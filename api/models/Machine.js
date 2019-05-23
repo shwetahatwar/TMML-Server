@@ -33,10 +33,10 @@ module.exports = {
       type:'string'
     },
     createdBy: {
-      model:'AppUser'
+      model:'User'
     },
     updatedBy: {
-      model:'AppUser'
+      model:'User'
     },
     frequencyInDays:{
       type:'number'
@@ -45,7 +45,7 @@ module.exports = {
       type:'number'
     },
     lastMaintenanceBy:{
-      model:'AppUser'
+      model:'User'
     }
   },
 

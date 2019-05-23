@@ -20,52 +20,96 @@ module.exports={
         }
         console.log(uploadedFiles[0].fd);
         var rejectedPart = new Array();
-        // var workbook = XLSX.readFile(uploadedFiles[0].fd);
-        // var sheet = workbook.Sheets[workbook.SheetNames[0]];
-        // var num_rows = xls_utils.decode_range(sheet['!ref']).e.r;
+        var checkFlag = 0;
+        var workbook = XLSX.readFile(uploadedFiles[0].fd);
+        var sheet = workbook.Sheets[workbook.SheetNames[0]];
+        var num_rows = xls_utils.decode_range(sheet['!ref']).e.r;
 
-        // var productionScheduleId = xls_utils.encode_cell({c:0, r:2});
-        // var productionScheduleIdValue = sheet[productionScheduleId];
-        // console.log(productionScheduleIdValue['v']);
-        // var checkFlag = 0;
-        // var productionSchedule = await ProductionSchedule.create({
-        //   productionScheduleId:productionScheduleIdValue['v'],
-        //   estimatedComplitionDate:0,
-        //   status: 0
-        // })
-        // .fetch()
-        // .catch(error=>{checkFlag = 1});
-        // return res.status(200).send(productionSchedule);
-        // if(checkFlag == 0){
-          for(var i = 1, l = num_rows; i <= l; i++){
-            var partNumber = xls_utils.encode_cell({c:0, r:i});
-            var partNumberValue = sheet[partNumber];
-            var estimatedComplitionDate = xls_utils.encode_cell({c:4, r:i});
-            var estimatedComplitionDateValue = sheet[estimatedComplitionDate];
-            var partNumberId = xls_utils.encode_cell({c:1, r:i});
-            var partNumberIdValue = sheet[partNumberId];
-            console.log(partNumberIdValue);
-            var partNumberNameIdValue;
+        for(var i = 1, l = num_rows; i <= l; i++){
+          var partNumber = xls_utils.encode_cell({c:0, r:i});
+          var partNumberValue = sheet[partNumber];
+          var description = xls_utils.encode_cell({c:3, r:i});
+          var descriptionValue = sheet[description];
+          var manPower = xls_utils.encode_cell({c:1, r:i});
+          var manPowerValue = sheet[manPower];
+          var SMH = xls_utils.encode_cell({c:2, r:i});
+          var newSMHValue = sheet[SMH];
+          var rawMaterial = xls_utils.encode_cell({c:4, r:i});
+          var rawMaterialValue = sheet[rawMaterial];
+          // console.log(descriptionValue);
+          var rawMaterialNameIdValue;
 
-            await PartNumber.findOne({
-              where:{'partNumber': partNumberIdValue['v']}
-            })
-            .then((newPartNumberId)=>{partNumberNameIdValue = newPartNumberId["id"]});
+          await RawMaterial.findOne({
+            where:{'name': rawMaterialValue['v']}
+          })
+          .then((newRawMaterialId)=>{rawMaterialNameIdValue = newRawMaterialId["id"]});
 
-            await ProductionSchedulePartRelation.create({
-              requestedQuantity:quantityValue['v'],
-              status:"0",
-              estimatedCompletionDate:estimatedComplitionDateValue['v'],
-              scheduleId:productionSchedule["id"],
-              partNumberId:partNumberNameIdValue
-            })
-            .catch(error=>{rejectedPart.push(partNumberIdValue['v']),console.log(error)})
+          var newPartNumberId = await PartNumber.create({
+            partNumber:partNumberValue['v'],
+            description:descriptionValue['v'],
+            manPower:manPowerValue['v'],
+            SMH:newSMHValue['v'],
+            rawMaterialId:rawMaterialNameIdValue
+          })
+          .fetch()
+          .catch(error=>{rejectedPart.push(partNumberValue['v']),checkFlag = 1});
+          // console.log(checkFlag);
+          if(checkFlag == 0){
+            // console.log("In Check");
+            for(var j = 5; j <= 100; j=j+5){
+              var count=0;
+              var sequenceNumber = xls_utils.encode_cell({c:j, r:i});
+              var sequenceNumberValue = sheet[sequenceNumber];
+              console.log(sequenceNumber)
+              if(sequenceNumberValue != null){
+                // console.log("In");
+                count++;
+                var loadingTime = xls_utils.encode_cell({c:j+1, r:i});
+                var loadingTimeValue = sheet[loadingTime];
+                var processTime = xls_utils.encode_cell({c:j+2, r:i});
+                var processTimeValue = sheet[processTime];
+                var unloadingTime = xls_utils.encode_cell({c:j+3, r:i});
+                var unloadingTimeValue = sheet[unloadingTime];
+                var cycleTime = xls_utils.encode_cell({c:j+4, r:i});
+                var cycleTimeValue = sheet[cycleTime];
+                var machineGroupId = xls_utils.encode_cell({c:j, r:i});
+                var machineGroupIdValue = sheet[machineGroupId];
+                var machineGroupIdNameValue;
+                var isGroupName;
+                await MachineGroup.findOne({
+                  where:{'name':machineGroupIdValue['v']}
+                })
+                .then((newMachineGroupIdNameValue)=>{machineGroupIdNameValue = newMachineGroupIdNameValue["id"],isGroupName=true})
+                .catch(error=>{console.log("No Group")});
+
+                if(machineGroupIdNameValue == null){
+                  await Machine.findOne({
+                    where:{'name':machineGroupIdValue['v']}
+                  })
+                  .then((newMachineGroupIdNameValue)=>{machineGroupIdNameValue = newMachineGroupIdNameValue["id"],isGroupName=false})
+                  .catch(error=>{console.log("No Machine")})
+                }
+                // console.log()
+                ProcessSequence.create({
+                  partId:newPartNumberId["id"],
+                  sequenceNumber:count,
+                  loadingTime: loadingTimeValue['v'],
+                  processTime:unloadingTimeValue['v'],
+                  machineGroupId:machineGroupIdNameValue,
+                  isGroup:isGroupName
+                })
+                .then(newValue =>{console.log("created")})
+                .catch(error=>{console.log(error)});
+              }
+              else{
+                // console.log("Out");
+                break;
+              }
+            }
           }
-          return res.status(200).send(rejectedPart);
-        // }
-        // else{
-        //   res.status(400).send("Duplicate Production Schedule");
-        // }
+        }
+        return res.status(200).send(rejectedPart);
+        
       })
     }
   }

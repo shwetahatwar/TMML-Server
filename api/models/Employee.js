@@ -22,10 +22,10 @@ module.exports = {
       type:'number'
     },
     createdBy: {
-      model:'AppUser'
+      model:'User'
     },
     updatedBy: {
-      model:'AppUser'
+      model:'User'
     },
     department:{
       model:'Department'

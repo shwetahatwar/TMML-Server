@@ -25,10 +25,10 @@ module.exports = {
       model:'RawMaterial'
     },
     createdBy: {
-      model:'AppUser'
+      model:'User'
     },
     updatedBy: {
-      model:'AppUser'
+      model:'User'
     },
   },
 

@@ -13,7 +13,7 @@ module.exports = {
       unique: true
     },
     createdBy:{
-      model:'AppUser'
+      model:'User'
     },
     estimatedCompletionDate:{
       type:'number'
