@@ -11,7 +11,15 @@ module.exports = {
     machineId:{
       model:'Machine',
     },
-    machine
+    strokes: {
+        type: 'number'
+    },
+    startTime: {
+        type: 'number'
+    },
+    endTime: {
+        type: 'number'
+    },
     createdBy: {
       model:'User'
     },
