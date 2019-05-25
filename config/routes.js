@@ -26,7 +26,8 @@ module.exports.routes = {
   'POST /rawMaterialBulkUpload':'RawMaterialBulkUploadController.upload',
   'POST /employeeBulkUpload':'EmployeeBulkUploadController.upload',
   'POST /productionScheduleBulkUpload': 'ProductionScheduleBulkUpload.upload',
-  'POST /partNumberBulkUpload': 'PartNumberBulkUpload.upload'
+  'POST /partNumberBulkUpload': 'PartNumberBulkUpload.upload',
+  'POST /iot/jobstrokes' : 'MachineStrokesController.jobstrokes',
   // 'GET  /logout': 'AuthController.logout',
 
   /***************************************************************************

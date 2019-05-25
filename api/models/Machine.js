@@ -41,6 +41,9 @@ module.exports = {
     frequencyInDays:{
       type:'number'
     },
+    nextMaintenanceOn:{
+      type:'number'
+    },
     lastMaintenanceOn:{
       type:'number'
     },

@@ -98,4 +98,8 @@ module.exports.policies = {
   EmployeeController:{
     '*':'isLoggedIn'
   },
+  MachineStrokesController: {
+    '*': 'isLoggedIn',
+    'jobstrokes': true,
+  },
 };
