@@ -20,7 +20,6 @@ module.exports = {
 				var response = await MachineStrokes.update({"id": result.id}).set({machineId: mId, multifactor: multiFactor, strokes: result.strokes}).fetch();
 				return res.ok();
 			} else {
-				// await MachineStrokes.create({machineId: mId, multifactor: multiFactor, strokes: strokesCount}).fetch();
 				return res.status(404).send('Record not found.');
 
 			}
