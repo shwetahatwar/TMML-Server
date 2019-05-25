@@ -20,6 +20,10 @@ module.exports = {
     endTime: {
         type: 'number'
     },
+    multifactor: {
+        type: 'number',
+        defaultsTo: 1
+    },
     createdBy: {
       model:'User'
     },
