@@ -11,7 +11,6 @@ module.exports = {
     machineId:{
       model:'Machine',
     },
-    machine
     createdBy: {
       model:'User'
     },
