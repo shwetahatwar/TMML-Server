@@ -32,6 +32,18 @@ module.exports = {
     createdBy:{
       model:'User'
     },
+    startTime:{
+      type:'number'
+    },
+    endTime:{
+      type:'number'
+    },
+    duration:{
+      type:'number'
+    },
+    operatorId:{
+      model:'User'
+    }
   },
 
 };

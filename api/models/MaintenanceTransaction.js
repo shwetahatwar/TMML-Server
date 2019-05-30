@@ -19,6 +19,12 @@ module.exports = {
     },
     remarks:{
       type:'string'
+    },
+    partReplaced:{
+      type:'string'
+    },
+    machineStatus:{
+      type:'string'
     }
   },
 

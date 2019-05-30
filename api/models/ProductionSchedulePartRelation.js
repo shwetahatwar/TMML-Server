@@ -25,6 +25,9 @@ module.exports = {
     },
     estimatedCompletionDate:{
       type:'number'
+    },
+    isJobCardCreated:{
+      type:'string'
     }
   },
 

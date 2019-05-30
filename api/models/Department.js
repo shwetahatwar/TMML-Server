@@ -12,6 +12,9 @@ module.exports = {
       type: 'string',
       unique: true
     },
+    status:{
+      type:'number'
+    },
     createdBy: {
       model:'User'
     },

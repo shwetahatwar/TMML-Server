@@ -22,6 +22,9 @@ module.exports = {
     materialTypeId:{
       model:'MaterialType'
     },
+    status:{
+      type:'number'
+    },
     createdBy: {
       model:'User'
     },

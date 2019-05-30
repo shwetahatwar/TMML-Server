@@ -21,6 +21,12 @@ module.exports = {
     mobileNumber:{
       type:'number'
     },
+    status:{
+      type:'number'
+    },
+    notifyForMachineMaintenace:{
+      type:'number'
+    },
     createdBy: {
       model:'User'
     },
