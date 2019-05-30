@@ -32,6 +32,7 @@ module.exports.routes = {
   'POST /PartNumber/create' : 'PartNumber.create',
   'PUT /Machine/update' : 'Machine.update',
   'POST /JobProcessSequenceRelation/create': 'JobProcessSequenceRelation.create',
+  'PUT /JobProcessSequenceRelation/update': 'JobProcessSequenceRelation.update',
   // 'GET  /logout': 'AuthController.logout',
 
   /***************************************************************************
