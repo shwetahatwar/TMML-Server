@@ -29,6 +29,9 @@ module.exports = {
     barcodeSerial:{
       type:'string'
     },
+    currentLocation:{
+      model:'Location'
+    },
     createdBy:{
       model:'User'
     },

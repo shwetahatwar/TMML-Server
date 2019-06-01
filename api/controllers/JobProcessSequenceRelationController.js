@@ -28,13 +28,14 @@ module.exports = {
     .set({
       status:"Occupied"
     });
+    console.log(newJobProcess);
     await JobCard.update({
       id:req.body.jobId
     })
     .set({
       status:"In Progress"
     })
-    await MachineStrockes.create({
+    await MachineStrokes.create({
       machineId:req.body.machineId,
       strokes:0,
       startTime:req.body.startTime,
@@ -42,7 +43,7 @@ module.exports = {
       multifactor:req.body.multifactor
     })
     res.send(newJobProcess);
-  } 
+  },
 
   update: async function(req,res){
     await MachineStrockes.update({
