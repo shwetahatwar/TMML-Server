@@ -1,0 +1,32 @@
+
+---------------------------------------------------------------
+POST API Call for completed Part number
+
+Following JSON will be part of body request
+---------------------------------------------------------------
+[
+    {
+        "partnumber": 922101700022,
+        "quantity": 1200,
+        "timestamp": 1559116105
+    },
+    {
+        "partnumber": 922100200162,
+        "quantity": 700,
+        "timestamp": 1559116122
+    },
+    {
+        "partnumber": 923100400259,
+        "quantity": 560,
+        "timestamp": 1559116130
+    }
+
+]
+
+---------------------------------------------------------------
+* Note
+
+1. "partnumber" is SAP part number (numeric field)
+2. "quantity" is numeric field
+3. "timestamp" is in seconds since 1970.
+
