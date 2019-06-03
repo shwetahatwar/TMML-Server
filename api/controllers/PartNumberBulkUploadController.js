@@ -39,7 +39,7 @@ module.exports={
           var rawMaterialNameIdValue;
 
           await RawMaterial.findOne({
-            where:{'name': rawMaterialValue['v']}
+            where:{'rawMaterialNumber': rawMaterialValue['v']}
           })
           .then((newRawMaterialId)=>{rawMaterialNameIdValue = newRawMaterialId["id"]});
 
@@ -95,7 +95,7 @@ module.exports={
                   partId:newPartNumberId["id"],
                   sequenceNumber:count,
                   loadingTime: loadingTimeValue['v'],
-                  processTime:unloadingTimeValue['v'],
+                  processTime:processTime['v'],
                   machineGroupId:machineGroupIdNameValue,
                   isGroup:isGroupName
                 })
