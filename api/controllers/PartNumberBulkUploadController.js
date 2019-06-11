@@ -37,7 +37,7 @@ module.exports={
           var rawMaterial = xls_utils.encode_cell({c:4, r:i});
           var rawMaterialValue = sheet[rawMaterial];
           var rawMaterialNameIdValue;
-
+          console.log(rawMaterialValue['v']);
           await RawMaterial.findOne({
             where:{'rawMaterialNumber': rawMaterialValue['v']}
           })
@@ -109,7 +109,6 @@ module.exports={
           }
         }
         return res.status(200).send(rejectedPart);
-        
       })
     }
   }

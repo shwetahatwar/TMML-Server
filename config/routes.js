@@ -30,6 +30,7 @@ module.exports.routes = {
   'POST /iot/jobstrokes' : 'MachineStrokesController.jobstrokes',
   'POST /ProductionSchedule/create' : 'ProductionSchedule.create',
   'POST /PartNumber/create' : 'PartNumber.create',
+  'POST /PartNumber/newPart' : 'PartNumber.newPart',
   'PUT /MaintenanceTransaction/update' : 'MaintenanceTransaction.update',
   'POST /JobProcessSequenceRelation/create': 'JobProcessSequenceRelation.create',
   'PUT /JobProcessSequenceRelation/update': 'JobProcessSequenceRelation.update',

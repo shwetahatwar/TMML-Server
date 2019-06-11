@@ -34,22 +34,24 @@ module.exports = {
     })
     .set({
       status:"In Progress"
-    })
+    });
     await MachineStrokes.create({
       machineId:req.body.machineId,
       strokes:0,
       startTime:req.body.startTime,
       endTime:req.body.endTime,
       multifactor:req.body.multifactor
-    })
+    });
     res.send(newJobProcess);
   },
 
   update: async function(req,res){
-    await MachineStrockes.update({
-      id:req.body.machineStrockId,
-      endTime:req.body.endTime
+    await MachineStrokes.update({
+      id:req.body.machineStrockId
     })
+    .set({
+      endTime:req.body.endTime
+    });
     var newJobProcess = await JobProcessSequenceRelation.update({
       id:req.body.JobProcessSequenceId
     })
@@ -63,7 +65,7 @@ module.exports = {
       id : req.body.machineId
     })
     .set({
-      status:"Occupied"
+      status:"Available"
     });
     res.send(newJobProcess);
   }
