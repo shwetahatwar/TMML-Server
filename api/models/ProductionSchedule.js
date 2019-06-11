@@ -22,7 +22,7 @@ module.exports = {
       type:'number'
     },
     status:{
-      type:'string' // New, In Progress, Pending?, Complete?
+      type:'string' // New, In Progress, Completed?
     }
   },
 
