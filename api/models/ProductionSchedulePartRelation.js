@@ -26,10 +26,9 @@ module.exports = {
     estimatedCompletionDate:{
       type:'number'
     },
-    isJobCardCreated:{
-      type:'string'
+    isJobCardCreated:{ // this should be bool right?
+      type:'number'
     }
   },
 
 };
-

@@ -24,7 +24,7 @@ module.exports = {
     status:{
       type:'number'
     },
-    notifyForMachineMaintenace:{
+    notifyForMachineMaintenance:{
       type:'number'
     },
     createdBy: {
@@ -39,4 +39,3 @@ module.exports = {
   },
 
 };
-

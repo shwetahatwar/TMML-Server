@@ -16,10 +16,10 @@ module.exports = {
       type:'string'
     },
     manPower:{
-      type:'string'
+      type:'number'
     },
     SMH:{
-      type:'string'
+      type:'number'   // this will be calculated based on cycle time (represented in hours)
     },
     rawMaterialId:{
       model:'RawMaterial'
@@ -33,4 +33,3 @@ module.exports = {
   },
 
 };
-

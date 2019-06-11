@@ -23,7 +23,7 @@ module.exports = {
     unloadingTime:{
       type:'number'
     },
-    cycleTime:{
+    cycleTime:{ // looks lthis is again summation of loadingTime + processTime + unloadingTime
       type:'number'
     },
     machineGroupId:{
@@ -35,4 +35,3 @@ module.exports = {
   },
 
 };
-

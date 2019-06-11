@@ -21,7 +21,7 @@ module.exports = {
       type:'number'
     },
     status:{
-      type:'string'
+      type:'string' // New, Pending for Raw Material, Under Processing, Completed
     },
     estimatedDate:{
       type:'number'
@@ -29,7 +29,7 @@ module.exports = {
     barcodeSerial:{
       type:'string'
     },
-    currentLocation:{
+    kanbanLocation:{ // this can be Kanban location instead of current location.
       model:'Location'
     },
     createdBy:{
@@ -41,4 +41,3 @@ module.exports = {
   },
 
 };
-

@@ -14,7 +14,7 @@ module.exports = {
       locationId:req.body.locationId,
       quantity:req.body.quantity,
       note:req.body.note,
-      status:req.body.status,
+      status:'Start',
       startTime:req.body.startTime,
       endTime:req.body.endTime,
       duration:req.body.duration,
