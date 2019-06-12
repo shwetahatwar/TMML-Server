@@ -18,7 +18,7 @@ module.exports={
         if (err) {
           sails.log.error('Error uploading file', err)
         }
-        console.log(uploadedFiles[0].fd);
+        // console.log(uploadedFiles[0].fd);
         var rejectedPart = new Array();
         var checkFlag = 0;
         var workbook = XLSX.readFile(uploadedFiles[0].fd);
@@ -37,11 +37,12 @@ module.exports={
           var rawMaterial = xls_utils.encode_cell({c:4, r:i});
           var rawMaterialValue = sheet[rawMaterial];
           var rawMaterialNameIdValue;
-          console.log(rawMaterialValue['v']);
+          // console.log(rawMaterialValue['v']);
           await RawMaterial.findOne({
             where:{'rawMaterialNumber': rawMaterialValue['v']}
           })
-          .then((newRawMaterialId)=>{rawMaterialNameIdValue = newRawMaterialId["id"]});
+          .then((newRawMaterialId)=>{rawMaterialNameIdValue = newRawMaterialId["id"]})
+          .catch((error)=>{console.log(error)});
 
           var newPartNumberId = await PartNumber.create({
             partNumber:partNumberValue['v'],
@@ -62,10 +63,10 @@ module.exports={
               
               var sequenceNumber = xls_utils.encode_cell({c:j, r:i});
               var sequenceNumberValue = sheet[sequenceNumber];
-              console.log(sequenceNumber)
+              // console.log(sequenceNumber)
               if(sequenceNumberValue != null){
                 count++;
-                console.log(count);
+                // console.log(count);
                 var loadingTime = xls_utils.encode_cell({c:j+1, r:i});
                 var loadingTimeValue = sheet[loadingTime];
                 var processTime = xls_utils.encode_cell({c:j+2, r:i});
@@ -78,6 +79,7 @@ module.exports={
                 var machineGroupIdValue = sheet[machineGroupId];
                 var machineGroupIdNameValue;
                 var isGroupName;
+                var ProcessSequenceId;
                 await MachineGroup.findOne({
                   where:{'name':machineGroupIdValue['v']}
                 })
@@ -91,7 +93,7 @@ module.exports={
                   .then((newMachineGroupIdNameValue)=>{machineGroupIdNameValue = newMachineGroupIdNameValue["id"],isGroupName=false})
                   .catch(error=>{console.log("No Machine")})
                 }
-                ProcessSequence.create({
+                var newProcessSequenceId = await ProcessSequence.create({
                   partId:newPartNumberId["id"],
                   sequenceNumber:count,
                   loadingTime: loadingTimeValue['v'],
@@ -99,8 +101,31 @@ module.exports={
                   machineGroupId:machineGroupIdNameValue,
                   isGroup:isGroupName
                 })
-                .then(newValue =>{console.log("created")})
+                .fetch()
                 .catch(error=>{console.log(error)});
+                ProcessSequenceId=newProcessSequenceId;
+                console.log(ProcessSequenceId,"newProcessSequenceId");
+                if(isGroupName == false){
+                  console.log("If");
+                  console.log(machineGroupIdNameValue,"machineGroupIdNameValue");
+                  var machines = await Machine.find({machineGroupId:machineGroupIdNameValue})
+                  console.log(machines);
+                  for(var machineCount = 0;machineCount<machines.length;machineCount++){
+                    console.log(machineCount);
+                    await ProcessSequenceMachineRelation.create({
+                      processSequenceId:newProcessSequenceId["id"],
+                      machineId:machines[machineCount]["id"]
+                    })
+                  }
+                }
+                else{
+                  console.log("Else");
+                  console.log(newProcessSequenceId);
+                  await ProcessSequenceMachineRelation.create({
+                      processSequenceId:newProcessSequenceId["id"],
+                      machineId:machineGroupIdNameValue
+                    })
+                }
               }
               else{
                 break;
