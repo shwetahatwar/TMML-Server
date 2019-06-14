@@ -15,6 +15,9 @@ module.exports = {
     barcodeSerial:{
       type:'string'
     },
+    locationType:{
+      type:'string'
+    },
     createdBy: {
       model:'User'
     }

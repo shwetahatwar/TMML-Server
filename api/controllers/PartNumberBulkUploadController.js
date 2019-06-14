@@ -83,7 +83,7 @@ module.exports={
                 await MachineGroup.findOne({
                   where:{'name':machineGroupIdValue['v']}
                 })
-                .then((newMachineGroupIdNameValue)=>{machineGroupIdNameValue = newMachineGroupIdNameValue["id"],isGroupName=true})
+                .then((newMachineGroupIdNameValue)=>{machineGroupIdNameValue = newMachineGroupIdNameValue["id"],isGroupName=true,console.log(machineGroupIdNameValue)})
                 .catch(error=>{console.log("No Group")});
 
                 if(machineGroupIdNameValue == null){
@@ -104,10 +104,10 @@ module.exports={
                 .fetch()
                 .catch(error=>{console.log(error)});
                 ProcessSequenceId=newProcessSequenceId;
-                console.log(ProcessSequenceId,"newProcessSequenceId");
-                if(isGroupName == false){
-                  console.log("If");
-                  console.log(machineGroupIdNameValue,"machineGroupIdNameValue");
+                // console.log(ProcessSequenceId,"newProcessSequenceId");
+                if(isGroupName == true){
+                  // console.log("If");
+                  // console.log(machineGroupIdNameValue,"machineGroupIdNameValue");
                   var machines = await Machine.find({machineGroupId:machineGroupIdNameValue})
                   console.log(machines);
                   for(var machineCount = 0;machineCount<machines.length;machineCount++){
@@ -119,8 +119,8 @@ module.exports={
                   }
                 }
                 else{
-                  console.log("Else");
-                  console.log(newProcessSequenceId);
+                  // console.log("Else");
+                  // console.log(newProcessSequenceId);
                   await ProcessSequenceMachineRelation.create({
                       processSequenceId:newProcessSequenceId["id"],
                       machineId:machineGroupIdNameValue

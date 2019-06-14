@@ -36,6 +36,8 @@ module.exports.routes = {
   'PUT /JobProcessSequenceRelation/update': 'JobProcessSequenceRelation.update',
   'POST /JobToJobRerouting/create': 'JobToJobRerouting.create',
   'PUT /Logistics/update': 'Logistics.update',
+  'POST /JobCard/create': 'JobCard.create',
+  'POST /Machine/create': 'Machine.create',
   // 'GET  /logout': 'AuthController.logout',
 
   /***************************************************************************

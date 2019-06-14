@@ -16,6 +16,9 @@ module.exports = {
       type: 'string',
       required: true
     },
+    employeeId:{
+      model:'Employee'
+    },
     createdBy: {
       model:'User'
     },

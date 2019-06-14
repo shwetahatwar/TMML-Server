@@ -43,22 +43,47 @@ module.exports = {
       multifactor:req.body.multifactor
     });
     res.send(newJobProcess);
+
+    var sourceLocation = await Location.find({
+      barcodeSerial:req.body.sourceLocation
+    });
+
+    var jobLocationRelationId = await Joblocationrelation.findOne({
+      jobcardId:req.body.jobId,
+      status:"Pending",
+      sourceLocation:sourceLocation["id"]
+    });
+
+    await Joblocationrelation.update({
+      id:jobLocationRelationId["id"]
+    })
+    .set({
+      destinationLocationId:req.body.machineId,
+      status:"Complete"
+    });
   },
+
+  
 
   update: async function(req,res){
     await MachineStrokes.update({
       id:req.body.machineStrockId
     })
     .set({
-      endTime:req.body.endTime
+      endTime:0
     });
+    var newJobProcessSequenceId = await JobProcessSequenceRelation.findOne({
+      jobId:req.body.jobcardId,
+      machineId:req.body.machineId
+    });
+    console.log(newJobProcessSequenceId);
     var newJobProcess = await JobProcessSequenceRelation.update({
-      id:req.body.JobProcessSequenceId
+      id:newJobProcessSequenceId["id"]
     })
     .set({
       quantity:req.body.quantity,
       status:req.body.status,
-      endTime:req.body.endTime,
+      endTime:0,
       duration:req.body.duration,
     });
     await Machine.update({
@@ -67,7 +92,45 @@ module.exports = {
     .set({
       status:"Available"
     });
+
+    var processSequence = await ProcessSequence.find({
+      id:newJobProcessSequenceId["processSequenceId"]
+    });
+
+    var multiplyMachines = "";
+    var processSequenceMachines = await ProcessSequenceMachineRelation.find({
+      processSequenceId:processSequence["id"]
+    });
+    // async function createJobLocation(multiplyMachines){
+    //   console.log(multiplyMachines);
+      
+    // };
+    for(var i=0;i<processSequenceMachines.length;i++){
+      var machineId = await Machine.find({
+        id:processSequenceMachines[i].machineId
+      });
+      multiplyMachines = multiplyMachines + "," + machineId[0].machineName;
+      if(i == processSequenceMachines.length-1){
+        await Joblocationrelation.create({
+        jobcardId:req.body.jobcardId,
+        jobProcessSequenceRelationId:newJobProcessSequenceId["id"],
+        sourceLocation:req.body.machineId,
+        multiplyMachines:multiplyMachines
+      });
+      }
+    }
+    // await processSequenceMachines.forEach(async function(processSequenceMachine){
+    //   var machineId = await Machine.find({
+    //     id:processSequenceMachine.machineId
+    //   });
+    //   multiplyMachines = multiplyMachines + "," + machineId[0].machineName;
+    // });
+
+    // await createJobLocation(multiplyMachines);
     res.send(newJobProcess);
-  }
+
+  },
+
+  
 };
 

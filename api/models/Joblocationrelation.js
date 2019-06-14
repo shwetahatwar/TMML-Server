@@ -15,9 +15,12 @@ module.exports = {
       type:'number'
     },
     sourceLocation:{
-      type:'string'
+      model:'Location'
     },
     destinationLocationId:{
+      model:'Location'
+    },
+    multiplyMachines:{
       type:'string'
     },
     status:{  //Pending, Picked, Completed
