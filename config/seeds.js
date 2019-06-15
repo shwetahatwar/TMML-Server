@@ -57,4 +57,26 @@ module.exports.seeds = {
 
   ],
 
+  Cell: [
+    {
+      name: 'Cell 1',
+      status: 0,
+    },
+    {
+      name: 'Cell 2',
+      status: 0,
+    },
+    {
+      name: 'Cell 3',
+      status: 0,
+    },
+    {
+      name: 'Cell 4',
+      status: 0,
+    },
+    {
+      name: 'Cell 5',
+      status: 0,
+    },
+  ],
 }
