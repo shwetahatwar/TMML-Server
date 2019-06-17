@@ -38,97 +38,100 @@ module.exports={
           var rawMaterialValue = sheet[rawMaterial];
           var rawMaterialNameIdValue;
           // console.log(rawMaterialValue['v']);
-          await RawMaterial.findOne({
-            where:{'rawMaterialNumber': rawMaterialValue['v']}
-          })
-          .then((newRawMaterialId)=>{rawMaterialNameIdValue = newRawMaterialId["id"]})
-          .catch((error)=>{console.log(error)});
-
-          var newPartNumberId = await PartNumber.create({
-            partNumber:partNumberValue['v'],
-            description:descriptionValue['v'],
-            manPower:manPowerValue['v'],
-            SMH:newSMHValue['v'],
-            rawMaterialId:rawMaterialNameIdValue
-          })
-          .fetch()
-          .catch(error=>{rejectedPart.push(partNumberValue['v'])});
-          if(newPartNumberId != null)
-            checkFlag = 0;
-          else
-            checkFlag = 1;
-          if(checkFlag == 0){
-            var count=0;
-            for(var j = 5; j <= 100; j=j+5){
-              
-              var sequenceNumber = xls_utils.encode_cell({c:j, r:i});
-              var sequenceNumberValue = sheet[sequenceNumber];
-              // console.log(sequenceNumber)
-              if(sequenceNumberValue != null){
-                count++;
-                // console.log(count);
-                var loadingTime = xls_utils.encode_cell({c:j+1, r:i});
-                var loadingTimeValue = sheet[loadingTime];
-                var processTime = xls_utils.encode_cell({c:j+2, r:i});
-                var processTimeValue = sheet[processTime];
-                var unloadingTime = xls_utils.encode_cell({c:j+3, r:i});
-                var unloadingTimeValue = sheet[unloadingTime];
-                var cycleTime = xls_utils.encode_cell({c:j+4, r:i});
-                var cycleTimeValue = sheet[cycleTime];
-                var machineGroupId = xls_utils.encode_cell({c:j, r:i});
-                var machineGroupIdValue = sheet[machineGroupId];
-                var machineGroupIdNameValue;
-                var isGroupName;
-                var ProcessSequenceId;
-                await MachineGroup.findOne({
-                  where:{'name':machineGroupIdValue['v']}
-                })
-                .then((newMachineGroupIdNameValue)=>{machineGroupIdNameValue = newMachineGroupIdNameValue["id"],isGroupName=true,console.log(machineGroupIdNameValue)})
-                .catch(error=>{console.log("No Group")});
-
-                if(machineGroupIdNameValue == null){
-                  await Machine.findOne({
+          if(rawMaterialValue!=undefined&&rawMaterialValue!=null){
+            await RawMaterial.findOne({
+              where:{'rawMaterialNumber': rawMaterialValue['v']}
+            })
+            .then((newRawMaterialId)=>{rawMaterialNameIdValue = newRawMaterialId["id"]})
+            .catch((error)=>{console.log(error)});
+          }
+          if(rawMaterialNameIdValue!=null&&rawMaterialNameIdValue!=undefined&&partNumberValue!=null&&partNumberValue!=undefined){
+            var newPartNumberId = await PartNumber.create({
+              partNumber:partNumberValue['v'],
+              description:descriptionValue['v'],
+              manPower:manPowerValue['v'],
+              SMH:newSMHValue['v'],
+              rawMaterialId:rawMaterialNameIdValue
+            })
+            .fetch()
+            .catch(error=>{rejectedPart.push(partNumberValue['v'])});
+            if(newPartNumberId != null)
+              checkFlag = 0;
+            else
+              checkFlag = 1;
+            if(checkFlag == 0){
+              var count=0;
+              for(var j = 5; j <= 100; j=j+5){
+                
+                var sequenceNumber = xls_utils.encode_cell({c:j, r:i});
+                var sequenceNumberValue = sheet[sequenceNumber];
+                // console.log(sequenceNumber)
+                if(sequenceNumberValue != null){
+                  count++;
+                  // console.log(count);
+                  var loadingTime = xls_utils.encode_cell({c:j+1, r:i});
+                  var loadingTimeValue = sheet[loadingTime];
+                  var processTime = xls_utils.encode_cell({c:j+2, r:i});
+                  var processTimeValue = sheet[processTime];
+                  var unloadingTime = xls_utils.encode_cell({c:j+3, r:i});
+                  var unloadingTimeValue = sheet[unloadingTime];
+                  var cycleTime = xls_utils.encode_cell({c:j+4, r:i});
+                  var cycleTimeValue = sheet[cycleTime];
+                  var machineGroupId = xls_utils.encode_cell({c:j, r:i});
+                  var machineGroupIdValue = sheet[machineGroupId];
+                  var machineGroupIdNameValue;
+                  var isGroupName;
+                  var ProcessSequenceId;
+                  await MachineGroup.findOne({
                     where:{'name':machineGroupIdValue['v']}
                   })
-                  .then((newMachineGroupIdNameValue)=>{machineGroupIdNameValue = newMachineGroupIdNameValue["id"],isGroupName=false})
-                  .catch(error=>{console.log("No Machine")})
-                }
-                var newProcessSequenceId = await ProcessSequence.create({
-                  partId:newPartNumberId["id"],
-                  sequenceNumber:count,
-                  loadingTime: loadingTimeValue['v'],
-                  processTime:processTime['v'],
-                  machineGroupId:machineGroupIdNameValue,
-                  isGroup:isGroupName
-                })
-                .fetch()
-                .catch(error=>{console.log(error)});
-                ProcessSequenceId=newProcessSequenceId;
-                // console.log(ProcessSequenceId,"newProcessSequenceId");
-                if(isGroupName == true){
-                  // console.log("If");
-                  // console.log(machineGroupIdNameValue,"machineGroupIdNameValue");
-                  var machines = await Machine.find({machineGroupId:machineGroupIdNameValue})
-                  console.log(machines);
-                  for(var machineCount = 0;machineCount<machines.length;machineCount++){
-                    console.log(machineCount);
-                    await ProcessSequenceMachineRelation.create({
-                      processSequenceId:newProcessSequenceId["id"],
-                      machineId:machines[machineCount]["id"]
+                  .then((newMachineGroupIdNameValue)=>{machineGroupIdNameValue = newMachineGroupIdNameValue["id"],isGroupName=true,console.log(machineGroupIdNameValue)})
+                  .catch(error=>{console.log("No Group")});
+
+                  if(machineGroupIdNameValue == null){
+                    await Machine.findOne({
+                      where:{'name':machineGroupIdValue['v']}
                     })
+                    .then((newMachineGroupIdNameValue)=>{machineGroupIdNameValue = newMachineGroupIdNameValue["id"],isGroupName=false})
+                    .catch(error=>{console.log("No Machine")})
+                  }
+                  var newProcessSequenceId = await ProcessSequence.create({
+                    partId:newPartNumberId["id"],
+                    sequenceNumber:count,
+                    loadingTime: loadingTimeValue['v'],
+                    processTime:processTime['v'],
+                    machineGroupId:machineGroupIdNameValue,
+                    isGroup:isGroupName
+                  })
+                  .fetch()
+                  .catch(error=>{console.log(error)});
+                  ProcessSequenceId=newProcessSequenceId;
+                  // console.log(ProcessSequenceId,"newProcessSequenceId");
+                  if(isGroupName == true){
+                    // console.log("If");
+                    // console.log(machineGroupIdNameValue,"machineGroupIdNameValue");
+                    var machines = await Machine.find({machineGroupId:machineGroupIdNameValue})
+                    console.log(machines);
+                    for(var machineCount = 0;machineCount<machines.length;machineCount++){
+                      console.log(machineCount);
+                      await ProcessSequenceMachineRelation.create({
+                        processSequenceId:newProcessSequenceId["id"],
+                        machineId:machines[machineCount]["id"]
+                      })
+                    }
+                  }
+                  else{
+                    // console.log("Else");
+                    // console.log(newProcessSequenceId);
+                    await ProcessSequenceMachineRelation.create({
+                        processSequenceId:newProcessSequenceId["id"],
+                        machineId:machineGroupIdNameValue
+                      })
                   }
                 }
                 else{
-                  // console.log("Else");
-                  // console.log(newProcessSequenceId);
-                  await ProcessSequenceMachineRelation.create({
-                      processSequenceId:newProcessSequenceId["id"],
-                      machineId:machineGroupIdNameValue
-                    })
+                  break;
                 }
-              }
-              else{
-                break;
               }
             }
           }

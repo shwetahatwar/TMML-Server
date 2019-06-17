@@ -27,6 +27,9 @@ module.exports = {
     },
     department:{
       model:'User'
+    },
+    role:{
+      model:'Role'
     }
   },
   customToJSON: function() {

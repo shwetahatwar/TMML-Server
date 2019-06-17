@@ -35,11 +35,15 @@ module.exports={
           var rawMaterialNumber = xls_utils.encode_cell({c:3, r:i});
           var rawMaterialNumberValue = sheet[rawMaterialNumber];
           var materialTypeIdNameValues;
-          
-          await MaterialType.findOne({
-            where:{'name':materialTypeIdValue['v']}
-          })
-          .then((materialTypeId)=>{materialTypeIdNameValues = materialTypeId["id"]});
+          if(materialTypeIdValue!=null&&materialTypeIdValue!=undefined)
+          {
+            await MaterialType.findOne({
+              where:{'name':materialTypeIdValue['v']}
+            })
+            .then((materialTypeId)=>{materialTypeIdNameValues = materialTypeId["id"]});
+          }
+          if(rawMaterialNumberValue!=null&&rawMaterialNumberValue!=undefined&&materialTypeIdNameValues!=null&&materialTypeIdNameValues!=undefined)
+          {
             await RawMaterial.create({
               rawMaterialNumber:rawMaterialNumberValue['v'],
               name:value['v'],
@@ -49,6 +53,7 @@ module.exports={
               updatedBy:req.user
             })
             .catch(error=>{rejectedMaterial.push(rawMaterialNumberValue['v'])});
+          }
         }
         return res.status(200).send(rejectedMaterial);
       })

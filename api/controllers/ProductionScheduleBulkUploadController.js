@@ -46,20 +46,22 @@ module.exports={
             var partNumberIdValue = sheet[partNumberId];
             console.log(partNumberIdValue);
             var partNumberNameIdValue;
-
-            await PartNumber.findOne({
-              where:{'partNumber': partNumberIdValue['v']}
-            })
-            .then((newPartNumberId)=>{partNumberNameIdValue = newPartNumberId["id"]});
-
-            await ProductionSchedulePartRelation.create({
-              requestedQuantity:quantityValue['v'],
-              status:"0",
-              estimatedCompletionDate:estimatedComplitionDateValue['v'],
-              scheduleId:productionSchedule["id"],
-              partNumberId:partNumberNameIdValue
-            })
-            .catch(error=>{rejectedPart.push(partNumberIdValue['v']),console.log(error)})
+            if(partNumberIdValue!=null&&partNumberIdValue!=undefined){
+              await PartNumber.findOne({
+                where:{'partNumber': partNumberIdValue['v']}
+              })
+              .then((newPartNumberId)=>{partNumberNameIdValue = newPartNumberId["id"]});
+            }
+            if(partNumberNameIdValue!=null&&partNumberNameIdValue!=undefined&&productionSchedule!=null&&productionSchedule!=undefined){
+              await ProductionSchedulePartRelation.create({
+                requestedQuantity:quantityValue['v'],
+                status:"0",
+                estimatedCompletionDate:estimatedComplitionDateValue['v'],
+                scheduleId:productionSchedule["id"],
+                partNumberId:partNumberNameIdValue
+              })
+              .catch(error=>{rejectedPart.push(partNumberIdValue['v']),console.log(error)})
+            }
           }
           return res.status(200).send(rejectedPart);
         }

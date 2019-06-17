@@ -34,14 +34,21 @@ module.exports={
 	    	var updatedByValue = sheet[updatedBy];
 	    	var createdByIdValues;
 	    	var updatedByIdValues;
-	    	await User.findOne({
-	    		where:{'username':createdByValue['v']}
-	    	})
-	    	.then((createdById)=>{createdByIdValues = createdById["id"]});
-	    	await User.findOne({
-	    		where:{'username':updatedByValue['v']}
-	    	})
-	    	.then((updatedById)=>{updatedByIdValues = updatedById["id"]});
+	    	if(createdByValue!=null&&createdByValue!=undefined)
+	    	{
+		    	await User.findOne({
+		    		where:{'username':createdByValue['v']}
+		    	})
+		    	.then((createdById)=>{createdByIdValues = createdById["id"]});
+		    }
+		    if(updatedByValue!=null&&updatedByValue!=undefined)
+		    {
+		    	await User.findOne({
+		    		where:{'username':updatedByValue['v']}
+		    	})
+		    	.then((updatedById)=>{updatedByIdValues = updatedById["id"]});
+		    }
+		    // if()
 	    	await Cell.create({name:value['v'],createdBy:createdByIdValues,updatedBy:updatedByIdValues});
 			}
 			return res.ok();

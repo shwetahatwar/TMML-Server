@@ -101,10 +101,6 @@ module.exports = {
     var processSequenceMachines = await ProcessSequenceMachineRelation.find({
       processSequenceId:processSequence["id"]
     });
-    // async function createJobLocation(multiplyMachines){
-    //   console.log(multiplyMachines);
-      
-    // };
     for(var i=0;i<processSequenceMachines.length;i++){
       var machineId = await Machine.find({
         id:processSequenceMachines[i].machineId
@@ -119,14 +115,6 @@ module.exports = {
       });
       }
     }
-    // await processSequenceMachines.forEach(async function(processSequenceMachine){
-    //   var machineId = await Machine.find({
-    //     id:processSequenceMachine.machineId
-    //   });
-    //   multiplyMachines = multiplyMachines + "," + machineId[0].machineName;
-    // });
-
-    // await createJobLocation(multiplyMachines);
     res.send(newJobProcess);
 
   },

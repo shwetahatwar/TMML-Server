@@ -39,6 +39,7 @@ module.exports={
             where:{'name':departmentValue['v']}
           })
           .then((departmentValueId)=>{departmentValue = departmentValueId["id"]});
+          if(employeeIdValue!=null&&employeeIdValue!=undefined&&departmentValue!=undefined&&departmentValue!=null){  
             await Employee.create({
               employeeId:employeeIdValue['v'],
               name:nameValue['v'],
@@ -49,6 +50,7 @@ module.exports={
               updatedBy:req.user
             })
             .catch(error=>{rejectedEmployee.push(employeeIdValue['v'])});
+          }
         }
         return res.status(200).send(rejectedEmployee);
       })

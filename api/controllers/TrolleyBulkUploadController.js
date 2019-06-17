@@ -35,24 +35,29 @@ module.exports={
           var typeIdNameValues;
           var materialTypeIdNameValues;
 
-
-          await TrolleyType.findOne({
-            where:{'name':typeIdValue['v']}
-          })
-          .then((newTypeId)=>{typeIdNameValues = newTypeId["id"]});
-          await MaterialType.findOne({
-            where:{'name':materialTypeIdValue['v']}
-          })
-          .then((materialTypeId)=>{materialTypeIdNameValues = materialTypeId["id"]});
-
-          await Trolley.create({
-            capacity:value['v'],
-            typeId:typeIdNameValues,
-            materialTypeId:materialTypeIdNameValues,
-            barcodeSerial:"A123",
-            status:0
-          })
-          .catch(error=>{rejectedTrolley.push(value['v'])});
+          if(typeIdValue!=null&&typeIdValue!=undefined){
+            await TrolleyType.findOne({
+              where:{'name':typeIdValue['v']}
+            })
+            .then((newTypeId)=>{typeIdNameValues = newTypeId["id"]});
+          }
+          if(materialTypeIdValue!=null&&materialTypeIdValue!=undefined){
+            await MaterialType.findOne({
+              where:{'name':materialTypeIdValue['v']}
+            })
+            .then((materialTypeId)=>{materialTypeIdNameValues = materialTypeId["id"]});
+          }
+          if(typeIdNameValues!=null&&typeIdNameValues!=undefined&&materialTypeIdNameValues!=null&&materialTypeIdNameValues!=undefined)
+          {
+            await Trolley.create({
+              capacity:value['v'],
+              typeId:typeIdNameValues,
+              materialTypeId:materialTypeIdNameValues,
+              barcodeSerial:"A123",
+              status:0
+            })
+            .catch(error=>{rejectedTrolley.push(value['v'])});
+          }
         }
         return res.status(200).send(rejectedTrolley);
       })
