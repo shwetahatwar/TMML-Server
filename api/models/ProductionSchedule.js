@@ -15,13 +15,16 @@ module.exports = {
     createdBy:{
       model:'User'
     },
+    scheduleDate: { // a date for which schedule is created
+      type:'number'
+    },
     estimatedCompletionDate:{
       type:'number'
     },
     actualCompletionDate:{
       type:'number'
     },
-    PartNumberMonthlyRequiredQuota: {
+    partNumberMonthlyRequiredQuota: {
       model: 'PartNumberRequiredQuota'
     },
     status:{
