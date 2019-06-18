@@ -111,7 +111,8 @@ module.exports = {
         jobcardId:req.body.jobcardId,
         jobProcessSequenceRelationId:newJobProcessSequenceId["id"],
         sourceLocation:req.body.machineId,
-        multiplyMachines:multiplyMachines
+        multiplyMachines:multiplyMachines,
+        status="Pending"
       });
       }
     }
