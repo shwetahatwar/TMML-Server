@@ -9,16 +9,16 @@ module.exports = {
 
   attributes: {
     partNumber:{
-      model:PartNumber,
+      model:'PartNumber',
     },
     requiredQuantity: {
       type:'number',
     },
     monthYear: {
-      type: 'Number'
+      type: 'number'
     },
     componentDetails: { // a chesis or component where this part will be consumed
-      type: String,
+      type: 'string',
     },
-
+  },
 };
