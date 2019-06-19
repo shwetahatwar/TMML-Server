@@ -53,6 +53,9 @@ module.exports = {
     },
     lastMaintenanceBy:{
       model:'User'
+    },
+    isAutomacticCount:{
+      type:'number'
     }
   },
 

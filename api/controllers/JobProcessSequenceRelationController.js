@@ -112,7 +112,7 @@ module.exports = {
         jobProcessSequenceRelationId:newJobProcessSequenceId["id"],
         sourceLocation:req.body.machineId,
         multiplyMachines:multiplyMachines,
-        status="Pending"
+        status:"Pending"
       });
       }
     }
@@ -120,6 +120,5 @@ module.exports = {
 
   },
 
-  
 };
 
