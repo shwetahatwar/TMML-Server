@@ -19,7 +19,7 @@ module.exports = {
   	.fetch()
   	.catch((error)=>{console.log(error)});
   	console.log(newJobCardId);
-  	await JobToJobRerouting.create({
+  	await Jobtojobrerouting.create({
   		fromJobId:req.body.fromJobId,
   		fromProcessSequenceId:req.body.fromProcessSequenceId,
   		toJobId:newJobCardId["id"],

@@ -12,7 +12,7 @@ module.exports = {
       status:req.body.status
     })
     .fetch();
-    var MaintenanceTable = await MaintenanceTransaction.create({
+    var MaintenanceTable = await Maintenancetransaction.create({
       machineId: req.body.machineId,
       maintenanceOn : req.body.maintenanceOn,
       maintenanceBy : req.body.maintenanceBy,

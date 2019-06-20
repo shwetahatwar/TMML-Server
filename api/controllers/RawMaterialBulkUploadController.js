@@ -37,14 +37,14 @@ module.exports={
           var materialTypeIdNameValues;
           if(materialTypeIdValue!=null&&materialTypeIdValue!=undefined)
           {
-            await MaterialType.findOne({
+            await Materialtype.findOne({
               where:{'name':materialTypeIdValue['v']}
             })
             .then((materialTypeId)=>{materialTypeIdNameValues = materialTypeId["id"]});
           }
           if(rawMaterialNumberValue!=null&&rawMaterialNumberValue!=undefined&&materialTypeIdNameValues!=null&&materialTypeIdNameValues!=undefined)
           {
-            await RawMaterial.create({
+            await Rawmaterial.create({
               rawMaterialNumber:rawMaterialNumberValue['v'],
               name:value['v'],
               description:descriptionValue['v'],

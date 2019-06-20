@@ -7,7 +7,7 @@
 
 module.exports = {
   update: async function(req,res){
-    await JobProcessSequenceRelation.update({
+    await Jobprocesssequencerelation.update({
       id:req.body.JobProcessSequenceRelationId
     })
     .set({

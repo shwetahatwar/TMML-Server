@@ -36,13 +36,13 @@ module.exports={
           var materialTypeIdNameValues;
 
           if(typeIdValue!=null&&typeIdValue!=undefined){
-            await TrolleyType.findOne({
+            await Trolleytype.findOne({
               where:{'name':typeIdValue['v']}
             })
             .then((newTypeId)=>{typeIdNameValues = newTypeId["id"]});
           }
           if(materialTypeIdValue!=null&&materialTypeIdValue!=undefined){
-            await MaterialType.findOne({
+            await Materialtype.findOne({
               where:{'name':materialTypeIdValue['v']}
             })
             .then((materialTypeId)=>{materialTypeIdNameValues = materialTypeId["id"]});

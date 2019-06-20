@@ -20,6 +20,15 @@ module.exports.policies = {
   // '*': 'isLoggedIn',
   // 'login':true,
   // 'login': true,
+
+  '*':{
+    create:true,
+    find:true,
+    findOne:true,
+    update:true,
+    set:true
+  },
+
   AccessLevelController:{
   	'*':'isLoggedIn'
   },

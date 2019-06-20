@@ -66,18 +66,18 @@ module.exports = {
   
 
   update: async function(req,res){
-    await MachineStrokes.update({
+    await Machinestrokes.update({
       id:req.body.machineStrockId
     })
     .set({
       endTime:0
     });
-    var newJobProcessSequenceId = await JobProcessSequenceRelation.findOne({
+    var newJobProcessSequenceId = await Jobprocesssequencerelation.findOne({
       jobId:req.body.jobcardId,
       machineId:req.body.machineId
     });
     console.log(newJobProcessSequenceId);
-    var newJobProcess = await JobProcessSequenceRelation.update({
+    var newJobProcess = await Jobprocesssequencerelation.update({
       id:newJobProcessSequenceId["id"]
     })
     .set({
@@ -93,12 +93,12 @@ module.exports = {
       status:"Available"
     });
 
-    var processSequence = await ProcessSequence.find({
+    var processSequence = await Processsequence.find({
       id:newJobProcessSequenceId["processSequenceId"]
     });
 
     var multiplyMachines = "";
-    var processSequenceMachines = await ProcessSequenceMachineRelation.find({
+    var processSequenceMachines = await Processsequencemachinerelation.find({
       processSequenceId:processSequence["id"]
     });
     for(var i=0;i<processSequenceMachines.length;i++){

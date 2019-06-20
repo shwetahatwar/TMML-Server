@@ -22,7 +22,7 @@ module.exports = {
   	.catch((error)=>{
   		console.log(error);
   	}); 
-  	await MachineFile.create({
+  	await Machinefile.create({
   		machineId:machine["id"],
   		fileData:req.body.fileData,
   		fileType:req.body.fileType

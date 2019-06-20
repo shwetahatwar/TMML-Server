@@ -18,17 +18,19 @@ module.exports = {
   console.log(newproductionScheduleId["id"]);
   for(var i=0;i<req.body.partMaster.length;i++){
     console.log(req.body.partMaster[i].partNumberId);
-    var newPartNumber = await PartNumber.findOne({partNumber:req.body.partMaster[i].partNumberId})
+    var newPartNumber = await Partnumber.findOne({partNumber:req.body.partMaster[i].partNumberId});
     console.log(newPartNumber);
-    await ProductionSchedulePartRelation.create({
-      scheduleId:newproductionScheduleId["id"],
-      partNumberId:newPartNumber["id"],
-      requestedQuantity:req.body.partMaster[i].requestedQuantity,
-      estimatedCompletionDate:req.body.partMaster[i].estimatedCompletionDate,
-      isJobCardCreated:req.body.partMaster[i].isJobCardCreated
-    })
-    .then()
-    .catch(error=>console.log(error));
+    if(newPartNumber!=null&&newPartNumber!=undefined){
+      await ProductionSchedulePartRelation.create({
+        scheduleId:newproductionScheduleId["id"],
+        partNumberId:newPartNumber["id"],
+        requestedQuantity:req.body.partMaster[i].requestedQuantity,
+        estimatedCompletionDate:req.body.partMaster[i].estimatedCompletionDate,
+        isJobCardCreated:req.body.partMaster[i].isJobCardCreated
+      })
+      .then()
+      .catch(error=>console.log(error));
+    }
   }
   res.status(200).send(newproductionScheduleId);
 }
