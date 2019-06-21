@@ -35,13 +35,18 @@ module.exports = {
     .set({
       status:"In Progress"
     });
-    await MachineStrokes.create({
-      machineId:req.body.machineId,
-      strokes:0,
-      startTime:req.body.startTime,
-      endTime:req.body.endTime,
-      multifactor:req.body.multifactor
+    var getMachine = await Machine.findOne({
+      id: req.body.machineId
     });
+    if(getMachine["isAutomacticCount"] == 1){
+      await MachineStrokes.create({
+        machineId:req.body.machineId,
+        strokes:0,
+        startTime:req.body.startTime,
+        endTime:req.body.endTime,
+        multifactor:req.body.multifactor
+      });
+    }
     res.send(newJobProcess);
 
     var sourceLocation = await Location.find({

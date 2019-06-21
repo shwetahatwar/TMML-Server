@@ -34,6 +34,7 @@ var rc;
 try {
   sails = require('sails');
   rc = require('sails/accessible/rc');
+  
 } catch (err) {
   console.error('Encountered an error when attempting to require(\'sails\'):');
   console.error(err.stack);
@@ -52,3 +53,4 @@ try {
 
 // Start server
 sails.lift(rc('sails'));
+

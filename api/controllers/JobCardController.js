@@ -7,13 +7,40 @@
 
 module.exports = {
   create: async function(req,res){
+
+    var getJobCard = await JobCard.find()
+    .sort('id DESC')
+    .limit(1);
+
+    var d = new Date();
+    console.log(sensor);
+    var curr_date = d.getDate();
+    var curr_month = parseInt(d.getMonth()) + 1;
+    var curr_year = d.getFullYear();
+    var barcodeSerial = "J0";
+    var serialNumber;
+
+    var lastBarcodeDay = getJobCard["barcodeSerial"];
+    lastBarcodeDay = lastBarcodeDay.substring(8,10);
+
+    if(lastBarcodeDay == curr_month){
+      var lastSerialNumber = getJobCard["barcodeSerial"];
+      lastSerialNumber = lastSerialNumber.substring(16,18);
+      serialNumber = lastSerialNumber + 1;
+    }
+    else{
+      serialNumber = "001";
+    }
+
+    barcodeSerial = barcodeSerial + curr_year + curr_month + curr_date + serialNumber;
+
   	var newJobCard = await JobCard.create({
   		productionSchedulePartRelationId:req.body.productionSchedulePartRelationId,
   		requestedQuantity:req.body.requestedQuantity,
   		actualQuantity:req.body.actualQuantity,
   		status:req.body.status,
   		estimatedDate:req.body.estimatedDate,
-  		barcodeSerial:req.body.barcodeSerial,
+  		barcodeSerial:barcodeSerial,
   		currentLocation:req.body.currentLocation
   	})
   	.fetch()

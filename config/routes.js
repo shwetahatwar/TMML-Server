@@ -27,7 +27,7 @@ module.exports.routes = {
   'POST /employeeBulkUpload':'EmployeeBulkUploadController.upload',
   'POST /productionScheduleBulkUpload': 'ProductionScheduleBulkUpload.upload',
   'POST /partNumberBulkUpload': 'PartNumberBulkUpload.upload',
-  'POST /iot/jobstrokes' : 'MachineStrokesController.jobstrokes',
+  'POST /iot/jobstrokes' : 'MachineStrokes.create',
   'POST /ProductionSchedule/create' : 'ProductionSchedule.create',
   'POST /PartNumber/create' : 'PartNumber.create',
   'POST /PartNumber/newPart' : 'PartNumber.newPart',
@@ -39,6 +39,7 @@ module.exports.routes = {
   'POST /JobCard/create': 'JobCard.create',
   'POST /Machine/create': 'Machine.create',
   'PUT /Joblocationrelation/move': 'Joblocationrelation.move',
+  // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 
   /***************************************************************************
