@@ -31,7 +31,10 @@ module.exports = {
       type:'number'
     },
     status:{
-      type:'string'
+      type:'number'
+    },
+    maintenanceStatus: {
+      type: 'string'
     },
     barcodeSerial:{
       type:'string'
@@ -56,8 +59,11 @@ module.exports = {
     },
     isAutomacticCount:{
       type:'number'
+    },
+    maintenanceDetails: {
+      collection: 'MaintenanceTransaction',
+      via: 'machineId',
     }
   },
 
 };
-

@@ -29,6 +29,10 @@ module.exports = {
     },
     updatedBy: {
       model:'User'
+    },
+    processSequences: {
+      collection:'Processsequence',
+      via: 'partId',
     }
   },
 

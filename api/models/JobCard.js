@@ -21,6 +21,9 @@ module.exports = {
       type:'number'
     },
     status:{
+      type:'number'
+    },
+    jobcardStatus:{
       type:'string' // New, Pending for Raw Material, Under Processing, Completed
     },
     estimatedDate:{
@@ -37,6 +40,10 @@ module.exports = {
     },
     updatedBy:{
       model:'User'
+    },
+    processes: {
+      collection: 'JobProcessSequenceRelation',
+      via: 'jobId'
     }
   },
 

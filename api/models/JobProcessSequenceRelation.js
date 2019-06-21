@@ -43,8 +43,8 @@ module.exports = {
     },
     operatorId:{
       model:'User'
-    }
+    },
+
   },
 
 };
-

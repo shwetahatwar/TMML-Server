@@ -28,7 +28,10 @@ module.exports = {
     },
     isJobCardCreated:{ // this should be bool right?
       type:'number'
-    }
+    },
+    jobcard: {
+      collection: 'JobCard',
+      via: 'productionSchedulePartRelationId',
+    },
   },
-
 };

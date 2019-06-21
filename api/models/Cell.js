@@ -21,7 +21,10 @@ module.exports = {
     updatedBy: {
       model:'User'
     },
+    machines: {
+      collection:'Machine',
+      via: 'cellId',
+    }
   },
 
 };
-

@@ -25,8 +25,7 @@ module.exports = {
     },
     status:{  //Pending, Picked, Completed
       type:'string'
-    }
+    },
   },
 
 };
-
