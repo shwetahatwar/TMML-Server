@@ -26,7 +26,7 @@ module.exports = {
     note:{
       type:'string'
     },
-    status:{
+    processStatus:{
       type:'string'
     },
     createdBy:{

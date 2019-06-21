@@ -20,10 +20,10 @@ module.exports = {
     destinationLocationId:{
       model:'Location'
     },
-    multiplyMachines:{
+    suggestedDropLocations:{
       type:'string'
     },
-    status:{  //Pending, Picked, Completed
+    processStatus:{  //Pending, Picked, Completed
       type:'string'
     },
   },

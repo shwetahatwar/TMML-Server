@@ -17,7 +17,7 @@ module.exports = {
     requestedQuantity:{
       type:'number'
     },
-    status:{
+    scheduleStatus:{
       type:'string'
     },
     createdBy:{

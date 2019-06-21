@@ -21,7 +21,7 @@ module.exports = {
       type:'string'
     },
     status:{
-      type:'string'
+      type:'number'
     },
     createdBy:{
       model:'User'

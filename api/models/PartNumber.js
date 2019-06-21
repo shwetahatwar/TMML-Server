@@ -33,7 +33,10 @@ module.exports = {
     processSequences: {
       collection:'Processsequence',
       via: 'partId',
-    }
+    },
+    status:{
+      type:'number'
+    },
   },
 
 };
