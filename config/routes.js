@@ -39,6 +39,7 @@ module.exports.routes = {
   'POST /JobCard/create': 'JobCard.create',
   'POST /Machine/create': 'Machine.create',
   'PUT /Joblocationrelation/move': 'Joblocationrelation.move',
+  'POST /Location/create': 'Location.create',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

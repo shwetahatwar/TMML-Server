@@ -33,11 +33,11 @@ module.exports.bootstrap = async function() {
   // ]);
   // ```
   
-  console.log("Try Connect");
+  // console.log("Try Connect");
   client.connectTCP("192.168.0.23", { port: 502 },function(err,data){
     
-    console.log(data);
-    console.log(err);
+    // console.log(data);
+    // console.log(err);
   });
   client.setID(1);
   setInterval(function() {
@@ -61,7 +61,7 @@ module.exports.bootstrap = async function() {
         
       }
       else if(err){
-        console.log(err);
+        // console.log(err);
       }
     });
   }, 1000);

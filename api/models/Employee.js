@@ -19,7 +19,7 @@ module.exports = {
       type:'string'
     },
     mobileNumber:{
-      type:'number'
+      type:'string'
     },
     status:{
       type:'number'

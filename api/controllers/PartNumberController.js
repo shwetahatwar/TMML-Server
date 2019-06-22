@@ -18,7 +18,8 @@ module.exports = {
       description:req.body.description,
       manPower:req.body.manpower,
       SMH:req.body.smh,
-      rawMaterialId:rawMaterialNameIdValue
+      rawMaterialId:rawMaterialNameIdValue,
+      status:1
     })
     .fetch()
     .catch(error=>{console.log(error)});
@@ -104,7 +105,8 @@ module.exports = {
       description:req.body.description,
       manPower:req.body.manpower,
       SMH:req.body.smh,
-      rawMaterialId:req.body.rawMaterial.id
+      rawMaterialId:req.body.rawMaterial.id,
+      status:req.body.status
     })
     .fetch()
     .catch(error=>{console.log(error)});

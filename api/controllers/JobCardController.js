@@ -13,20 +13,40 @@ module.exports = {
     .limit(1);
 
     var d = new Date();
-    console.log(sensor);
+    // console.log(sensor);
     var curr_date = d.getDate();
     var curr_month = parseInt(d.getMonth()) + 1;
+    curr_month = ""+curr_month;
+    // console.log(curr_month);
+    if(curr_month.toString().length == 1){
+      curr_month = "0" + curr_month
+    }
+    // console.log(curr_month);
     var curr_year = d.getFullYear();
     var barcodeSerial = "J0";
     var serialNumber;
+    // console.log(getJobCard[0]["barcodeSerial"]);
+    if(getJobCard[0]["barcodeSerial"]!=null && getJobCard[0]["barcodeSerial"]!=undefined){
+      var lastBarcodeDay = getJobCard[0]["barcodeSerial"];
+      lastBarcodeDay = lastBarcodeDay.substring(8,10);
+      // console.log(lastBarcodeDay);
+      // console.log(curr_date);
+      if(lastBarcodeDay == curr_date){
 
-    var lastBarcodeDay = getJobCard["barcodeSerial"];
-    lastBarcodeDay = lastBarcodeDay.substring(8,10);
-
-    if(lastBarcodeDay == curr_month){
-      var lastSerialNumber = getJobCard["barcodeSerial"];
-      lastSerialNumber = lastSerialNumber.substring(16,18);
-      serialNumber = lastSerialNumber + 1;
+        var lastSerialNumber = getJobCard[0]["barcodeSerial"];
+        lastSerialNumber = lastSerialNumber.substring(10,13);
+        console.log(lastSerialNumber);
+        serialNumber = parseInt(lastSerialNumber) + 1;
+        if(serialNumber.toString().length == 1){
+          serialNumber = "00" + serialNumber
+        }
+        else if(serialNumber.toString().length == 2){
+          serialNumber = "0" + serialNumber
+        }
+      }
+      else{
+        serialNumber = "001";
+      }
     }
     else{
       serialNumber = "001";
@@ -41,7 +61,8 @@ module.exports = {
   		status:req.body.status,
   		estimatedDate:req.body.estimatedDate,
   		barcodeSerial:barcodeSerial,
-  		currentLocation:req.body.currentLocation
+  		currentLocation:req.body.currentLocation,
+      jobcardStatus:req.body.jobcardStatus
   	})
   	.fetch()
   	.catch((error)=>{console.log(error)});
