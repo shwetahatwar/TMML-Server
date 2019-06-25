@@ -12,12 +12,18 @@ module.exports = {
       type:'number',
       unique: true
     },
-    name:{
-      type:'string',
-      unique: true
-    },
+    // name:{
+    //   type:'string',
+    //   unique: true
+    // },
     description:{
       type:'string'
+    },
+    rmCreateDate:{
+      type:'number',
+    },
+    rmUpdateDate:{
+      type:'number',
     },
     materialTypeId:{
       model:'MaterialType'
@@ -34,4 +40,3 @@ module.exports = {
   },
 
 };
-

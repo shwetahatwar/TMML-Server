@@ -40,6 +40,7 @@ module.exports.routes = {
   'POST /Machine/create': 'Machine.create',
   'PUT /Joblocationrelation/move': 'Joblocationrelation.move',
   'POST /Location/create': 'Location.create',
+  'POST /seedDatabase': 'SetupDataUploadController.seedDatabase'
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

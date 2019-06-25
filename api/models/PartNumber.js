@@ -24,6 +24,15 @@ module.exports = {
     rawMaterialId:{
       model:'RawMaterial'
     },
+    partCreationDate: { // coming from SAP
+      type:'number'
+    },
+    partChangeDate: { // coming from SAP
+      type:'number'
+    },
+    partStatus: { // coming from SAP
+      type:'string' //N- New, C – Changed, B- Blocked
+    },
     createdBy: {
       model:'User'
     },
@@ -36,6 +45,12 @@ module.exports = {
     },
     status:{
       type:'number'
+    },
+    uom: { // unit of measurement coming from SAP
+      type: 'string',
+    },
+    materialGroup: { // coming from SAP
+      type: 'string',
     },
   },
 

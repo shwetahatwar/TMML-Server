@@ -12,27 +12,27 @@ module.exports.seeds = {
   Department: [
     {
       name: 'Engineering',
-      status: 0, // 0 for active, 1 for deactive
+      status: 1, // 0 for active, 1 for deactive
     },
     {
       name: 'Management',
-      status: 0, // 0 for active, 1 for deactive
+      status: 1, // 0 for active, 1 for deactive
     },
     {
       name: 'Production',
-      status: 0, // 0 for active, 1 for deactive
+      status: 1, // 0 for active, 1 for deactive
     },
     {
       name: 'Maintenance',
-      status: 0, // 0 for active, 1 for deactive
+      status: 1, // 0 for active, 1 for deactive
     },
     {
       name: 'Store',
-      status: 0, // 0 for active, 1 for deactive
+      status: 1, // 0 for active, 1 for deactive
     },
     {
       name: 'Logistics',
-      status: 0, // 0 for active, 1 for deactive
+      status: 1, // 0 for active, 1 for deactive
     },
   ],
   TrolleyType: [
@@ -60,23 +60,23 @@ module.exports.seeds = {
   Cell: [
     {
       name: 'Cell 1',
-      status: 0,
+      status: 1,
     },
     {
       name: 'Cell 2',
-      status: 0,
+      status: 1,
     },
     {
       name: 'Cell 3',
-      status: 0,
+      status: 1,
     },
     {
       name: 'Cell 4',
-      status: 0,
+      status: 1,
     },
     {
       name: 'Cell 5',
-      status: 0,
+      status: 1,
     },
   ],
 }
