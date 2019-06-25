@@ -25,9 +25,9 @@ module.exports = {
     updatedBy: {
       model:'User'
     },
-    department:{
-      model:'User'
-    },
+    // department:{
+    //   model:'User'
+    // },
     role:{
       model:'Role'
     }
@@ -46,4 +46,3 @@ module.exports = {
     });
   }
 };
-

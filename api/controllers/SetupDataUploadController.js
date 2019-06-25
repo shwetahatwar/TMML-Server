@@ -14,8 +14,30 @@ module.exports = {
 
   seedDatabase: async function(req, res) {
 
+    // AccessLevel
+    var filepath0 = './documents/templates/bulk-upload/01-BulkUploadDepartment.xlsx';
+    var workbook0 = XLSX.readFile(filepath0);
+    var sheet0 = workbook0.Sheets[workbook0.SheetNames[0]];
+    var num_rows0 = xls_utils.decode_range(sheet0['!ref']).e.r;
+    var json0 = [];
+    for(var i = 1, l = num_rows0; i <= l; i++){
+      var name = xls_utils.encode_cell({c:0, r:i});
+      var value = sheet0[name];
+      var uriResult = value['v'];
+
+      var httpMethod = xls_utils.encode_cell({c:0, r:i});
+      var httpMethodValue = sheet0[httpMethod];
+      var httpMethodResult = httpMethodValue['v'];
+
+      console.log(name + " \t" + uriResult);
+      json1.push({uri: uriResult, httpMethod: httpMethodResult});
+    }
+
+    // add to Department
+    var accessLevel = await AccessLevel.createEach(json0);
+
     // Read Department
-    var filepath1 = './documents/templates/bulk-upload/01-BulkUploadDepartment.xlsx';
+    var filepath1 = './documents/templates/bulk-upload/01-BulkUploadAccessLevelURI.xlsx';
     var workbook1 = XLSX.readFile(filepath1);
     var sheet1 = workbook1.Sheets[workbook1.SheetNames[0]];
     var num_rows1 = xls_utils.decode_range(sheet1['!ref']).e.r;
@@ -27,6 +49,7 @@ module.exports = {
       console.log(name + " \t" + result);
       json1.push({name: result, status: 1});
     }
+
     // add to Department
     var departments = await Department.createEach(json1);
 
