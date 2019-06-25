@@ -15,7 +15,24 @@ module.exports = {
   seedDatabase: async function(req, res) {
 
     // AccessLevel
-    var filepath0 = './documents/templates/bulk-upload/01-BulkUploadDepartment.xlsx';
+    var filepath00 = './documents/templates/bulk-upload/01-BulkUploadRole.xlsx';
+    var workbook00 = XLSX.readFile(filepath00);
+    var sheet00 = workbook00.Sheets[workbook00.SheetNames[0]];
+    var num_rows00 = xls_utils.decode_range(sheet00['!ref']).e.r;
+    var json00 = [];
+    for(var i = 1, l = num_rows00; i <= l; i++){
+      var name = xls_utils.encode_cell({c:0, r:i});
+      var value = sheet00[name];
+      var result = value['v'];
+      console.log(name + " \t" + result);
+      json00.push({roleName: result});
+    }
+
+    // add to Accesslevel
+    var role = await Role.createEach(json00);
+
+    // AccessLevel
+    var filepath0 = './documents/templates/bulk-upload/01-BulkUploadAccessLevelURI.xlsx';
     var workbook0 = XLSX.readFile(filepath0);
     var sheet0 = workbook0.Sheets[workbook0.SheetNames[0]];
     var num_rows0 = xls_utils.decode_range(sheet0['!ref']).e.r;
@@ -25,19 +42,19 @@ module.exports = {
       var value = sheet0[name];
       var uriResult = value['v'];
 
-      var httpMethod = xls_utils.encode_cell({c:0, r:i});
+      var httpMethod = xls_utils.encode_cell({c:1, r:i});
       var httpMethodValue = sheet0[httpMethod];
       var httpMethodResult = httpMethodValue['v'];
 
       console.log(name + " \t" + uriResult);
-      json1.push({uri: uriResult, httpMethod: httpMethodResult});
+      json0.push({uri: uriResult, httpMethod: httpMethodResult});
     }
 
-    // add to Department
+    // add to Accesslevel
     var accessLevel = await AccessLevel.createEach(json0);
 
     // Read Department
-    var filepath1 = './documents/templates/bulk-upload/01-BulkUploadAccessLevelURI.xlsx';
+    var filepath1 = './documents/templates/bulk-upload/01-BulkUploadDepartment.xlsx';
     var workbook1 = XLSX.readFile(filepath1);
     var sheet1 = workbook1.Sheets[workbook1.SheetNames[0]];
     var num_rows1 = xls_utils.decode_range(sheet1['!ref']).e.r;
@@ -54,66 +71,124 @@ module.exports = {
     var departments = await Department.createEach(json1);
 
     // Read Trolley Type
-    var filepath2 = './documents/templates/bulk-upload/04-BulkUploadTrolleyType.xlsx';
-    var workbook2 = XLSX.readFile(filepath2);
-    var sheet2 = workbook2.Sheets[workbook2.SheetNames[0]];
-    var num_rows2 = xls_utils.decode_range(sheet2['!ref']).e.r;
-    var json2 = [];
-    for(var i = 1, l = num_rows2; i <= l; i++){
+    var filepath02 = './documents/templates/bulk-upload/02-BulkUploadEmployee.xlsx';
+    var workbook02 = XLSX.readFile(filepath02);
+    var sheet02 = workbook02.Sheets[workbook02.SheetNames[0]];
+    var num_rows02 = xls_utils.decode_range(sheet02['!ref']).e.r;
+    var json02 = [];
+    for(var i = 1, l = num_rows02; i <= l; i++){
+      var employeeId = xls_utils.encode_cell({c:0, r:i});
+      var employeeValue = sheet02[employeeId];
+      var employeeResult = employeeValue['v'];
+      console.log(employeeId + " \t" + employeeResult);
+
+      var name = xls_utils.encode_cell({c:1, r:i});
+      var value = sheet02[name];
+      var nameResult = value['v'];
+      console.log(name + " \t" + nameResult);
+
+      var email = xls_utils.encode_cell({c:2, r:i});
+      var emailValue = sheet02[email];
+      var emailResult = emailValue['v'];
+      console.log(email + " \t" + emailResult);
+
+      var mobileNumber = xls_utils.encode_cell({c:3, r:i});
+      var mobileNumberValue = sheet02[mobileNumber];
+      var mobileNumberResult = mobileNumberValue['v'];
+      console.log(mobileNumber + " \t" + mobileNumberResult);
+
+      var status = xls_utils.encode_cell({c:4, r:i});
+      var statusValue = sheet02[status];
+      var statusResult = statusValue['v'];
+      console.log(status + " \t" + statusResult);
+
+      var notifyForMachineMaintenance = xls_utils.encode_cell({c:5, r:i});
+      var notifyForMachineMaintenanceValue = sheet02[notifyForMachineMaintenance];
+      var notifyForMachineMaintenanceResult = notifyForMachineMaintenanceValue['v'];
+      console.log(notifyForMachineMaintenance + " \t" + notifyForMachineMaintenanceResult);
+
+      var department = xls_utils.encode_cell({c:6, r:i});
+      var departmentValue = sheet02[department];
+      var departmentResult = departmentValue['v'];
+      console.log(department + " \t" + departmentResult);
+      var departmentId = null;
+
+      // add to Department
+      var departments = await Department.find({name: departmentResult}).then((dep) => {
+        departmentId = dep['id']
+      });
+
+      json02.push({
+        employeeId: employeeResult,
+        name: nameResult,
+        email: emailResult,
+        mobileNumber:  mobileNumberResult,
+        status: statusResult,
+        notifyForMachineMaintenance: notifyForMachineMaintenanceResult,
+        department: departmentId
+      });
+    }
+    var employees = await Employee.createEach(json02);
+
+    // Read Trolley Type
+    var filepath04 = './documents/templates/bulk-upload/04-BulkUploadTrolleyType.xlsx';
+    var workbook04 = XLSX.readFile(filepath04);
+    var sheet04 = workbook04.Sheets[workbook04.SheetNames[0]];
+    var num_rows04 = xls_utils.decode_range(sheet04['!ref']).e.r;
+    var json04 = [];
+    for(var i = 1, l = num_rows04; i <= l; i++){
       var name = xls_utils.encode_cell({c:0, r:i});
-      var value = sheet2[name];
+      var value = sheet04[name];
       var result = value['v'];
       console.log(name + " \t" + result);
-      json2.push({name: result});
+      json04.push({name: result});
     }
-    var trolleyTypes = await TrolleyType.createEach(json2).then(
-
-    );
+    var trolleyTypes = await TrolleyType.createEach(json04);
 
     // Read Materialtype
-    var filepath3 = './documents/templates/bulk-upload/05-BulkUploadRawMaterialType.xlsx';
-    var workbook3 = XLSX.readFile(filepath3);
-    var sheet3 = workbook3.Sheets[workbook3.SheetNames[0]];
-    var num_rows3 = xls_utils.decode_range(sheet3['!ref']).e.r;
-    var json3 = [];
-    for(var i = 1, l = num_rows3; i <= l; i++){
+    var filepath05 = './documents/templates/bulk-upload/05-BulkUploadRawMaterialType.xlsx';
+    var workbook05 = XLSX.readFile(filepath05);
+    var sheet05 = workbook05.Sheets[workbook05.SheetNames[0]];
+    var num_rows05 = xls_utils.decode_range(sheet05['!ref']).e.r;
+    var json05 = [];
+    for(var i = 1, l = num_rows05; i <= l; i++){
       var name = xls_utils.encode_cell({c:0, r:i});
-      var value = sheet3[name];
+      var value = sheet05[name];
       var result = value['v'];
       console.log(name + " \t" + result);
-      json3.push({name: result});
+      json05.push({name: result});
     }
-    var materialTypes = await MaterialType.createEach(json3);
+    var materialTypes = await MaterialType.createEach(json05);
 
     // Read Cell
-    var filepath4 = './documents/templates/bulk-upload/08-BulkUploadMachineCell.xlsx';
-    var workbook4 = XLSX.readFile(filepath4);
-    var sheet4 = workbook4.Sheets[workbook4.SheetNames[0]];
-    var num_rows4 = xls_utils.decode_range(sheet4['!ref']).e.r;
-    var json4 = [];
-    for(var i = 1, l = num_rows4; i <= l; i++){
+    var filepath08 = './documents/templates/bulk-upload/08-BulkUploadMachineCell.xlsx';
+    var workbook08 = XLSX.readFile(filepath08);
+    var sheet08 = workbook08.Sheets[workbook08.SheetNames[0]];
+    var num_rows08 = xls_utils.decode_range(sheet08['!ref']).e.r;
+    var json08 = [];
+    for(var i = 1, l = num_rows08; i <= l; i++){
       var name = xls_utils.encode_cell({c:0, r:i});
-      var value = sheet4[name];
+      var value = sheet08[name];
       var result = value['v'];
       console.log(name + " \t" + result);
-      json4.push({name: result});
+      json08.push({name: result});
     }
-    var cells = await Cell.createEach(json4);
+    var cells = await Cell.createEach(json08);
 
     // Costcenter
-    var filepath5 = './documents/templates/bulk-upload/10-BulkUploadCostCenter.xlsx';
-    var workbook5 = XLSX.readFile(filepath5);
-    var sheet5 = workbook5.Sheets[workbook5.SheetNames[0]];
-    var num_rows5 = xls_utils.decode_range(sheet5['!ref']).e.r;
-    var json5 = [];
-    for(var i = 1, l = num_rows5; i <= l; i++){
+    var filepath10 = './documents/templates/bulk-upload/10-BulkUploadCostCenter.xlsx';
+    var workbook10 = XLSX.readFile(filepath10);
+    var sheet10 = workbook10.Sheets[workbook10.SheetNames[0]];
+    var num_rows10 = xls_utils.decode_range(sheet10['!ref']).e.r;
+    var json10 = [];
+    for(var i = 1, l = num_rows10; i <= l; i++){
       var name = xls_utils.encode_cell({c:0, r:i});
-      var value = sheet5[name];
+      var value = sheet10[name];
       var result = value['v'];
       console.log(name + " \t" + result);
-      json4.push({name: result});
+      json10.push({name: result});
     }
-    var cells = await Cell.createEach(json5);
+    var cells = await CostCenter.createEach(json10);
 
     return res.status(200).send("Seed Database");
   }
