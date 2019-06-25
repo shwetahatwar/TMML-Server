@@ -18,14 +18,6 @@ module.exports = {
     tag:{
         type:'string'
     },
-    createdBy: {
-      model:'AppUser'
-    },
-    updatedBy: {
-      model:'AppUser'
-    },
-
   },
 
 };
-
