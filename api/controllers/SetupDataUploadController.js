@@ -141,8 +141,8 @@ module.exports = {
     for(var i = 1, l = num_rows03; i <= l; i++){
       var name = xls_utils.encode_cell({c:0, r:i});
       var value = sheet03[name];
-      var result = value['v'];
-      console.log("User: " + name + " \t" + result);
+      var userResult = value['v'];
+      console.log("User: " + name + " \t" + userResult);
 
       var password = xls_utils.encode_cell({c:1, r:i});
       var passwordValue = sheet03[password];
@@ -176,7 +176,7 @@ module.exports = {
 
           // console.log('Role: ' +  role +  '\nroleIdentifer: ' +  roleIdentifer);
 
-          json03.push({name: result, password: passwordResult, employeeId: empId, role: roleIdentifer});
+          json03.push({username: userResult, password: passwordResult, employeeId: empId, role: roleIdentifer});
 
         });
       });
