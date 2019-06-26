@@ -114,21 +114,87 @@ module.exports = {
       var departmentId = null;
 
       // add to Department
-      var departments = await Department.find({name: departmentResult}).then((dep) => {
-        departmentId = dep['id']
-      });
-
-      json02.push({
-        employeeId: employeeResult,
-        name: nameResult,
-        email: emailResult,
-        mobileNumber:  mobileNumberResult,
-        status: statusResult,
-        notifyForMachineMaintenance: notifyForMachineMaintenanceResult,
-        department: departmentId
+      await Department.find({name: departmentResult}).then((dep) => {
+        var depId = null;
+        if (dep.length > 0) {
+          depId = dep[0]['id'];
+        }
+        json02.push({
+          employeeId: employeeResult,
+          name: nameResult,
+          email: emailResult,
+          mobileNumber:  mobileNumberResult,
+          status: statusResult,
+          notifyForMachineMaintenance: notifyForMachineMaintenanceResult,
+          department: depId
+        });
       });
     }
     var employees = await Employee.createEach(json02);
+
+    // Read Users
+    var filepath03 = './documents/templates/bulk-upload/03-BulkUploadUser.xlsx';
+    var workbook03 = XLSX.readFile(filepath03);
+    var sheet03 = workbook03.Sheets[workbook03.SheetNames[0]];
+    var num_rows03 = xls_utils.decode_range(sheet03['!ref']).e.r;
+    var json03 = [];
+    for(var i = 1, l = num_rows03; i <= l; i++){
+      var name = xls_utils.encode_cell({c:0, r:i});
+      var value = sheet03[name];
+      var result = value['v'];
+      console.log("User: " + name + " \t" + result);
+
+      var password = xls_utils.encode_cell({c:1, r:i});
+      var passwordValue = sheet03[password];
+      var passwordResult = passwordValue['v'];
+      console.log("User password: " + password + " \t" + passwordResult);
+
+      var employeeId = xls_utils.encode_cell({c:2, r:i});
+      var employeeIdValue = sheet03[employeeId];
+      var employeeIdResult = employeeIdValue['v'];
+      console.log("User Employee Id: " + employeeId + " \t" + employeeIdResult);
+
+      var role = xls_utils.encode_cell({c:3, r:i});
+      var roleValue = sheet03[role];
+      var roleResult = roleValue['v'];
+      console.log("User Role: " + role + " \t" + roleResult);
+
+      // employee id
+      await Employee.find({employeeId: employeeIdResult}).then(async (emp) => {
+        // return emp['id']
+        var empId = null;
+        if (emp.length > 0) {
+          empId = emp[0]['id'];
+        }
+
+        // role
+        await Role.find({roleName: roleResult}).then( async (role) => {
+          var roleIdentifer = null;
+          if (role.length > 0) {
+            roleIdentifer = role[0]['id'];
+          }
+
+          // console.log('Role: ' +  role +  '\nroleIdentifer: ' +  roleIdentifer);
+
+          json03.push({name: result, password: passwordResult, employeeId: empId, role: roleIdentifer});
+
+        });
+      });
+
+      // var role = xls_utils.encode_cell({c:3, r:i});
+      // var roleValue = sheet03[role];
+      // var roleResult = roleValue['v'];
+      // console.log(role + " \t" + roleResult);
+      //
+      // // role
+      // var roleIdentifier = await Role.find({roleName: roleResult}).then((role) => {
+      //   return role['id']
+      // });
+
+      // json03.push({name: result, password: passwordResult, employeeId: empId, role: roleIdentifier});
+    }
+    var users = await User.createEach(json03);
+
 
     // Read Trolley Type
     var filepath04 = './documents/templates/bulk-upload/04-BulkUploadTrolleyType.xlsx';
