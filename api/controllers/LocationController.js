@@ -23,7 +23,7 @@ module.exports = {
     var curr_year = d.getFullYear();
     var barcodeSerial;
     var serialNumber;
-    if(getLocation[0]["barcodeSerial"]!=null && getLocation[0]["barcodeSerial"]!=undefined){
+    if(getLocation[0]!=null && getLocation[0]!=undefined){
     	if(getLocation[0]["barcodeSerial"] == "Store"){
     		barcodeSerial = "LS";
     	}

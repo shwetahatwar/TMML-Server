@@ -13,7 +13,7 @@ module.exports = {
     })
     .then((newRawMaterialId)=>{rawMaterialNameIdValue = newRawMaterialId["id"]});
 
-    var newPartNumberId = await Partnumber.create({
+    var newPartNumberId = await PartNumber.create({
       partNumber:req.body.partnumber,
       description:req.body.description,
       manPower:req.body.manpower,
@@ -100,7 +100,7 @@ module.exports = {
 
   newPart: async function(req,res){
 
-    var newPartNumberId = await Partnumber.create({
+    var newPartNumberId = await PartNumber.create({
       partNumber:req.body.partnumber,
       description:req.body.description,
       manPower:req.body.manpower,
@@ -118,7 +118,7 @@ module.exports = {
           isGroupName = true;
           console.log(req.body.processes[i].machineGroupName);
           var machineGroupId = req.body.processes[i].machineGroupName;
-          var newProcessSequenceId = await Processsequence.create({
+          var newProcessSequenceId = await ProcessSequence.create({
             partId:newPartNumberId["id"],
             sequenceNumber:j,
             loadingTime: req.body.processes[i].loadingTime,
@@ -145,7 +145,7 @@ module.exports = {
                 .then((newMachineId)=>{machineIdValue = newMachineId["id"]});
 
                 // console.log(machineIdValue)
-                await Processsequencemachinerelation.create({
+                await ProcessSequenceMachineRelation.create({
                   processSequenceId:newProcessSequenceId["id"],
                   machineId:machineIdValue
                 })

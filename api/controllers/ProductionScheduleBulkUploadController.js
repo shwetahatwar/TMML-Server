@@ -47,7 +47,7 @@ module.exports={
             console.log(partNumberIdValue);
             var partNumberNameIdValue;
             if(partNumberIdValue!=null&&partNumberIdValue!=undefined){
-              await Partnumber.findOne({
+              await PartNumber.findOne({
                 where:{'partNumber': partNumberIdValue['v']}
               })
               .then((newPartNumberId)=>{partNumberNameIdValue = newPartNumberId["id"]});

@@ -22,7 +22,7 @@ module.exports = {
     var curr_year = d.getFullYear();
     var barcodeSerial = "MA";
     var serialNumber;
-    if(getMachine[0]["barcodeSerial"]!=null && getMachine[0]["barcodeSerial"]!=undefined){
+    if(getMachine[0]!=null && getMachine[0]!=undefined){
       var lastBarcodeDay = getMachine[0]["barcodeSerial"];
       lastBarcodeDay = lastBarcodeDay.substring(8,10);
       if(lastBarcodeDay == curr_date){

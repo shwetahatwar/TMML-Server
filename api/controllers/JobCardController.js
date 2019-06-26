@@ -26,7 +26,7 @@ module.exports = {
     var barcodeSerial = "J0";
     var serialNumber;
     // console.log(getJobCard[0]["barcodeSerial"]);
-    if(getJobCard[0]["barcodeSerial"]!=null && getJobCard[0]["barcodeSerial"]!=undefined){
+    if(getJobCard[0]!=null && getJobCard[0]!=undefined){
       var lastBarcodeDay = getJobCard[0]["barcodeSerial"];
       lastBarcodeDay = lastBarcodeDay.substring(8,10);
       // console.log(lastBarcodeDay);

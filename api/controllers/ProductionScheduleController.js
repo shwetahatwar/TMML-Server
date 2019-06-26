@@ -18,7 +18,7 @@ module.exports = {
   console.log(newproductionScheduleId["id"]);
   for(var i=0;i<req.body.partMaster.length;i++){
     console.log(req.body.partMaster[i].partNumberId);
-    var newPartNumber = await Partnumber.findOne({partNumber:req.body.partMaster[i].partNumberId});
+    var newPartNumber = await PartNumber.findOne({partNumber:req.body.partMaster[i].partNumberId});
     console.log(newPartNumber);
     if(newPartNumber!=null&&newPartNumber!=undefined){
       await ProductionSchedulePartRelation.create({

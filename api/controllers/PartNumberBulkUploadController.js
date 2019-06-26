@@ -46,7 +46,7 @@ module.exports={
             .catch((error)=>{console.log(error)});
           }
           if(rawMaterialNameIdValue!=null&&rawMaterialNameIdValue!=undefined&&partNumberValue!=null&&partNumberValue!=undefined){
-            var newPartNumberId = await Partnumber.create({
+            var newPartNumberId = await PartNumber.create({
               partNumber:partNumberValue['v'],
               description:descriptionValue['v'],
               manPower:manPowerValue['v'],
@@ -95,7 +95,7 @@ module.exports={
                     .then((newMachineGroupIdNameValue)=>{machineGroupIdNameValue = newMachineGroupIdNameValue["id"],isGroupName=false})
                     .catch(error=>{console.log("No Machine")})
                   }
-                  var newProcessSequenceId = await Processsequence.create({
+                  var newProcessSequenceId = await ProcessSequence.create({
                     partId:newPartNumberId["id"],
                     sequenceNumber:count,
                     loadingTime: loadingTimeValue['v'],
@@ -114,7 +114,7 @@ module.exports={
                     console.log(machines);
                     for(var machineCount = 0;machineCount<machines.length;machineCount++){
                       console.log(machineCount);
-                      await Processsequencemachinerelation.create({
+                      await ProcessSequenceMachineRelation.create({
                         processSequenceId:newProcessSequenceId["id"],
                         machineId:machines[machineCount]["id"]
                       })
@@ -123,7 +123,7 @@ module.exports={
                   else{
                     // console.log("Else");
                     // console.log(newProcessSequenceId);
-                    await Processsequencemachinerelation.create({
+                    await ProcessSequenceMachineRelation.create({
                         processSequenceId:newProcessSequenceId["id"],
                         machineId:machineGroupIdNameValue
                       })
