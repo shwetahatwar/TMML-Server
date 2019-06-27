@@ -7,7 +7,7 @@
 
 module.exports = {
   create: async function(req,res){
-  	var getLocation = await Machine.find({
+  	var getLocation = await Location.find({
   		locationType:req.body.locationType
   	})
     .sort('id DESC')

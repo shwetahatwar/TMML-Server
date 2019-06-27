@@ -89,7 +89,7 @@ module.exports = {
     })
     .set({
       quantity:req.body.quantity,
-      processStatus:req.body.status,
+      processStatus:req.body.processStatus,
       duration:req.body.duration,
     })
     .fetch();

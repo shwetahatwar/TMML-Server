@@ -9,7 +9,7 @@ module.exports = {
   update: async function(req,res){
     var machineUpdated = await Machine.update({ id:req.body.machineId })
     .set({
-      status:req.body.status
+      maintenanceStatus:req.body.maintenanceStatus
     })
     .fetch();
     var MaintenanceTable = await MaintenanceTransaction.create({
@@ -18,7 +18,7 @@ module.exports = {
       maintenanceBy : req.body.maintenanceBy,
       remarks : req.body.remarks,
       partReplaced : req.body.partReplaced,
-      machineStatus : req.body.status
+      machineStatus : req.body.maintenanceStatus
     }).fetch();
     res.send(machineUpdated);
   }
