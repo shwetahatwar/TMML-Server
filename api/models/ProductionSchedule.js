@@ -33,6 +33,14 @@ module.exports = {
     parts: {
       collection: 'ProductionSchedulePartRelation',
       via: 'scheduleId',
+    },
+    scheduleType: {
+      type:'string',
+      isIn: ['Scheduled', 'Nesting RM Optimization', 'Unplanned', 'Design Change'],
+      defaultsTo: 'Scheduled',
+    },
+    remarks: {
+      type: 'string',
     }
   },
 

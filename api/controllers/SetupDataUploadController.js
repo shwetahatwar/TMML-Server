@@ -237,7 +237,7 @@ module.exports = {
       var value = sheet08[name];
       var result = value['v'];
       console.log(name + " \t" + result);
-      json08.push({name: result});
+      json08.push({name: result, status: 1});
     }
     var cells = await Cell.createEach(json08);
 
