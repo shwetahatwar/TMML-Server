@@ -11,7 +11,8 @@ module.exports = {
     productionScheduleId:req.body.productionScheduleId,
     estimatedCompletionDate:req.body.estimatedCompletionDate,
     actualCompletionDate:req.body.actualCompletionDate,
-    status:req.body.status
+    status:req.body.status,
+    scheduleType: req.body.scheduleType
   })
   .fetch()
   .catch(error=>console.log(error));
@@ -35,4 +36,3 @@ module.exports = {
   res.status(200).send(newproductionScheduleId);
 }
 };
-
