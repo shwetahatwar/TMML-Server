@@ -9,7 +9,7 @@ module.exports = {
 
   attributes: {
     productionScheduleId:{
-      type:'string',
+      type:'string', // Machine Shop Daily Plan YYYY-MM-DD-NNN (where NNN is serial number from 001 to 999)
       unique: true
     },
     createdBy:{
@@ -36,8 +36,8 @@ module.exports = {
     },
     scheduleType: {
       type:'string',
-      isIn: ['Scheduled', 'Nesting RM Optimization', 'Unplanned', 'Design Change'],
-      defaultsTo: 'Scheduled',
+      // isIn: ['Scheduled', 'Nesting RM Optimization', 'Unplanned', 'Design Change'],
+      // defaultsTo: 'Scheduled',
     },
     remarks: {
       type: 'string',
