@@ -24,10 +24,10 @@ passport.use(new LocalStrategy({
 			let userDetails = {
 				username: user.username,
 				id: user.id,
-				token: jwt.sign({ username: user.username }, 'BRIOTTMMLMACHINESHOPWIPIIOT'),
+				role: user.role,
+				token: jwt.sign({ username: user.username, userid: user.id }, 'BRIOTTMMLMACHINESHOPWIPIIOT'),
 			};
-			return cb(null, userDetails, { message: 'Login Succesful'});
+			return cb(null, userDetails, { message: 'Login Successful'});
 		});
 	});
 }));
-
