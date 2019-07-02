@@ -21,6 +21,9 @@ module.exports = {
     updatedBy: {
       model:'User'
     },
+    machineTypeId: {
+      model: 'MachineType'
+    },
     machines: {
       collection:'Machine',
       via: 'machineGroupId',
