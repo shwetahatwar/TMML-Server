@@ -41,7 +41,8 @@ module.exports.routes = {
   'PUT /Joblocationrelation/move': 'Joblocationrelation.move',
   'POST /Location/create': 'Location.create',
   'POST /seedDatabase': 'SetupDataUploadController.seedDatabase',
-  'POST /sapPartNumber': 'SapPartNumberController.create'
+  'POST /sapPartNumber': 'SapPartNumberController.create',
+  'POST /monthlySchdeule': 'MonthlySchdeuleController.create'
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

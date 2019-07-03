@@ -23,6 +23,9 @@ module.exports = {
     partReplaced:{
       type:'string'
     },
+    costOfPartReplaced: {
+      type: 'string'
+    },
     machineStatus:{
       type:'string'
     }

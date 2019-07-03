@@ -9,7 +9,7 @@ module.exports = {
 
   attributes: {
     productionScheduleId:{
-      type:'string',
+      type:'string', // Machine Shop Daily Plan YYYY-MM-DD-NNN (where NNN is serial number from 001 to 999)
       unique: true
     },
     createdBy:{
@@ -24,8 +24,11 @@ module.exports = {
     actualCompletionDate:{
       type:'number'
     },
-    status:{
+    scheduleStatus:{
       type:'string' // New, In Progress, Completed?
+    },
+    status: {
+      type: 'number' // New, In Progress, Completed?
     },
     partNumberMonthlyRequiredQuota: {
       model: 'PartNumberRequiredQuota'
