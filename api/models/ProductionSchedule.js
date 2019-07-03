@@ -24,8 +24,11 @@ module.exports = {
     actualCompletionDate:{
       type:'number'
     },
-    status:{
+    scheduleStatus:{
       type:'string' // New, In Progress, Completed?
+    },
+    status: {
+      type: 'number' // New, In Progress, Completed?
     },
     partNumberMonthlyRequiredQuota: {
       model: 'PartNumberRequiredQuota'

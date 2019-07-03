@@ -13,7 +13,8 @@ module.exports = {
       actualCompletionDate: req.body.actualCompletionDate,
       status: req.body.status,
       scheduleType: req.body.scheduleType,
-      remarks: req.body.remarks
+      remarks: req.body.remarks,
+      scheduleStatus: req.body.scheduleStatus 
     })
       .fetch()
       .catch(error => console.log(error));
@@ -28,7 +29,8 @@ module.exports = {
           partNumberId: newPartNumber["id"],
           requestedQuantity: req.body.partMaster[i].requestedQuantity,
           estimatedCompletionDate: req.body.partMaster[i].estimatedCompletionDate,
-          isJobCardCreated: req.body.partMaster[i].isJobCardCreated
+          isJobCardCreated: req.body.partMaster[i].isJobCardCreated,
+          partRemark: req.body.partMaster[i].partRemark
         })
           .then()
           .catch(error => console.log(error));

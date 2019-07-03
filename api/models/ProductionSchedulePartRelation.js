@@ -33,5 +33,8 @@ module.exports = {
       collection: 'JobCard',
       via: 'productionSchedulePartRelationId',
     },
+    partRemark: {
+      type: 'string'
+    },
   },
 };
