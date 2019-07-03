@@ -36,7 +36,7 @@ module.exports = {
     },
     scheduleType: {
       type:'string',
-      isIn: ['Scheduled', 'Nesting RM Optimization', 'Unplanned', 'Design Change'],
+      isIn: ['Scheduled', 'Nesting RM Optimization', 'Design Change'],
       defaultsTo: 'Scheduled',
     },
     remarks: {
