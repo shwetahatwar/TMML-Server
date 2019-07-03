@@ -15,7 +15,7 @@ passport.use(new LocalStrategy({
 	passportField: 'password'
 }, async function(username, password, cb){
 	// console.log("username",username);
-	var users = await User.find({username: username}).populate('employeeId');
+	var users = await User.find({username: username}).populate('employeeId').populate('role');
 	if (users.length > 0) {
 		var user = users[0];
 		if(!user) return cb(null, false, {message: 'Username not found'});
