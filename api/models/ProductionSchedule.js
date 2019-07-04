@@ -16,7 +16,7 @@ module.exports = {
       model:'User'
     },
     scheduleDate: { // a date for which schedule is created
-      type:'number'
+      type:'string'
     },
     estimatedCompletionDate:{
       type:'number'
