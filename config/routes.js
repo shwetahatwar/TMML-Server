@@ -42,7 +42,7 @@ module.exports.routes = {
   'POST /Location/create': 'Location.create',
   'POST /seedDatabase': 'SetupDataUploadController.seedDatabase',
   'POST /sapPartNumber': 'SapPartNumberController.create',
-  'POST /monthlySchdeule': 'MonthlySchdeuleController.create'
+  'POST /monthlySchdeule': 'MonthlyScheduleController.create'
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

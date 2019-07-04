@@ -23,6 +23,14 @@ module.exports = {
     })
     .fetch()
     .catch(error=>{console.log(error)});
+    if(newPartNumberId != null && newPartNumberId != undefined){
+      PartFile.create({
+        partId:newPartNumberId["id"],
+        fileData:req.body.fileData,
+        fileType:req.body.fileType
+      })
+      .catch(error=>{console.log(error)});
+    }
 
     for(var i=0;i<req.body.processes.length;i++){
       var isGroupName;
