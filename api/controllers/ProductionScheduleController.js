@@ -14,7 +14,7 @@ module.exports = {
       status: req.body.status,
       scheduleType: req.body.scheduleType,
       remarks: req.body.remarks,
-      scheduleStatus: req.body.scheduleStatus 
+      scheduleStatus: req.body.scheduleStatus
     })
     .fetch()
     .catch(error => console.log(error));
@@ -74,7 +74,7 @@ module.exports = {
           estimatedCompletionDate: 0,
           isJobCardCreated: false,
           partRemark: req.body.dailySchedule[i].remarks,
-          scheduleStatus="New"
+          scheduleStatus:"New"
         })
         .then()
         .catch(error => console.log(error));
@@ -102,7 +102,7 @@ module.exports = {
           estimatedCompletionDate: 0,
           isJobCardCreated: false,
           partRemark: "",
-          scheduleStatus="New"
+          scheduleStatus: "New"
         })
         .then()
         .catch(error => console.log(error));
@@ -130,7 +130,7 @@ module.exports = {
           estimatedCompletionDate: 0,
           isJobCardCreated: false,
           partRemark: "",
-          scheduleStatus="New"
+          scheduleStatus: "New"
         })
         .then()
         .catch(error => console.log(error));
@@ -158,7 +158,7 @@ module.exports = {
           estimatedCompletionDate: 0,
           isJobCardCreated: false,
           partRemark: "",
-          scheduleStatus="New"
+          scheduleStatus: "New"
         })
         .then()
         .catch(error => console.log(error));
@@ -186,7 +186,7 @@ module.exports = {
           estimatedCompletionDate: 0,
           isJobCardCreated: false,
           partRemark: "",
-          scheduleStatus="New"
+          scheduleStatus: "New"
         })
         .then()
         .catch(error => console.log(error));
@@ -194,8 +194,8 @@ module.exports = {
     }
     res.send();
     // for(var i=0;i<req.body.dailySchedule.length;i++){
-      
-      
+
+
     //   counter++;
     //   await ProductionSchedulePartRelation.create({
     //     scheduleId: newproductionScheduleId["id"],
@@ -220,7 +220,7 @@ module.exports = {
     //     status: req.body.status,
     //     scheduleType: req.body.scheduleType,
     //     remarks: req.body.remarks,
-    //     scheduleStatus: req.body.scheduleStatus 
+    //     scheduleStatus: req.body.scheduleStatus
     //   })
     //   .fetch()
     //   .catch(error => console.log(error));
