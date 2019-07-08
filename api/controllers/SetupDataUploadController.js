@@ -104,7 +104,11 @@ module.exports = {
 
       var notifyForMachineMaintenance = xls_utils.encode_cell({c:5, r:i});
       var notifyForMachineMaintenanceValue = sheet02[notifyForMachineMaintenance];
-      var notifyForMachineMaintenanceResult = notifyForMachineMaintenanceValue['v'];
+      var notifyForMachineMaintenanceResultData = notifyForMachineMaintenanceValue['v'];
+      var notifyForMachineMaintenanceResult = 0;
+      if (notifyForMachineMaintenanceResultData.toLowerCase().equals == "yes") {
+        notifyForMachineMaintenanceResult = 1;
+      }
       console.log(notifyForMachineMaintenance + " \t" + notifyForMachineMaintenanceResult);
 
       var department = xls_utils.encode_cell({c:6, r:i});
