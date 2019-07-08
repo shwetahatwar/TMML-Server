@@ -54,9 +54,30 @@ module.exports = {
       for(var counter=0;counter<5;counter++)
       if(counter==0){
         day = day1;
-        var getProductionScheduleId = ProductionSchedule.find();
+        var checkProductionSchedule = "Machine Shop Daily Plan " +day;
+        var getProductionScheduleId = await ProductionSchedule.find({
+          where: { productionScheduleId: { contains: checkProductionSchedule } },
+          sort: [{ id: 'DESC'}]
+        });
+        var postProductionScheduleId
+        if(getProductionScheduleId!=null&&getProductionScheduleId!=undefined){
+          var latestProductionScheduleId = getProductionScheduleId[0]["productionScheduleId"];
+          latestProductionScheduleId = latestProductionScheduleId.substr(35,3);
+          latestProductionScheduleId = parseInt(latestProductionScheduleId, 10) +1;
+          if(latestProductionScheduleId.toString().length == 1){
+            latestProductionScheduleId = "00" + latestProductionScheduleId;
+          }
+          else if(latestProductionScheduleId.toString().length == 2){
+            latestProductionScheduleId = "0" + latestProductionScheduleId;
+          }
+          postProductionScheduleId = "Machine Shop Daily Plan " +day+"-"+latestProductionScheduleId;
+          console.log(latestProductionScheduleId);
+        }
+        else{
+          postProductionScheduleId = "Machine Shop Daily Plan " +day+"-001"
+        }
         var newproductionScheduleId = await ProductionSchedule.create({
-          productionScheduleId: "Machine Shop Daily Plan " +day+"-001",
+          productionScheduleId: postProductionScheduleId,
           estimatedCompletionDate: req.body.estimatedCompletionDate,
           actualCompletionDate: req.body.actualCompletionDate,
           status: 0,
@@ -90,15 +111,37 @@ module.exports = {
       }
       else if(counter == 1){
         day = day2;
+        var checkProductionSchedule = "Machine Shop Daily Plan " +day;
+        var getProductionScheduleId = await ProductionSchedule.find({
+          where: { productionScheduleId: { contains: checkProductionSchedule } },
+          sort: [{ id: 'DESC'}]
+        });
+        var postProductionScheduleId
+        if(getProductionScheduleId!=null&&getProductionScheduleId!=undefined){
+          var latestProductionScheduleId = getProductionScheduleId[0]["productionScheduleId"];
+          latestProductionScheduleId = latestProductionScheduleId.substr(35,3);
+          latestProductionScheduleId = parseInt(latestProductionScheduleId, 10) +1;
+          if(latestProductionScheduleId.toString().length == 1){
+            latestProductionScheduleId = "00" + latestProductionScheduleId;
+          }
+          else if(latestProductionScheduleId.toString().length == 2){
+            latestProductionScheduleId = "0" + latestProductionScheduleId;
+          }
+          postProductionScheduleId = "Machine Shop Daily Plan " +day+"-"+latestProductionScheduleId;
+          console.log(latestProductionScheduleId);
+        }
+        else{
+          postProductionScheduleId = "Machine Shop Daily Plan " +day+"-001"
+        }
         var newproductionScheduleId = await ProductionSchedule.create({
-          productionScheduleId: "Machine Shop Daily Plan " +day+"-001",
+          productionScheduleId: postProductionScheduleId,
           estimatedCompletionDate: req.body.estimatedCompletionDate,
           actualCompletionDate: req.body.actualCompletionDate,
           status: 0,
           scheduleType: "Scheduled",
           remarks: "",
           scheduleStatus: "New",
-          scheduleDate:day2
+          scheduleDate:day1
         })
         .fetch()
         .catch(error => console.log(error));
@@ -123,15 +166,37 @@ module.exports = {
       }
       else if(counter == 2){
         day = day3;
+        var checkProductionSchedule = "Machine Shop Daily Plan " +day;
+        var getProductionScheduleId = await ProductionSchedule.find({
+          where: { productionScheduleId: { contains: checkProductionSchedule } },
+          sort: [{ id: 'DESC'}]
+        });
+        var postProductionScheduleId
+        if(getProductionScheduleId!=null&&getProductionScheduleId!=undefined){
+          var latestProductionScheduleId = getProductionScheduleId[0]["productionScheduleId"];
+          latestProductionScheduleId = latestProductionScheduleId.substr(35,3);
+          latestProductionScheduleId = parseInt(latestProductionScheduleId, 10) +1;
+          if(latestProductionScheduleId.toString().length == 1){
+            latestProductionScheduleId = "00" + latestProductionScheduleId;
+          }
+          else if(latestProductionScheduleId.toString().length == 2){
+            latestProductionScheduleId = "0" + latestProductionScheduleId;
+          }
+          postProductionScheduleId = "Machine Shop Daily Plan " +day+"-"+latestProductionScheduleId;
+          console.log(latestProductionScheduleId);
+        }
+        else{
+          postProductionScheduleId = "Machine Shop Daily Plan " +day+"-001"
+        }
         var newproductionScheduleId = await ProductionSchedule.create({
-          productionScheduleId: "Machine Shop Daily Plan " +day+"-001",
+          productionScheduleId: postProductionScheduleId,
           estimatedCompletionDate: req.body.estimatedCompletionDate,
           actualCompletionDate: req.body.actualCompletionDate,
           status: 0,
           scheduleType: "Scheduled",
           remarks: "",
           scheduleStatus: "New",
-          scheduleDate:day3
+          scheduleDate:day1
         })
         .fetch()
         .catch(error => console.log(error));
@@ -156,15 +221,37 @@ module.exports = {
       }
       else if(counter == 3){
         day = day4;
+        var checkProductionSchedule = "Machine Shop Daily Plan " +day;
+        var getProductionScheduleId = await ProductionSchedule.find({
+          where: { productionScheduleId: { contains: checkProductionSchedule } },
+          sort: [{ id: 'DESC'}]
+        });
+        var postProductionScheduleId
+        if(getProductionScheduleId!=null&&getProductionScheduleId!=undefined){
+          var latestProductionScheduleId = getProductionScheduleId[0]["productionScheduleId"];
+          latestProductionScheduleId = latestProductionScheduleId.substr(35,3);
+          latestProductionScheduleId = parseInt(latestProductionScheduleId, 10) +1;
+          if(latestProductionScheduleId.toString().length == 1){
+            latestProductionScheduleId = "00" + latestProductionScheduleId;
+          }
+          else if(latestProductionScheduleId.toString().length == 2){
+            latestProductionScheduleId = "0" + latestProductionScheduleId;
+          }
+          postProductionScheduleId = "Machine Shop Daily Plan " +day+"-"+latestProductionScheduleId;
+          console.log(latestProductionScheduleId);
+        }
+        else{
+          postProductionScheduleId = "Machine Shop Daily Plan " +day+"-001"
+        }
         var newproductionScheduleId = await ProductionSchedule.create({
-          productionScheduleId: "Machine Shop Daily Plan " +day+"-001",
+          productionScheduleId: postProductionScheduleId,
           estimatedCompletionDate: req.body.estimatedCompletionDate,
           actualCompletionDate: req.body.actualCompletionDate,
           status: 0,
           scheduleType: "Scheduled",
           remarks: "",
           scheduleStatus: "New",
-          scheduleDate:day4
+          scheduleDate:day1
         })
         .fetch()
         .catch(error => console.log(error));
@@ -189,15 +276,37 @@ module.exports = {
       }
       else if(counter == 4){
         day = day5;
+        var checkProductionSchedule = "Machine Shop Daily Plan " +day;
+        var getProductionScheduleId = await ProductionSchedule.find({
+          where: { productionScheduleId: { contains: checkProductionSchedule } },
+          sort: [{ id: 'DESC'}]
+        });
+        var postProductionScheduleId
+        if(getProductionScheduleId!=null&&getProductionScheduleId!=undefined){
+          var latestProductionScheduleId = getProductionScheduleId[0]["productionScheduleId"];
+          latestProductionScheduleId = latestProductionScheduleId.substr(35,3);
+          latestProductionScheduleId = parseInt(latestProductionScheduleId, 10) +1;
+          if(latestProductionScheduleId.toString().length == 1){
+            latestProductionScheduleId = "00" + latestProductionScheduleId;
+          }
+          else if(latestProductionScheduleId.toString().length == 2){
+            latestProductionScheduleId = "0" + latestProductionScheduleId;
+          }
+          postProductionScheduleId = "Machine Shop Daily Plan " +day+"-"+latestProductionScheduleId;
+          console.log(latestProductionScheduleId);
+        }
+        else{
+          postProductionScheduleId = "Machine Shop Daily Plan " +day+"-001"
+        }
         var newproductionScheduleId = await ProductionSchedule.create({
-          productionScheduleId: "Machine Shop Daily Plan " +day+"-001",
+          productionScheduleId: postProductionScheduleId,
           estimatedCompletionDate: req.body.estimatedCompletionDate,
           actualCompletionDate: req.body.actualCompletionDate,
           status: 0,
           scheduleType: "Scheduled",
           remarks: "",
           scheduleStatus: "New",
-          scheduleDate:day5
+          scheduleDate:day1
         })
         .fetch()
         .catch(error => console.log(error));
