@@ -24,7 +24,7 @@ module.exports = {
     .fetch()
     .catch(error=>{console.log(error)});
     if(newPartNumberId != null && newPartNumberId != undefined){
-      PartFile.create({
+      await PartFile.create({
         partId:newPartNumberId["id"],
         fileData:req.body.fileData,
         fileType:req.body.fileType
@@ -119,6 +119,12 @@ module.exports = {
     .fetch()
     .catch(error=>{console.log(error)});
     if(newPartNumberId!=null && newPartNumberId!=undefined){
+      await PartFile.create({
+        partId:newPartNumberId["id"],
+        fileData:req.body.fileData,
+        fileType:req.body.fileType
+      })
+      .catch(error=>{console.log(error)});
       for(var i=0;i<req.body.processes.length;i++){
         if(req.body.processes[i].machineGroupName!= null && req.body.processes[i].machineGroupName!=undefined&&req.body.processes[i].machineGroupName!=0){
           var isGroupName;

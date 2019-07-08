@@ -9,7 +9,7 @@ module.exports = {
 
   attributes: {
     partId:{
-      model:'Machine'
+      model:'PartNumber'
     },
     fileData:{
       type:'ref',
