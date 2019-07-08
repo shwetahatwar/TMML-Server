@@ -23,7 +23,7 @@ module.exports = {
     }
     // console.log(curr_month);
     var curr_year = d.getFullYear();
-    var barcodeSerial = "J0";
+    var barcodeSerial = "JO";
     var serialNumber;
     // console.log(getJobCard[0]["barcodeSerial"]);
     if(getJobCard[0]!=null && getJobCard[0]!=undefined){
