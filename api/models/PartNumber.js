@@ -52,6 +52,9 @@ module.exports = {
     materialGroup: { // coming from SAP
       type: 'string',
     },
+    rawMaterialQuantity: {
+      type: 'number',
+    },
   },
 
 };
