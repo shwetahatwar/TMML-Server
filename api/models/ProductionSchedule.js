@@ -37,6 +37,9 @@ module.exports = {
       collection: 'ProductionSchedulePartRelation',
       via: 'scheduleId',
     },
+    monthlyScheduleId:{
+      model:'MonthlySchedule'
+    },
     scheduleType: {
       type:'string',
       isIn: ['Scheduled', 'Nesting RM Optimization', 'Design Change'],

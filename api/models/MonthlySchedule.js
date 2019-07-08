@@ -9,10 +9,10 @@ module.exports = {
 
   attributes: {
     year:{  
-      type:'number'
+      type:'string'
     },
     month:{
-      type:'number'
+      type:'string'
     },
     scheduleName:{ //Machine Shop Daily Plan YYYY-MM 
       type:'string'
