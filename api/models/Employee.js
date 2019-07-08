@@ -21,6 +21,9 @@ module.exports = {
     mobileNumber:{
       type:'string'
     },
+    barcodeSerial:{
+      type:'string'
+    },
     status:{
       type:'number'
     },

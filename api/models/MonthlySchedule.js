@@ -17,30 +17,30 @@ module.exports = {
     scheduleName:{ //Machine Shop Daily Plan YYYY-MM 
       type:'string'
     },
-    partNumber:{
-      model:'PartNumber'
-    },
-    description:{
-      type:'string'
-    },
-    UOM:{
-      type:'string'
-    },
-    proc:{
-      type:'string'
-    },
-    EP:{
-      type:'string'
-    },
-    issueLoc:{
-      type:'string'
-    },
-    requiredInMonth:{
-      type:'number'
-    },
-    CAT:{
-      type:'string' //MAT, SRF, EVR, IB
-    }
+    // partNumber:{
+    //   model:'PartNumber'
+    // },
+    // description:{
+    //   type:'string'
+    // },
+    // UOM:{
+    //   type:'string'
+    // },
+    // proc:{
+    //   type:'string'
+    // },
+    // EP:{
+    //   type:'string'
+    // },
+    // issueLoc:{
+    //   type:'string'
+    // },
+    // requiredInMonth:{
+    //   type:'number'
+    // },
+    // CAT:{
+    //   type:'string' //MAT, SRF, EVR, IB
+    // }
   },
 
 };
