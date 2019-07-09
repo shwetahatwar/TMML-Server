@@ -16,7 +16,9 @@ module.exports = {
       model:'MachineType'
     },
     machineGroupId:{
-      model:'MachineGroup'
+      // model:'MachineGroup'
+      collection:'MachineGroup',
+      via: 'machines',
     },
     costCenterId:{
       model:'CostCenter'

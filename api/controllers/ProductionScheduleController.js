@@ -460,5 +460,9 @@ module.exports = {
       }
     }
     
+  },
+
+  dailyMonthlyReport: async function(req,res){
+    
   }
 };

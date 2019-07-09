@@ -107,12 +107,16 @@ module.exports = {
 
 
   newPart: async function(req,res){
-
+    var cycleTime = 0;
+    for(var i=0;i<req.body.processes.length;i++){
+      cycleTime = cycleTime + parseInt(req.body.processes[i].loadingTime)+parseInt(req.body.processes[i].processTime)+parseInt(req.body.processes[i].unloadingTime);
+    }
+    var smh = cycleTime/3600;
     var newPartNumberId = await PartNumber.create({
       partNumber:req.body.partnumber,
       description:req.body.description,
       manPower:req.body.manpower,
-      SMH:req.body.smh,
+      SMH:smh,
       rawMaterialId:req.body.rawMaterial.id,
       status:req.body.status
     })
@@ -132,13 +136,14 @@ module.exports = {
           isGroupName = true;
           console.log(req.body.processes[i].machineGroupName);
           var machineGroupId = req.body.processes[i].machineGroupName;
+          var cycleTime = parseInt(req.body.processes[i].loadingTime)+parseInt(req.body.processes[i].processTime)+parseInt(req.body.processes[i].unloadingTime);
           var newProcessSequenceId = await ProcessSequence.create({
             partId:newPartNumberId["id"],
             sequenceNumber:j,
             loadingTime: req.body.processes[i].loadingTime,
             processTime:req.body.processes[i].processTime,
             unloadingTime:req.body.processes[i].unloadingTime,
-            cycleTime:req.body.processes[i].cycleTime,
+            cycleTime:cycleTime,
             machineGroupId:req.body.processes[i].machineGroupName,
             isGroup:isGroupName
           })
