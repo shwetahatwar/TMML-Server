@@ -464,5 +464,51 @@ module.exports = {
 
   dailyMonthlyReport: async function(req,res){
     
+    var monthlySchedule = await MonthlySchedule.find({
+      year:req.body.year,
+      month:req.body.month
+    });
+    if(monthlySchedule[0]!=null&&monthlySchedule!=undefined){
+      var monthlySchedulePartNumbers = await MonthlySchedulePartRelation.find({
+        monthlyScheduleId:monthlySchedule[0]["id"]
+      });
+    }
+    // console.log(monthlySchedulePartNumbers.length);
+    if(monthlySchedulePartNumbers[0]!=null&&monthlySchedulePartNumbers[0]!=undefined){
+      var dailySchedule = await ProductionSchedule.find({
+        monthlyScheduleId:monthlySchedule[0]["id"]
+      });
+    }
+    // console.log(dailySchedule.length);
+    var resTable=[];
+    if(monthlySchedulePartNumbers!=null&&monthlySchedulePartNumbers!=undefined){
+      for(var i=0;i<monthlySchedulePartNumbers.length;i++){
+        var partNumberQuantity = 0;
+        if(dailySchedule!=null&&dailySchedule!=undefined){
+          for(var j=0;j<dailySchedule.length;j++){
+            // console.log(dailySchedule[j]["id"]);
+            // console.log(monthlySchedulePartNumbers[i]["partNumber"]);
+            var dailySchedulePartNumbers = await ProductionSchedulePartRelation.find({
+              scheduleId:dailySchedule[j]["id"],
+              partNumberId:monthlySchedulePartNumbers[i]["partNumber"]
+            });
+            // console.log(dailySchedulePartNumbers);
+            if(dailySchedulePartNumbers[0]!=null && dailySchedulePartNumbers!=undefined){
+              partNumberQuantity = partNumberQuantity + dailySchedulePartNumbers[0]["requestedQuantity"];
+            }
+          }
+          var pushPartDetails={
+            partNumber: monthlySchedulePartNumbers[i]["partNumber"],
+            monthlyQuantity:monthlySchedulePartNumbers[i]["requiredInMonth"],
+            quantitiesInProduction:partNumberQuantity
+          }
+          // var pushPartDetails=[monthlySchedulePartNumbers[i]["partNumber"],monthlySchedulePartNumbers[i]["requiredInMonth"],partNumberQuantity];
+          resTable.push(pushPartDetails);
+          // resTable.push("Part Number: " + monthlySchedulePartNumbers[i]["partNumber"],"Monthly Quantity: "+monthlySchedulePartNumbers[i]["requiredInMonth"],"Completed Quantity: "+partNumberQuantity);
+        }
+      }
+    }
+    console.log(resTable);
+    res.send(resTable);
   }
 };
