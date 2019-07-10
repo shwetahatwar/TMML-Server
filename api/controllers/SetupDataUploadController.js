@@ -226,7 +226,7 @@ module.exports = {
       var value = sheet05[name];
       var result = value['v'];
       console.log(name + " \t" + result);
-      json05.push({name: result});
+      json05.push({name: result, status: 1});
     }
     var materialTypes = await MaterialType.createEach(json05);
 
@@ -259,6 +259,47 @@ module.exports = {
       json10.push({name: result});
     }
     var cells = await CostCenter.createEach(json10);
+
+    // ---------------
+    // Read Raw Material
+    var filepath06 = './documents/templates/bulk-upload/13-BulkUploadRawMaterialTemplate.xlsx';
+    var workbook06 = XLSX.readFile(filepath06);
+    var sheet06 = workbook06.Sheets[workbook06.SheetNames[0]];
+    var num_rows06 = xls_utils.decode_range(sheet06['!ref']).e.r;
+    var json06 = [];
+    for(var i = 1, l = num_rows06; i <= l; i++){
+
+      var rmNumber = xls_utils.encode_cell({c:0, r:i});
+      var rmNumberValue = sheet06[rmNumber];
+      var rmNumberResult = rmNumberValue['v'];
+
+      var rmDesc = xls_utils.encode_cell({c:1, r:i});
+      var rmDescValue = sheet06[rmDesc];
+      var rmDescResult = rmDescValue['v'];
+
+      var rmType = xls_utils.encode_cell({c:2, r:i});
+      var rmTypeValue = sheet06[rmType];
+      var rmTypeResult = rmType['v'];
+
+      await MaterialType.find({name: rmTypeResult}).then( async (type) => {
+        var typeIdentifer = null;
+        if (type.length > 0) {
+          typeIdentifer = type[0]['id'];
+        }
+
+        json06.push({
+          rawMaterialNumber: rmNumberResult,
+          description: rmDescResult,
+          materialTypeId:typeIdentifer,
+          rmCreateDate:Date.now(),
+          rmUpdateDate: Date.now(),
+          status: 1,
+          createdBy: 1,
+          updatedBy: 1,
+        });
+      });
+    }
+    var materialList = await RawMaterial.createEach(json06);
 
     return res.status(200).send("Seed Database");
   }
