@@ -226,7 +226,7 @@ module.exports = {
       var value = sheet05[name];
       var result = value['v'];
       console.log(name + " \t" + result);
-      json05.push({name: result});
+      json05.push({name: result, status: 1});
     }
     var materialTypes = await MaterialType.createEach(json05);
 
