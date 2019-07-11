@@ -488,9 +488,9 @@ module.exports = {
       });
     }
     // console.log(dailySchedule.length);
-    var resTable=[];
-    if(monthlySchedulePartNumbers!=null&&monthlySchedulePartNumbers!=undefined){
-      for(var i=0;i<monthlySchedulePartNumbers.length;i++){
+    var resTable = [];
+    if(monthlySchedulePartNumbers != null && monthlySchedulePartNumbers != undefined){
+      for(var i=0; i < monthlySchedulePartNumbers.length; i++){
         var partNumberQuantity = 0;
         if(dailySchedule!=null&&dailySchedule!=undefined){
           for(var j=0;j<dailySchedule.length;j++){
