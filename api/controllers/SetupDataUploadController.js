@@ -260,25 +260,24 @@ module.exports = {
     }
     var cells = await CostCenter.createEach(json10);
 
-    // ---------------
     // Read Raw Material
-    var filepath06 = './documents/templates/bulk-upload/13-BulkUploadRawMaterialTemplate.xlsx';
-    var workbook06 = XLSX.readFile(filepath06);
-    var sheet06 = workbook06.Sheets[workbook06.SheetNames[0]];
-    var num_rows06 = xls_utils.decode_range(sheet06['!ref']).e.r;
-    var json06 = [];
-    for(var i = 1, l = num_rows06; i <= l; i++){
+    var filepath13 = './documents/templates/bulk-upload/13-BulkUploadRawMaterialTemplate.xlsx';
+    var workbook13 = XLSX.readFile(filepath13);
+    var sheet13 = workbook13.Sheets[workbook13.SheetNames[0]];
+    var num_rows13 = xls_utils.decode_range(sheet13['!ref']).e.r;
+    var json13 = [];
+    for(var i = 1, l = num_rows13; i <= l; i++){
 
       var rmNumber = xls_utils.encode_cell({c:0, r:i});
-      var rmNumberValue = sheet06[rmNumber];
+      var rmNumberValue = sheet13[rmNumber];
       var rmNumberResult = rmNumberValue['v'];
 
       var rmDesc = xls_utils.encode_cell({c:1, r:i});
-      var rmDescValue = sheet06[rmDesc];
+      var rmDescValue = sheet13[rmDesc];
       var rmDescResult = rmDescValue['v'];
 
       var rmType = xls_utils.encode_cell({c:2, r:i});
-      var rmTypeValue = sheet06[rmType];
+      var rmTypeValue = sheet13[rmType];
       var rmTypeResult = rmType['v'];
 
       await MaterialType.find({name: rmTypeResult}).then( async (type) => {
@@ -300,6 +299,45 @@ module.exports = {
       });
     }
     var materialList = await RawMaterial.createEach(json06);
+
+// ---------
+  // Read Raw Material
+  var filepath17 = './documents/templates/bulk-upload/17-BulkUploadRoleAccessLevelRelation.xlsx';
+  var workbook17 = XLSX.readFile(filepath17);
+  var sheet17 = workbook7.Sheets[workbook17.SheetNames[0]];
+  var num_rows17 = xls_utils.decode_range(sheet17['!ref']).e.r;
+  var json17 = [];
+  for(var i = 1, l = num_rows17; i <= l; i++){
+
+    var cell1 = xls_utils.encode_cell({c:0, r:i});
+    var cell1Object = sheet17[cell1];
+    var cell1Value = cell2Object['v'];
+
+    var cell2 = xls_utils.encode_cell({c:0, r:i});
+    var cell1Object = sheet17[cell2];
+    var cell2Value = cell2Object['v'];
+
+    await Role.find({roleName: cell1Value}).then( async (roles) => {
+      var roleIdentifer = null;
+      if (roles.length > 0) {
+        roleIdentifer = roles[0]['id'];
+      }
+
+      await AccessLevel.find(uri: cell2Value).then( async (acessLevels) => {
+
+        var accessLevelId = null;
+        if (acessLevels.length > 0) {
+          acessLevels = roles[0]['id'];
+        }
+        json17.push({
+          roleId: roleIdentifer,
+          accessId: accessLevelId,
+        });
+      });
+
+    });
+  }
+  var roleAccessRelation = await RoleAccessRelation.createEach(json17);
 
     return res.status(200).send("Seed Database");
   }
