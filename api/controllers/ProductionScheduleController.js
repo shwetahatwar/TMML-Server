@@ -475,10 +475,10 @@ module.exports = {
       console.log('monthlySchedulePartNumbers: ', monthlySchedule[0]["id"]);
       var monthlySchedulePartNumbers = await MonthlySchedulePartRelation.find({
         monthlyScheduleId:monthlySchedule[0]["id"]
-      });
+      }).populate('partNumber');
     }
 
-    console.log("monthlySchedulePartNumbers: ", monthlySchedulePartNumbers);
+    console.log("MonthlySchedulePartRelation: ", monthlySchedulePartNumbers);
 
     // console.log(monthlySchedulePartNumbers.length);
     if(monthlySchedulePartNumbers.length > 0 && monthlySchedulePartNumbers[0] != null && monthlySchedulePartNumbers[0] != undefined){
@@ -498,17 +498,19 @@ module.exports = {
             // console.log(monthlySchedulePartNumbers[i]["partNumber"]);
             var dailySchedulePartNumbers = await ProductionSchedulePartRelation.find({
               scheduleId:dailySchedule[j]["id"],
-              partNumberId:monthlySchedulePartNumbers[i]["partNumber"]
+              partNumberId:monthlySchedulePartNumbers[i]["partNumber"]['id']
             });
             // console.log(dailySchedulePartNumbers);
             if(dailySchedulePartNumbers[0]!=null && dailySchedulePartNumbers!=undefined){
               partNumberQuantity = partNumberQuantity + dailySchedulePartNumbers[0]["requestedQuantity"];
             }
           }
+          console.log('Part Number: ', monthlySchedulePartNumbers[i]);
           var pushPartDetails={
-            partNumber: monthlySchedulePartNumbers[i]["partNumber"],
+            partNumberId: monthlySchedulePartNumbers[i]["partNumber"]['id'],
             monthlyQuantity:monthlySchedulePartNumbers[i]["requiredInMonth"],
-            quantitiesInProduction:partNumberQuantity
+            quantitiesInProduction:partNumberQuantity,
+            partNumber:monthlySchedulePartNumbers[i]["partNumber"]['partNumber'],
           }
           // var pushPartDetails=[monthlySchedulePartNumbers[i]["partNumber"],monthlySchedulePartNumbers[i]["requiredInMonth"],partNumberQuantity];
           resTable.push(pushPartDetails);
