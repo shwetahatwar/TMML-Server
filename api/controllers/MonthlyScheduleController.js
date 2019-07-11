@@ -46,6 +46,17 @@ module.exports = {
 
     var scheduleName = "Machine Shop Monthly Plan";
     scheduleName = scheduleName +" "+ req.body.monthlySchedule[0].Year +"-"+ req.body.monthlySchedule[0].Month;
+
+    var monthlySchedules = await MonthlySchedule.find({
+      year:req.body.monthlySchedule[0].Year,
+      month:req.body.monthlySchedule[0].Month,
+    });
+
+    if (monthlySchedules != undefined && monthlySchedules.length > 0) {
+      res.send('Monthly schedule already exist!');
+      return;
+    }
+
     var mothlyScheduleId = await MonthlySchedule.create({
       year:req.body.monthlySchedule[0].Year,
       month:req.body.monthlySchedule[0].Month,

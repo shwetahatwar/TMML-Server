@@ -49,7 +49,7 @@ module.exports = {
       var day4=obj[5];
       var day5=obj[6];
       console.log(day1);
-      console.log(req.body.dailySchedule[0][day1]); 
+      console.log(req.body.dailySchedule[0][day1]);
       var day;
       for(var counter=0;counter<5;counter++)
       if(counter==0){
@@ -459,22 +459,30 @@ module.exports = {
         res.send("Not Found");
       }
     }
-    
+
   },
 
   dailyMonthlyReport: async function(req,res){
-    
+
     var monthlySchedule = await MonthlySchedule.find({
       year:req.body.year,
       month:req.body.month
     });
-    if(monthlySchedule[0]!=null&&monthlySchedule!=undefined){
+
+    console.log('monthlySchedule: ', monthlySchedule);
+
+    if(monthlySchedule != undefined && monthlySchedule.length > 0 && monthlySchedule[0] !=null){
+      console.log('monthlySchedulePartNumbers: ', monthlySchedule[0]["id"]);
       var monthlySchedulePartNumbers = await MonthlySchedulePartRelation.find({
         monthlyScheduleId:monthlySchedule[0]["id"]
       });
     }
+
+    console.log("monthlySchedulePartNumbers: ", monthlySchedulePartNumbers);
+
     // console.log(monthlySchedulePartNumbers.length);
-    if(monthlySchedulePartNumbers[0]!=null&&monthlySchedulePartNumbers[0]!=undefined){
+    if(monthlySchedulePartNumbers.length > 0 && monthlySchedulePartNumbers[0] != null && monthlySchedulePartNumbers[0] != undefined){
+      console.log('monthly schedule id: ', monthlySchedule[0]["id"]);
       var dailySchedule = await ProductionSchedule.find({
         monthlyScheduleId:monthlySchedule[0]["id"]
       });
