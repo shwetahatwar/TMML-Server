@@ -323,7 +323,7 @@ module.exports = {
         roleIdentifer = roles[0]['id'];
       }
 
-      await AccessLevel.find(uri: cell2Value).then( async (acessLevels) => {
+      await AccessLevel.find({uri: cell2Value}).then( async (acessLevels) => {
 
         var accessLevelId = null;
         if (acessLevels.length > 0) {
