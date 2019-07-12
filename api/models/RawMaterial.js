@@ -12,10 +12,6 @@ module.exports = {
       type:'number',
       unique: true
     },
-    // name:{
-    //   type:'string',
-    //   unique: true
-    // },
     description:{
       type:'string'
     },

@@ -89,13 +89,20 @@ module.exports = {
 
       var email = xls_utils.encode_cell({c:2, r:i});
       var emailValue = sheet02[email];
-      var emailResult = emailValue['v'];
-      console.log(email + " \t" + emailResult);
+      var emailResult = "";
+
+      if (emailValue != undefined) {
+        emailValue['v'];
+        console.log(email + " \t" + emailResult);
+      }
 
       var mobileNumber = xls_utils.encode_cell({c:3, r:i});
       var mobileNumberValue = sheet02[mobileNumber];
-      var mobileNumberResult = mobileNumberValue['v'];
-      console.log(mobileNumber + " \t" + mobileNumberResult);
+      var mobileNumberResult = "";
+      if (mobileNumberValue != undefined) {
+        mobileNumberResult = mobileNumberValue['v'];
+       console.log(mobileNumber + " \t" + mobileNumberResult);
+      }
 
       var status = xls_utils.encode_cell({c:4, r:i});
       var statusValue = sheet02[status];
@@ -260,61 +267,21 @@ module.exports = {
     }
     var cells = await CostCenter.createEach(json10);
 
-    // Read Raw Material
-    var filepath13 = './documents/templates/bulk-upload/13-BulkUploadRawMaterialTemplate.xlsx';
-    var workbook13 = XLSX.readFile(filepath13);
-    var sheet13 = workbook13.Sheets[workbook13.SheetNames[0]];
-    var num_rows13 = xls_utils.decode_range(sheet13['!ref']).e.r;
-    var json13 = [];
-    for(var i = 1, l = num_rows13; i <= l; i++){
-
-      var rmNumber = xls_utils.encode_cell({c:0, r:i});
-      var rmNumberValue = sheet13[rmNumber];
-      var rmNumberResult = rmNumberValue['v'];
-
-      var rmDesc = xls_utils.encode_cell({c:1, r:i});
-      var rmDescValue = sheet13[rmDesc];
-      var rmDescResult = rmDescValue['v'];
-
-      var rmType = xls_utils.encode_cell({c:2, r:i});
-      var rmTypeValue = sheet13[rmType];
-      var rmTypeResult = rmType['v'];
-
-      await MaterialType.find({name: rmTypeResult}).then( async (type) => {
-        var typeIdentifer = null;
-        if (type.length > 0) {
-          typeIdentifer = type[0]['id'];
-        }
-
-        json06.push({
-          rawMaterialNumber: rmNumberResult,
-          description: rmDescResult,
-          materialTypeId:typeIdentifer,
-          rmCreateDate:Date.now(),
-          rmUpdateDate: Date.now(),
-          status: 1,
-          createdBy: 1,
-          updatedBy: 1,
-        });
-      });
-    }
-    var materialList = await RawMaterial.createEach(json06);
-
 // ---------
-  // Read Raw Material
+  // Read Access Level
   var filepath17 = './documents/templates/bulk-upload/17-BulkUploadRoleAccessLevelRelation.xlsx';
   var workbook17 = XLSX.readFile(filepath17);
-  var sheet17 = workbook7.Sheets[workbook17.SheetNames[0]];
+  var sheet17 = workbook17.Sheets[workbook17.SheetNames[0]];
   var num_rows17 = xls_utils.decode_range(sheet17['!ref']).e.r;
   var json17 = [];
   for(var i = 1, l = num_rows17; i <= l; i++){
 
     var cell1 = xls_utils.encode_cell({c:0, r:i});
     var cell1Object = sheet17[cell1];
-    var cell1Value = cell2Object['v'];
+    var cell1Value = cell1Object['v'];
 
-    var cell2 = xls_utils.encode_cell({c:0, r:i});
-    var cell1Object = sheet17[cell2];
+    var cell2 = xls_utils.encode_cell({c:1, r:i});
+    var cell2Object = sheet17[cell2];
     var cell2Value = cell2Object['v'];
 
     await Role.find({roleName: cell1Value}).then( async (roles) => {
@@ -323,12 +290,16 @@ module.exports = {
         roleIdentifer = roles[0]['id'];
       }
 
+      console.log("User Role: " + roleIdentifer + " " + cell1Value);
+
       await AccessLevel.find({uri: cell2Value}).then( async (acessLevels) => {
 
         var accessLevelId = null;
         if (acessLevels.length > 0) {
-          acessLevels = roles[0]['id'];
+          accessLevelId = acessLevels[0]['id'];
         }
+
+        console.log("User Access Level: " + accessLevelId + " " + cell2Value);
         json17.push({
           roleId: roleIdentifer,
           accessId: accessLevelId,
@@ -338,6 +309,76 @@ module.exports = {
     });
   }
   var roleAccessRelation = await RoleAccessRelation.createEach(json17);
+
+  // Read Raw Material
+  /*var filepath13 = './documents/templates/bulk-upload/13-BulkUploadRawMaterialTemplate.xlsx';
+  var workbook13 = XLSX.readFile(filepath13);
+  var sheet13 = workbook13.Sheets[workbook13.SheetNames[0]];
+  var num_rows13 = xls_utils.decode_range(sheet13['!ref']).e.r;
+  var json13 = [];
+  var materialNumbers = [];
+  for(var i = 1, l = num_rows13; i <= l; i++){
+
+    var rmNumber = xls_utils.encode_cell({c:0, r:i});
+    var rmNumberValue = sheet13[rmNumber];
+    var rmNumberResult = 0;
+
+    if (rmNumberValue != undefined) {
+      rmNumberResult = rmNumberValue['v'];
+    }  else {
+      continue;
+    }
+
+    var rmDesc = xls_utils.encode_cell({c:1, r:i});
+    var rmDescValue = sheet13[rmDesc];
+    var rmDescResult = "";
+
+    if (rmDescValue != undefined) {
+      rmDescResult = rmDescValue['v'];
+    }  else {
+      continue;
+    }
+
+    var rmType = xls_utils.encode_cell({c:2, r:i});
+    var rmTypeValue = sheet13[rmType];
+    var rmTypeResult = "";
+
+    if (rmTypeValue != undefined) {
+      rmTypeResult = rmTypeValue['v'];
+    } else {
+      continue;
+    }
+
+    console.log(i + " rmTypeResult: " + rmTypeResult);
+
+    await MaterialType.find({name: rmTypeResult}).then( async (type) => {
+      var typeIdentifer = null;
+      if (type.length > 0) {
+        typeIdentifer = type[0]['id'];
+      }
+
+      console.log(i + " typeIdentifer: " + typeIdentifer);
+      if (materialNumbers.indexOf(rmNumberResult) > -1) {
+        console.log("duplicateNumber: ", rmNumberResult);
+      } else {
+        json13.push({
+          rawMaterialNumber: rmNumberResult,
+          description: rmDescResult,
+          materialTypeId:typeIdentifer,
+          rmCreateDate:Date.now(),
+          rmUpdateDate: Date.now(),
+          status: 1,
+          createdBy: 1,
+          updatedBy: 1,
+        });
+        materialNumbers.push(rmNumberResult);
+      }
+    });
+  }
+  var materialList = await RawMaterial.createEach(json13);*/
+
+
+  console.log("Role Access Relation:", roleAccessRelation);
 
     return res.status(200).send("Seed Database");
   }
