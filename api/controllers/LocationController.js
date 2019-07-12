@@ -15,12 +15,17 @@ module.exports = {
 
     var d = new Date();
     var curr_date = d.getDate();
+    var curr_date = d.getDate();
+    if(curr_date.toString().length == 1){
+      curr_date = "0" + curr_date
+    }
     var curr_month = parseInt(d.getMonth()) + 1;
     curr_month = ""+curr_month;
     if(curr_month.toString().length == 1){
       curr_month = "0" + curr_month
     }
     var curr_year = d.getFullYear();
+    var curr_time = d.getTime();
     var barcodeSerial;
     var serialNumber;
     if(getLocation[0]!=null && getLocation[0]!=undefined){
@@ -33,19 +38,25 @@ module.exports = {
     	else{
     		barcodeSerial = "LK";
     	}
-      var lastBarcodeDay = getLocation[0]["barcodeSerial"];
-      lastBarcodeDay = lastBarcodeDay.substring(8,10);
+      var BarcodeDay = getJobCard[0]["barcodeSerial"];
+      lastBarcodeDay = BarcodeDay.substring(8,10);
+      // console.log(lastBarcodeDay);
+      var lastBarcodeMintues=BarcodeDay.substring(10,23);
       if(lastBarcodeDay == curr_date){
-
-        var lastSerialNumber = getLocation[0]["barcodeSerial"];
-        lastSerialNumber = lastSerialNumber.substring(10,13);
-        console.log(lastSerialNumber);
-        serialNumber = parseInt(lastSerialNumber) + 1;
-        if(serialNumber.toString().length == 1){
-          serialNumber = "00" + serialNumber
+        if(curr_time == lastBarcodeMintues){
+          var lastSerialNumber = getLocation[0]["barcodeSerial"];
+          lastSerialNumber = lastSerialNumber.substring(23,26);
+          console.log(lastSerialNumber);
+          serialNumber = parseInt(lastSerialNumber) + 1;
+          if(serialNumber.toString().length == 1){
+            serialNumber = "00" + serialNumber
+          }
+          else if(serialNumber.toString().length == 2){
+            serialNumber = "0" + serialNumber
+          }
         }
-        else if(serialNumber.toString().length == 2){
-          serialNumber = "0" + serialNumber
+        else{
+          serialNumber = "001";
         }
       }
       else{
@@ -55,6 +66,8 @@ module.exports = {
     else{
       serialNumber = "001";
     }
+
+    barcodeSerial = barcodeSerial + curr_year + curr_month + curr_date + curr_time + serialNumber;
 
     var location = await Location.create({
     	name:req.body.name,
