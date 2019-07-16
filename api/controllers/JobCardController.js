@@ -60,22 +60,55 @@ module.exports = {
 
     barcodeSerial = barcodeSerial + curr_year + curr_month + curr_date + curr_time + serialNumber;
 
-    var PartNumber = await PartNumber.find({
+    var partNumber = await PartNumber.find({
       id:req.body.partNumber
     });
-    var SMH = PartNumber[0]["SMH"];
+    var SMH = partNumber[0]["SMH"];
     SMH = SMH * req.body.requestedQuantity;
     var shiftTime = await Shift.find({
-      name:req.body.shiftName
+      name:req.body.shiftName,
+      cell:req.body.cell
     });
     shiftTime = shiftTime[0];
     
+    console.log(shiftTime);
+    var millis = new Date();
+    var hrs = millis.getHours();
+    hrs = hrs * 3600;
+    var min = millis.getMinutes();
+    min = min * 60;
+    var sec = millis.getSeconds();
+    var timestamp = hrs+min+sec; 
+
+    console.log(timestamp,"timestamp");
+    var estimatedDate = timestamp + SMH;
+    if(timestamp<shiftTime["teaBreakStartInSeconds"]){
+      if(estimatedDate > shiftTime["teaBreakStartInSeconds"]){
+        estimatedDate = estimatedDate + 600;
+        console.log("tea");
+      }
+    }
+    if(timestamp<shiftTime["lunchBreakStartInSeconds"]){
+      if(estimatedDate > shiftTime["lunchBreakStartInSeconds"]){
+        estimatedDate = estimatedDate + 1800;
+        console.log("Lunch")
+      }
+    }
+    
+    console.log(estimatedDate,timestamp);
+    estimatedDate = estimatedDate - timestamp;
+    var dt = new Date();
+    dt.setSeconds( dt.getSeconds() + estimatedDate );
+    estimatedDate = dt.toString();
+    estimatedDate = estimatedDate.substr(0,24);
+    console.log(estimatedDate);
+
   	var newJobCard = await JobCard.create({
   		productionSchedulePartRelationId:req.body.productionSchedulePartRelationId,
   		requestedQuantity:req.body.requestedQuantity,
   		actualQuantity:req.body.actualQuantity,
   		status:req.body.status,
-  		estimatedDate:req.body.estimatedDate,
+  		estimatedDate:estimatedDate,
   		barcodeSerial:barcodeSerial,
   		currentLocation:req.body.currentLocation,
       jobcardStatus:req.body.jobcardStatus
