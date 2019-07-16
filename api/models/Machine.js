@@ -57,7 +57,7 @@ module.exports = {
       type:'number'
     },
     lastMaintenanceBy:{
-      model:'User'
+      model:'Employee'
     },
     isAutomacticCount:{
       type:'number'

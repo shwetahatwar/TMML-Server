@@ -111,4 +111,10 @@ module.exports.policies = {
     '*': 'isLoggedIn',
     'jobstrokes': true,
   },
+  ShiftController: {
+    '*': 'isLoggedIn',
+  },
+  MessageController: {
+    '*': 'isLoggedIn',
+  }
 };

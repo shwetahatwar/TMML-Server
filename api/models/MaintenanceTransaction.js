@@ -15,7 +15,7 @@ module.exports = {
       type:'number'
     },
     maintenanceBy:{
-      model:'User'
+      model:'Employee'
     },
     remarks:{
       type:'string'
@@ -32,4 +32,3 @@ module.exports = {
   },
 
 };
-

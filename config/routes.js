@@ -45,7 +45,8 @@ module.exports.routes = {
   'POST /monthlySchdeule': 'MonthlyScheduleController.create',
   'POST /dailyUpload': 'ProductionScheduleController.dailyUpload',
   'POST /dailyMonthlyReport': 'ProductionScheduleController.dailyMonthlyReport',
-  'POST /getDetailJobCard': 'JobCard.getDetailJobCard'
+  'POST /getDetailJobCard': 'JobCard.getDetailJobCard',
+  'POST /iot/getJobProcessQuantity': 'MachineStrokesController.getJobProcessQuantity',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

@@ -10,6 +10,7 @@ module.exports = {
   attributes: {
     rawMaterialNumber:{
       type:'number',
+      // columnType: 'integer',
       unique: true
     },
     description:{
@@ -17,9 +18,11 @@ module.exports = {
     },
     rmCreateDate:{
       type:'number',
+      // columnType: 'int8',
     },
     rmUpdateDate:{
       type:'number',
+      // columnType: 'int8',
     },
     materialTypeId:{
       model:'MaterialType'

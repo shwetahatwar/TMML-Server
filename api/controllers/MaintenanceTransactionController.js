@@ -15,46 +15,61 @@ module.exports = {
     //    pass: 'dravid19'
     //  }
     //});
+
+    var employeeBarcode = req.body.employeeBarcode;
+    var employee = null;
+    var employeeDBId = 0;
+    if (employeeBarcode != undefined) {
+      employees = await Employee.find({employeeId: employeeBarcode});
+      if (employees.length > 0) {
+        employeeDBId = employees[0].id;
+      }
+    } else {
+      emplyeeId = null;
+    }
+
+    console.log("employeeDBId:  ", employeeDBId);
+
+    // as request is just received it is now
+    var maintenanceTime  = Date.now();
+    var nextMaintenanceDate = 0;
+
+    var machine = await Machine.find({id:req.body.machineId});
+    if (machine.length > 0) {
+        nextMaintenanceDate = maintenanceTime + (86400* machine[0].frequencyInDays);
+    } else {
+      return res.status(404).send('Machine not found.');
+    }
+
+    console.log("Current Date: " + maintenanceTime + "\tNext Date: " + nextMaintenanceDate);
+
     var machineUpdated = await Machine.update({ id:req.body.machineId })
     .set({
-      maintenanceStatus:req.body.maintenanceStatus
+      maintenanceStatus:req.body.maintenanceStatus,
+      lastMaintenanceBy: employeeDBId,
+      lastMaintenanceOn: maintenanceTime,
+      nextMaintenanceOn: nextMaintenanceDate,
+
     })
     .fetch();
+
     if(machineUpdated != null && machineUpdated != undefined){
       var MaintenanceTable = await MaintenanceTransaction.create({
         machineId: req.body.machineId,
-        maintenanceOn : req.body.maintenanceOn,
-        maintenanceBy : req.body.maintenanceBy,
+        maintenanceOn : maintenanceTime,
+        maintenanceBy : employeeDBId,
         remarks : req.body.remarks,
         partReplaced : req.body.partReplaced,
         machineStatus: req.body.maintenanceStatus,
         costOfPartReplaced: req.body.costOfPartReplaced,
       }).fetch();
-      if(MaintenanceTable!=null && MaintenanceTable != undefined){
+      if(MaintenanceTable != null && MaintenanceTable != undefined){
         var EmployeeList = await Employee.find({
           notifyForMachineMaintenance:1
         });
-        //for(var i =0; i<EmployeeList.length;i++){
-        //  var emailFor = EmployeeList[0]["email"];
-        //  var mailOptions = {
-        //    from: 'menikhil.kkamable@gmail.com',
-        //    to: emailFor,
-        //    subject: req.body.maintenanceStatus,
-        //    text: req.body.machineId + "is " + req.body.maintenanceStatus
-        //  };
-
-          //transporter.sendMail(mailOptions, function(error, info){
-          //  if (error) {
-          //    console.log(error);
-          //  } else {
-          //    console.log('Email sent: ' + info.response);
-          //  }
-          //});
-        //}
       }
     }
     res.send(machineUpdated);
   }
 
 };
-
