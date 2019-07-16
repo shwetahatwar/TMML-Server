@@ -44,7 +44,8 @@ module.exports.routes = {
   'POST /sapPartNumber': 'SapPartNumberController.create',
   'POST /monthlySchdeule': 'MonthlyScheduleController.create',
   'POST /dailyUpload': 'ProductionScheduleController.dailyUpload',
-  'POST /dailyMonthlyReport': 'ProductionScheduleController.dailyMonthlyReport'
+  'POST /dailyMonthlyReport': 'ProductionScheduleController.dailyMonthlyReport',
+  'POST /getDetailJobCard': 'JobCard.getDetailJobCard'
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 
