@@ -44,7 +44,6 @@ module.exports = {
 
   soapRequestGet:async function(req,res){
 
-    var newDate = new Date();
     const xmlhttp = new XMLHttpRequest();
     xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmppp_ws_comp_dtl/170/zmppp_ws_comp_dtl/zmppp_ws_comp_dtl', true);
     xmlhttp.onreadystatechange = function() {
@@ -61,16 +60,48 @@ module.exports = {
         var xmlItems = xmlResult["ZCOMP_DTL"];
 
         for(var i =0;i<xmlItems.length;i++){
-          var partNumber = PartNumber.create({
-            partNumber:xmlItems[i]["item"]["ZIDNRK"],
-            description:xmlItems[i]["item"]["ZMAKTX"],
-            partCreationDate:xmlItems[i]["item"]["ZANDAT1"],
-            partChangeDate:xmlItems[i]["item"]["ZAEDAT"],
-            partStatus:xmlItems[i]["item"]["ZSTATUS"],
-            uom:xmlItems[i]["item"]["ZLGFSB"],
-            materialGroup:xmlItems[i]["item"]["ZMAKTX1"]
-          });
 
+          if(xmlItems[i]["item"]["ZSTATUS"] == "N"){
+            var partNumber = PartNumber.find({
+              partNumber:xmlItems[i]["item"]["ZIDNRK"],
+            });
+            if(partNumber[0]!=null && partNumber[0]!=undefined){
+
+            }
+            else{
+              var newPartNumber = PartNumber.create({
+                partNumber:xmlItems[i]["item"]["ZIDNRK"],
+                description:xmlItems[i]["item"]["ZMAKTX"],
+                partCreationDate:xmlItems[i]["item"]["ZANDAT1"],
+                partChangeDate:xmlItems[i]["item"]["ZAEDAT"],
+                partStatus:xmlItems[i]["item"]["ZSTATUS"],
+                uom:xmlItems[i]["item"]["ZLGFSB"],
+                materialGroup:xmlItems[i]["item"]["ZMAKTX1"]
+              });
+            }
+          }
+          else if(xmlItems[i]["item"]["ZSTATUS"] == "C"){
+            var partNumber = PartNumber.update({
+              partNumber:xmlItems[i]["item"]["ZIDNRK"]
+            })
+            .set({
+              description:xmlItems[i]["item"]["ZMAKTX"],
+              partCreationDate:xmlItems[i]["item"]["ZANDAT1"],
+              partChangeDate:xmlItems[i]["item"]["ZAEDAT"],
+              partStatus:xmlItems[i]["item"]["ZSTATUS"],
+              uom:xmlItems[i]["item"]["ZLGFSB"],
+              materialGroup:xmlItems[i]["item"]["ZMAKTX1"]
+            });
+          }
+          else if(xmlItems[i]["item"]["ZSTATUS"] == "B"){
+            var partNumber = PartNumber.update({
+              partNumber:xmlItems[i]["item"]["ZIDNRK"]
+            })
+            .set({
+              partStatus:xmlItems[i]["item"]["ZSTATUS"],
+              status:0
+            });
+          }
         }
       }
     };

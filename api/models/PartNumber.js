@@ -10,7 +10,8 @@ module.exports = {
   attributes: {
     partNumber:{
       type:'string',
-      unique: true
+      unique: true,
+      required: true
     },
     description:{
       type:'string'

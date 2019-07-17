@@ -11,7 +11,8 @@ module.exports = {
     rawMaterialNumber:{
       type:'number',
       // columnType: 'integer',
-      unique: true
+      unique: true,
+      required: true
     },
     description:{
       type:'string'

@@ -10,7 +10,8 @@ module.exports = {
   attributes: {
     productionScheduleId:{
       type:'string', // Machine Shop Daily Plan YYYY-MM-DD-NNN (where NNN is serial number from 001 to 999)
-      unique: true
+      unique: true,
+      required: true
     },
     createdBy:{
       model:'User'

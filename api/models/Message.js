@@ -10,7 +10,8 @@ module.exports = {
   attributes: {
     type:{
       type:'string',  // sms or email
-      unique: true
+      unique: true,
+      required: true
     },
     subject:{
       type:'string',

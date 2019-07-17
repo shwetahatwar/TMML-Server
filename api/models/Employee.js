@@ -10,7 +10,8 @@ module.exports = {
   attributes: {
     employeeId: {
       type: 'string',
-      unique: true
+      unique: true,
+      required: true
     },
     name: {
       type: 'string'
@@ -19,7 +20,7 @@ module.exports = {
       type:'string'
     },
     mobileNumber:{
-      type:'string'
+      type:'number'
     },
     barcodeSerial:{
       type:'string'

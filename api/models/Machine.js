@@ -10,7 +10,8 @@ module.exports = {
   attributes: {
     machineName:{
       type:'string',
-      unique: true
+      unique: true,
+      required: true
     },
     machineTypeId:{
       model:'MachineType'
