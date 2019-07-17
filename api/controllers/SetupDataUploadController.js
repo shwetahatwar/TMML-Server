@@ -252,6 +252,48 @@ module.exports = {
     }
     var cells = await Cell.createEach(json08);
 
+    // type
+    var filepath092 = './documents/templates/bulk-upload/09-BulkUploadMachineType.xlsx';
+    var workbook092 = XLSX.readFile(filepath092);
+    var sheet092 = workbook092.Sheets[workbook092.SheetNames[0]];
+    var num_rows092 = xls_utils.decode_range(sheet092['!ref']).e.r;
+    var json092 = [];
+    for(var i = 1, l = num_rows092; i <= l; i++){
+      var name = xls_utils.encode_cell({c:0, r:i});
+      var value = sheet092[name];
+      var result = value['v'];
+      console.log(name + " \t" + result);
+      json092.push({name: result, status: 1});
+    }
+    var machineTypes = await MachineType.createEach(json092);
+
+    // Group
+    var filepath09 = './documents/templates/bulk-upload/09-BulkUploadMachineGroup.xlsx';
+    var workbook09 = XLSX.readFile(filepath09);
+    var sheet09 = workbook09.Sheets[workbook09.SheetNames[0]];
+    var num_rows09 = xls_utils.decode_range(sheet09['!ref']).e.r;
+    var json09 = [];
+    for(var i = 1, l = num_rows09; i <= l; i++){
+      var name = xls_utils.encode_cell({c:0, r:i});
+      var value = sheet09[name];
+      var result = value['v'];
+      console.log(name + " \t" + result);
+
+      var name2 = xls_utils.encode_cell({c:1, r:i});
+      var value2 = sheet09[name2];
+      var result2 = value2['v'];
+      console.log(name2 + " \t" + result2);
+
+      await MachineType.find({name: result2}).then( async (machineTypes) => {
+          var machineTypeId = null;
+          if (machineTypes.length > 0) {
+            machineTypeId = machineTypes[0]['id'];
+            json09.push({name: result, machineTypeId: machineTypeId, status: 1});
+          }
+      });
+    }
+    var machineGroups = await MachineGroup.createEach(json09);
+
     // Costcenter
     var filepath10 = './documents/templates/bulk-upload/10-BulkUploadCostCenter.xlsx';
     var workbook10 = XLSX.readFile(filepath10);
