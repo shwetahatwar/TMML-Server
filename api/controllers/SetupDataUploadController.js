@@ -324,54 +324,8 @@ module.exports = {
     }
     var machine details = await CostCenter.createEach(json11);*/
 
-    // Read Access Level
-    var filepath17 = './documents/templates/bulk-upload/17-BulkUploadRoleAccessLevelRelation.xlsx';
-    var workbook17 = XLSX.readFile(filepath17);
-    var sheet17 = workbook17.Sheets[workbook17.SheetNames[0]];
-    var num_rows17 = xls_utils.decode_range(sheet17['!ref']).e.r;
-    var json17 = [];
-    for(var i = 1, l = num_rows17; i <= l; i++){
-
-      var cell1 = xls_utils.encode_cell({c:0, r:i});
-      var cell1Object = sheet17[cell1];
-      var cell1Value = cell1Object['v'];
-
-      var cell2 = xls_utils.encode_cell({c:1, r:i});
-      var cell2Object = sheet17[cell2];
-      var cell2Value = cell2Object['v'];
-
-      var cell3 = xls_utils.encode_cell({c:2, r:i});
-      var cell3Object = sheet17[cell3];
-      var cell3Value = cell3Object['v'];
-
-      await Role.find({roleName: cell1Value}).then( async (roles) => {
-        var roleIdentifer = null;
-        if (roles.length > 0) {
-          roleIdentifer = roles[0]['id'];
-        }
-
-        console.log("User Role: " + roleIdentifer + " " + cell1Value);
-
-        await AccessLevel.find({uri: cell2Value, httpMethod: cell3Value}).then( async (acessLevels) => {
-
-          var accessLevelId = null;
-          if (acessLevels.length > 0) {
-            accessLevelId = acessLevels[0]['id'];
-          }
-
-          console.log("User Access Level: " + accessLevelId + " " + cell2Value + " " + cell3 + " " + cell3Value);
-          json17.push({
-            roleId: roleIdentifer,
-            accessId: accessLevelId,
-          });
-        });
-
-      });
-    }
-    var roleAccessRelation = await RoleAccessRelation.createEach(json17);
-
     // Read Raw Material
-    /*var filepath13 = './documents/templates/bulk-upload/13-BulkUploadRawMaterialTemplate.xlsx';
+    /* var filepath13 = './documents/templates/bulk-upload/13-BulkUploadRawMaterialTemplate.xlsx';
     var workbook13 = XLSX.readFile(filepath13);
     var sheet13 = workbook13.Sheets[workbook13.SheetNames[0]];
     var num_rows13 = xls_utils.decode_range(sheet13['!ref']).e.r;
@@ -422,7 +376,7 @@ module.exports = {
           console.log("duplicateNumber: ", rmNumberResult);
         } else {
           json13.push({
-            rawMaterialNumber: rmNumberResult,
+            rawMaterialNumber: Number(rmNumberResult),
             description: rmDescResult,
             materialTypeId:typeIdentifer,
             rmCreateDate:Date.now(),
@@ -435,8 +389,55 @@ module.exports = {
         }
       });
     }
-    // console.log("json13: ", json13);
+    console.log("json13: ", json13);
     var materialList = await RawMaterial.createEach(json13);*/
+
+
+    // Read Access Level
+    var filepath17 = './documents/templates/bulk-upload/17-BulkUploadRoleAccessLevelRelation.xlsx';
+    var workbook17 = XLSX.readFile(filepath17);
+    var sheet17 = workbook17.Sheets[workbook17.SheetNames[0]];
+    var num_rows17 = xls_utils.decode_range(sheet17['!ref']).e.r;
+    var json17 = [];
+    for(var i = 1, l = num_rows17; i <= l; i++){
+
+      var cell1 = xls_utils.encode_cell({c:0, r:i});
+      var cell1Object = sheet17[cell1];
+      var cell1Value = cell1Object['v'];
+
+      var cell2 = xls_utils.encode_cell({c:1, r:i});
+      var cell2Object = sheet17[cell2];
+      var cell2Value = cell2Object['v'];
+
+      var cell3 = xls_utils.encode_cell({c:2, r:i});
+      var cell3Object = sheet17[cell3];
+      var cell3Value = cell3Object['v'];
+
+      await Role.find({roleName: cell1Value}).then( async (roles) => {
+        var roleIdentifer = null;
+        if (roles.length > 0) {
+          roleIdentifer = roles[0]['id'];
+        }
+
+        console.log("User Role: " + roleIdentifer + " " + cell1Value);
+
+        await AccessLevel.find({uri: cell2Value, httpMethod: cell3Value}).then( async (acessLevels) => {
+
+          var accessLevelId = null;
+          if (acessLevels.length > 0) {
+            accessLevelId = acessLevels[0]['id'];
+          }
+
+          console.log("User Access Level: " + accessLevelId + " " + cell2Value + " " + cell3 + " " + cell3Value);
+          json17.push({
+            roleId: roleIdentifer,
+            accessId: accessLevelId,
+          });
+        });
+
+      });
+    }
+    var roleAccessRelation = await RoleAccessRelation.createEach(json17);
 
     return res.status(200).send("Seed Database");
   }
