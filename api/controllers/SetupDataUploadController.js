@@ -309,6 +309,21 @@ module.exports = {
     }
     var cells = await CostCenter.createEach(json10);
 
+    // machine details
+    /*var filepath11 = './documents/templates/bulk-upload/11-BulkUploadMachineDetails.xlsx';
+    var workbook11 = XLSX.readFile(filepath11);
+    var sheet11 = workbook11.Sheets[workbook11.SheetNames[0]];
+    var num_rows11 = xls_utils.decode_range(sheet11['!ref']).e.r;
+    var json11 = [];
+    for(var i = 1, l = num_rows11; i <= l; i++){
+      var cell0 = xls_utils.encode_cell({c:0, r:i});
+      var cell0Object = sheet11[cell0];
+      var cell0Value = cell0Object['v'];
+      console.log(cell0 + " \t" + cell0Value);
+      json10.push({name: result});
+    }
+    var machine details = await CostCenter.createEach(json11);*/
+
     // Read Access Level
     var filepath17 = './documents/templates/bulk-upload/17-BulkUploadRoleAccessLevelRelation.xlsx';
     var workbook17 = XLSX.readFile(filepath17);
