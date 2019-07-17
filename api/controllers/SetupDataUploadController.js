@@ -237,6 +237,21 @@ module.exports = {
     }
     var materialTypes = await MaterialType.createEach(json05);
 
+    // machine type
+    var filepath07 = './documents/templates/bulk-upload/07-BulkUploadMachineType.xlsx';
+    var workbook07 = XLSX.readFile(filepath07);
+    var sheet07 = workbook07.Sheets[workbook07.SheetNames[0]];
+    var num_rows07 = xls_utils.decode_range(sheet07['!ref']).e.r;
+    var json07 = [];
+    for(var i = 1, l = num_rows07; i <= l; i++){
+      var name = xls_utils.encode_cell({c:0, r:i});
+      var value = sheet07[name];
+      var result = value['v'];
+      console.log(name + " \t" + result);
+      json07.push({name: result, status: 1});
+    }
+    var machineTypes = await MachineType.createEach(json07);
+
     // Read Cell
     var filepath08 = './documents/templates/bulk-upload/08-BulkUploadMachineCell.xlsx';
     var workbook08 = XLSX.readFile(filepath08);
@@ -251,21 +266,6 @@ module.exports = {
       json08.push({name: result, status: 1});
     }
     var cells = await Cell.createEach(json08);
-
-    // type
-    var filepath092 = './documents/templates/bulk-upload/09-BulkUploadMachineType.xlsx';
-    var workbook092 = XLSX.readFile(filepath092);
-    var sheet092 = workbook092.Sheets[workbook092.SheetNames[0]];
-    var num_rows092 = xls_utils.decode_range(sheet092['!ref']).e.r;
-    var json092 = [];
-    for(var i = 1, l = num_rows092; i <= l; i++){
-      var name = xls_utils.encode_cell({c:0, r:i});
-      var value = sheet092[name];
-      var result = value['v'];
-      console.log(name + " \t" + result);
-      json092.push({name: result, status: 1});
-    }
-    var machineTypes = await MachineType.createEach(json092);
 
     // Group
     var filepath09 = './documents/templates/bulk-upload/09-BulkUploadMachineGroup.xlsx';
@@ -325,6 +325,10 @@ module.exports = {
       var cell2Object = sheet17[cell2];
       var cell2Value = cell2Object['v'];
 
+      var cell3 = xls_utils.encode_cell({c:2, r:i});
+      var cell3Object = sheet17[cell3];
+      var cell3Value = cell3Object['v'];
+
       await Role.find({roleName: cell1Value}).then( async (roles) => {
         var roleIdentifer = null;
         if (roles.length > 0) {
@@ -333,14 +337,14 @@ module.exports = {
 
         console.log("User Role: " + roleIdentifer + " " + cell1Value);
 
-        await AccessLevel.find({uri: cell2Value}).then( async (acessLevels) => {
+        await AccessLevel.find({uri: cell2Value, httpMethod: cell3Value}).then( async (acessLevels) => {
 
           var accessLevelId = null;
           if (acessLevels.length > 0) {
             accessLevelId = acessLevels[0]['id'];
           }
 
-          console.log("User Access Level: " + accessLevelId + " " + cell2Value);
+          console.log("User Access Level: " + accessLevelId + " " + cell2Value + " " + cell3 + " " + cell3Value);
           json17.push({
             roleId: roleIdentifer,
             accessId: accessLevelId,
