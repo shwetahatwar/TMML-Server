@@ -42,6 +42,8 @@ module.exports.routes = {
   'POST /Location/create': 'Location.create',
   'POST /seedDatabase': 'SetupDataUploadController.seedDatabase',
   'POST /sapPartNumber': 'SapPartNumberController.create',
+  'POST /soapRequest': 'SapPartNumberController.soapRequest',
+  'POST /soapRequest1': 'SapPartNumberController.soapRequest1',
   'POST /monthlySchdeule': 'MonthlyScheduleController.create',
   'POST /dailyUpload': 'ProductionScheduleController.dailyUpload',
   'POST /dailyMonthlyReport': 'ProductionScheduleController.dailyMonthlyReport',

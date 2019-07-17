@@ -97,11 +97,11 @@ module.exports = {
     
     console.log(estimatedDate,timestamp);
     estimatedDate = estimatedDate - timestamp;
-    var dt = new Date();
-    dt.setSeconds( dt.getSeconds() + estimatedDate );
-    estimatedDate = dt.toString();
-    estimatedDate = estimatedDate.substr(0,24);
-    console.log(estimatedDate);
+    // var dt = new Date();
+    // dt.setSeconds( dt.getSeconds() + estimatedDate );
+    // estimatedDate = dt.toString();
+    // estimatedDate = estimatedDate.substr(0,24);
+    // console.log(estimatedDate);
 
   	var newJobCard = await JobCard.create({
   		productionSchedulePartRelationId:req.body.productionSchedulePartRelationId,

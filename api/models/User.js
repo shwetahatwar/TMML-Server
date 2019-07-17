@@ -6,7 +6,7 @@
  */
 const bcrypt = require('bcrypt-nodejs');
 module.exports = {
-
+​
   attributes: {
     username: {
       type: 'string',
@@ -24,6 +24,9 @@ module.exports = {
     },
     updatedBy: {
       model:'User'
+    },
+     status:{
+      type:'number'
     },
     // department:{
     //   model:'User'
