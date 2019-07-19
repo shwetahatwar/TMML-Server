@@ -44,11 +44,13 @@ module.exports.routes = {
   'POST /sapPartNumber': 'SapPartNumberController.create',
   'POST /soapRequest': 'SapPartNumberController.soapRequestGet',
   'POST /soapRequest1': 'SapPartNumberController.soapRequest1',
+  'POST /soapRequestPost': 'SapPartNumberController.soapRequestPost',
   'POST /monthlySchdeule': 'MonthlyScheduleController.create',
   'POST /dailyUpload': 'ProductionScheduleController.dailyUpload',
   'POST /dailyMonthlyReport': 'ProductionScheduleController.dailyMonthlyReport',
   'POST /getDetailJobCard': 'JobCard.getDetailJobCard',
   'POST /iot/getJobProcessQuantity': 'MachineStrokesController.getJobProcessQuantity',
+  'POST /JobCardComplete': 'JobCard.completeJobCard',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

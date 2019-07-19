@@ -116,6 +116,52 @@ module.exports = {
     parseString(xml, function (err, result) {
       console.dir(JSON.stringify(result));
     });
+  },
+
+  soapRequestPost:async function(req,res){
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/wsdl/bndg_5D15DB2018714700E100802BAC181DB2/wsdl11/allinone/ws_policy/document?sap-client=170', true);
+    xmlhttp.onreadystatechange = async function() {
+      if (xmlhttp.readyState == 4) {
+        // alert(xmlhttp.responseText);
+        console.log(xmlhttp.responseText);
+        var xml = xmlhttp.responseText;
+        var xmlResult;
+        parseString(xml, function (err, result) {
+          console.dir(JSON.stringify(result));
+          xmlResult = JSON.stringify(result);
+        });
+
+        var xmlItems = xmlResult["ZCOMP_DTL"];
+
+        for(var i =0;i<xmlItems.length;i++){
+          var sapTransaction = await SapTransaction.update({
+            uniqueNumber:xmlItems[i]["item"]["ZBKTXT"]
+          })
+          .set({
+            documentNumber:xmlItems[i]["item"]["ZMBLNR"],
+            documentYear:xmlItems[i]["item"]["ZMJAHR"],
+            remarks:xmlItems[i]["item"]["ZREMARKS"]
+          });
+        }
+      }
+    };
+    // xmlhttp.setRequestHeader('SOAPAction', '');
+    xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
+    const xml = fs.readFileSync('C:\\All Projects\\TMML\\server\\server\\api\\test\\xmlPOSTTextFile.xml', 'utf-8');
+    var getJobCardCompleted = SapTransaction.find({
+      documentNumber: 0
+    });
+    for(var i=0;i<getJobCardCompleted.length;i++){
+      xml = xml.replace("Plant",getJobCardCompleted[i]["plant"]);
+      xml = xml.replace("Date",getJobCardCompleted[i]["date"]);
+      xml = xml.replace("Material Number",getJobCardCompleted[i]["material"]);
+      xml = xml.replace("Job Card No",getJobCardCompleted[i]["jobCard"]);
+      xml = xml.replace("Unique  Number",getJobCardCompleted[i]["uniqueNumber"]);
+      xml = xml.replace("Component quantity Component",getJobCardCompleted[i]["quantity"]);
+      xmlhttp.send(xml);
+    }
+    
   }
 };
 

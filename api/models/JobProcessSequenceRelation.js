@@ -26,7 +26,7 @@ module.exports = {
     note:{
       type:'string'
     },
-    processStatus:{
+    processStatus:{ //Complete, Pending, FinalComplete
       type:'string'
     },
     createdBy:{
@@ -44,7 +44,10 @@ module.exports = {
     operatorId:{
       model:'User'
     },
-
+    sequenceNumber:{
+      type:'number',
+      allowNull: true
+    }
   },
 
 };

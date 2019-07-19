@@ -11,10 +11,14 @@ module.exports = {
       id:req.body.JobProcessSequenceRelationId
     })
     .set({
-      status: req.body.status,
+      processStatus: req.body.status,
       locationId: req.body.locationId,
-      machineId: req.body.machineId
+      machineId: req.body.locationId
     });
+    var jobCardStatus = Jobprocesssequencerelation.find({
+      processStatus:"Pending"
+    });
+    // if(jobCardStatus[0]!=null && jobCardStatus[0]!=)
     // await Machine.update({
     //   id:req.body.machineId
     // })

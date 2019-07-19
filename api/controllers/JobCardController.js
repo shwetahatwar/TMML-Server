@@ -224,6 +224,42 @@ module.exports = {
       processSequence3:processSequence3
     }
     res.send(processes);
+  },
+
+  completeJobCard: async function(req,res){
+    await JobCard.update({
+      id:req.body.jobcardId
+    })
+    .set({
+      actualQuantity:req.body.quantity,
+      jobcardStatus:"Completed",
+      updatedBy:req.body.userId
+    });
+    await JobProcessSequenceRelation.update({
+      jobId:req.body.jobcardId
+    })
+    .set({
+      processStatus:"FinalComplete"
+    });
+    var dateTime = new Date();
+    var jobProcessSequenceRelation = JobProcessSequenceRelation.find({
+      jobId:req.body.jobcardId
+    });
+    var processSequence = ProcessSequence.find({
+      id:jobProcessSequenceRelation[0]["processSequenceId"]
+    });
+    var partNumber = PartNumber.find({
+      id:processSequence[0]["partId"]
+    });
+    await SapTransaction.create({
+      plant:"Tata Marcopolo Dharwad",
+      date:dateTime,
+      material:partNumber[0]["partNumber"],
+      jobCard:jobCardBarcode[0]["barcodeSerial"],
+      uniqueNumber:dateTime,
+      quantity:req.body.quantity,
+      documentNumber:0
+    });
   }
 
 };

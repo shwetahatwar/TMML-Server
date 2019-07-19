@@ -63,6 +63,19 @@ module.exports.datastores = {
     //     // encrypt: true   // use this for Azure databases
     //   }
     // }
+
+    // sqlserver: {
+    //   adapter: 'sails-sqlserver',
+    //   user: 'sa',
+    //   password: 'briot123',
+    //   host: '192.168.0.6',
+    //   database: 'TestDatabase',
+    //   // I've had to use this option in some cases
+    //   // where the SQL Server refuses my user otherwise
+    //   options: {
+    //       encrypt: false
+    //   }
+    // },
   },
 
 
