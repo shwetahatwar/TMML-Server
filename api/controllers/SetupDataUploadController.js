@@ -315,12 +315,83 @@ module.exports = {
     var sheet11 = workbook11.Sheets[workbook11.SheetNames[0]];
     var num_rows11 = xls_utils.decode_range(sheet11['!ref']).e.r;
     var json11 = [];
-    for(var i = 1, l = num_rows11; i <= l; i++){
+    for(var i = 1, l = num_rows11; i <= l; i++) {
+
+      // machine name
       var cell0 = xls_utils.encode_cell({c:0, r:i});
       var cell0Object = sheet11[cell0];
       var cell0Value = cell0Object['v'];
       console.log(cell0 + " \t" + cell0Value);
-      json10.push({name: result});
+
+      // machineTypeId
+      var cell1 = xls_utils.encode_cell({c:1, r:i});
+      var cell1Object = sheet11[cell1];
+      var cell1Value = cell1Object['v'];
+      console.log(cell1 + " \t" + cell1Value);
+
+      // machineGroupId
+      var cell2 = xls_utils.encode_cell({c:2, r:i});
+      var cell2Object = sheet11[cell2];
+      var cell2Value = cell2Object['v'];
+      console.log(cell2 + " \t" + cell2Value);
+
+      // costCenterId
+      var cell3 = xls_utils.encode_cell({c:3, r:i});
+      var cell3Object = sheet11[cell3];
+      var cell3Value = cell3Object['v'];
+      console.log(cell3 + " \t" + cell3Value);
+
+      // cellId
+      var cell4 = xls_utils.encode_cell({c:4, r:i});
+      var cell4Object = sheet11[cell4];
+      var cell4Value = cell4Object['v'];
+      console.log(cell4 + " \t" + cell4Value);
+
+      // capacity
+      var cell5 = xls_utils.encode_cell({c:5, r:i});
+      var cell5Object = sheet11[cell5];
+      var cell5Value = cell5Object['v'];
+      console.log(cell5 + " \t" + cell5Value);
+
+      //machineWeight
+      var cell6 = xls_utils.encode_cell({c:6, r:i});
+      var cell6Object = sheet11[cell6];
+      var cell6Value = cell6Object['v'];
+      console.log(cell6 + " \t" + cell6Value);
+
+      // frequencey
+      var cell7 = xls_utils.encode_cell({c:7, r:i});
+      var cell7Object = sheet11[cell7];
+      var cell7Value = cell7Object['v'];
+      console.log(cell7 + " \t" + cell7Value);
+
+      // machine operation
+      var cell8 = xls_utils.encode_cell({c:8, r:i});
+      var cell8Object = sheet11[cell8];
+      var cell8Value = cell8Object['v'];
+      console.log(cell8 + " \t" + cell8Value);
+
+      // process name
+      var cell9 = xls_utils.encode_cell({c:9, r:i});
+      var cell9Object = sheet11[cell9];
+      var cell9Value = cell9Object['v'];
+      console.log(cell9 + " \t" + cell9Value);
+
+      json11.push({
+        machineName: cell0value,
+        machineTypeId: null,
+        machineGroupId: null,
+        costCenterId: null,
+        capacity: cell5Value,
+        cellId: null,
+        machineWeight: cell6Value,
+        status: 1,
+        maintenanceStatus: 'Available',
+        createdBy: 1,
+        updatedBy: 1,
+        frequencyInDays: 0,
+
+       });
     }
     var machine details = await CostCenter.createEach(json11);*/
 
@@ -331,7 +402,7 @@ module.exports = {
     var num_rows13 = xls_utils.decode_range(sheet13['!ref']).e.r;
     var json13 = [];
     var materialNumbers = [];
-    for(var i = 1, l = 3; i <= l; i++){
+    for(var i = 1, l = num_rows13; i <= l; i++){
 
       var rmNumber = xls_utils.encode_cell({c:0, r:i});
       var rmNumberValue = sheet13[rmNumber];
@@ -439,6 +510,72 @@ module.exports = {
     }
     var roleAccessRelation = await RoleAccessRelation.createEach(json17);
 
+    // shift
+    var filepath18 = './documents/templates/bulk-upload/18-BulkUploadShift.xlsx';
+    var workbook18 = XLSX.readFile(filepath18);
+    var sheet18 = workbook18.Sheets[workbook18.SheetNames[0]];
+    var num_rows18 = xls_utils.decode_range(sheet18['!ref']).e.r;
+    var json18 = [];
+    for(var i = 1, l = num_rows18; i <= l; i++){
+
+      // shift
+      // var cell0 = xls_utils.encode_cell({c:0, r:i});
+      // var cell0Object = sheet10[cell0Object];
+      // var cell0Value = cell0Value['v'];
+      // console.log(cell0Object + " \t" + result);
+
+      var shift = fetchValueFromExcel(xls_utils, sheet18, 0, i);
+      var startTimeInSeconds = fetchValueFromExcel(xls_utils, sheet18, 1, i);
+      var endTimeInSeconds = fetchValueFromExcel(xls_utils, sheet18, 2, i);
+      var teaBreakStartInSeconds = fetchValueFromExcel(xls_utils, sheet18, 3, i);
+      var teaBreakEndInSeconds = fetchValueFromExcel(xls_utils, sheet18, 4, i);
+      var lunchBreakStartInSeconds = fetchValueFromExcel(xls_utils, sheet18, 5, i);
+      var lunchBreakEndInSeconds = fetchValueFromExcel(xls_utils, sheet18, 6, i);
+      var cell = fetchValueFromExcel(xls_utils, sheet18, 7, i);
+
+      await Cell.find({name: cell}).then( async (items) => {
+        var id = null;
+        if (items.length > 0) {
+          id = items[0]['id'];
+        }
+
+        json18.push({
+          name: shift,
+          startTimeInSeconds: startTimeInSeconds,
+          endTimeInSeconds: endTimeInSeconds,
+          teaBreakStartInSeconds: teaBreakStartInSeconds,
+          teaBreakEndInSeconds: teaBreakEndInSeconds,
+          lunchBreakStartInSeconds: lunchBreakStartInSeconds,
+          lunchBreakEndInSeconds: lunchBreakEndInSeconds,
+          cell: id,
+        });
+      });
+    }
+    var shifts = await Shift.createEach(json18);
+
+
     return res.status(200).send("Seed Database");
   }
 };
+
+function fetchValueFromExcel(utils, sheet, column, row) {
+
+  if (utils == undefined || sheet == undefined || column == undefined || row == undefined) {
+    return undefined;
+  }
+
+  // console.log("Utils: ", utils);
+  // console.log("Sheet: ", sheet);
+  // console.log("column: ", column);
+  // console.log("row: ", row);
+
+  var cell1Value = undefined;
+  var cell1 = utils.encode_cell({c:column, r:row});
+  if (cell1 != undefined) {
+    var cell1Object = sheet[cell1];
+    cell1Value = cell1Object['v'];
+    console.log(cell1 + " \t" + cell1Value);;
+
+  }
+  return cell1Value;
+}
