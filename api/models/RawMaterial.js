@@ -11,6 +11,8 @@ module.exports = {
     rawMaterialNumber:{
       type:'number',
       // columnType: 'integer',
+      // autoCreatedAt: true,
+      // autoMigrations: { columnType: '_numbertimestamp' },
       unique: true,
       required: true
     },
@@ -19,10 +21,14 @@ module.exports = {
     },
     rmCreateDate:{
       type:'number',
+      // autoCreatedAt: true,
+      // autoMigrations: { columnType: '_numbertimestamp' },
       // columnType: 'int8',
     },
     rmUpdateDate:{
       type:'number',
+      // autoCreatedAt: true,
+      // autoMigrations: { columnType: '_numbertimestamp' },
       // columnType: 'int8',
     },
     materialTypeId:{
