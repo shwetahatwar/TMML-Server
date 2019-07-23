@@ -1,6 +1,8 @@
 var XLSX = require('xlsx'),
     xls_utils = XLSX.utils;
 
+var nodemailer = require ('nodemailer');
+
 module.exports={
 
 	test : async function(req,res){
@@ -53,5 +55,31 @@ module.exports={
 			}
 			return res.ok();
 	  })
+	},
+
+	testMail:function(req,res){
+		var selfSignedConfig = {
+      host:'smtp.zoho.com',
+      port:465,
+      auth: {
+        user: 'nikhil.kamble@briot.in', // generated ethereal user
+        pass: 'briot@123' // generated ethereal password
+      }
+    };
+    var transporter = nodemailer.createTransport(selfSignedConfig);
+    var mailOptions = {
+      from: 'nikhil.kamble@briot.in', // sender address (who sends)
+      to: 'nikhil.kamble@briot.in, sagar@briot.in, dinesh@briot.in, karan@briot.in, servicedesk@briot.in', // list of receivers (who receives)
+      subject: 'Test Mail SMTP', // Subject line
+      text: 'This is a test mail for TMML SMTP'
+    };
+    transporter.sendMail(mailOptions, function(error, info) {
+      if(error){
+             return console.log(error);
+      } else {
+             console.log('Message sent: ' + info.response);
+      }
+    });
+    res.send();
 	}
 };

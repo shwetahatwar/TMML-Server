@@ -5,16 +5,24 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
+var nodemailer = require ('nodemailer');
+
 module.exports = {
   update: async function(req,res){
-    //var nodemailer = require('nodemailer');
-    //var transporter = nodemailer.createTransport({
+    // var nodemailer = require('nodemailer');
+    // var transporter = nodemailer.createTransport({
     //  service: 'Gmail',
     //  auth: {
     //    user: 'menikhil.kkamable@gmail.com',
     //    pass: 'dravid19'
     //  }
-    //});
+    // });
+
+    var selfSignedConfig = {
+      host: '128.9.24.24',
+      port: 25
+    };
+    var transporter = nodemailer.createTransport(selfSignedConfig);
 
     var employeeBarcode = req.body.employeeBarcode;
     var employee = null;
@@ -64,12 +72,45 @@ module.exports = {
         costOfPartReplaced: req.body.costOfPartReplaced,
       }).fetch();
       if(MaintenanceTable != null && MaintenanceTable != undefined){
-        var EmployeeList = await Employee.find({
+        var newEmployeeList = await Employee.find({
           notifyForMachineMaintenance:1
         });
+        var newEmailService = await MailConfig.find({
+          maintenanceStatus:req.body.maintenanceStatus
+        });
+        var mailSubject = newEmailService[0].mailSubject;
+        mailSubject = mailSubject.replace("%MACHINE%",machineName);
+        mailSubject = mailSubject.replace("%STATUS%",maintenanceStatus);
+        mailText= newEmailService[0].mailBody;
+        mailText = mailSubject.replace("%NAME%",machineName);
+        mailText = mailSubject.replace("%MACHINE%",machineName);
+        mailText = mailSubject.replace("%CELL%",cellName);
+        mailText = mailText.replace("%STATUS%",maintenanceStatus);
+        mailText = mailText.replace("%STATUS%",maintenanceStatus);
+        mailText = mailText.replace("%OPERATOR%",operatorName);
+        mailText = mailText.replace("%PART%",partNumber);
+        mailText = mailText.replace("%REMARKS%",remarks);
+
+        if(newEmployeeList[0]!=null&&newEmployeeList[0]!=undefined){
+          for(var i=0;i<newEmployeeList.length;i++){
+            var mailOptions = {
+              from: newEmailService[0].senderUsername, // sender address (who sends)
+              to: newEmployeeList[i].email, // list of receivers (who receives)
+              subject: mailSubject, // Subject line
+              text: mailText
+            };
+            transporter.sendMail(mailOptions, function(error, info) {
+              if(error){
+                console.log(error);
+              } else {
+                console.log('Message sent: ' + info.response);
+              }
+            });
+          }
+        }
+
       }
     }
     res.send(machineUpdated);
   }
-
 };

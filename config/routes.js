@@ -51,6 +51,7 @@ module.exports.routes = {
   'POST /getDetailJobCard': 'JobCard.getDetailJobCard',
   'POST /iot/getJobProcessQuantity': 'MachineStrokesController.getJobProcessQuantity',
   'POST /JobCardComplete': 'JobCard.completeJobCard',
+  'GET /testMail': 'TestUpload.testMail',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

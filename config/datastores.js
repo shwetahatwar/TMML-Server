@@ -48,27 +48,27 @@ module.exports.datastores = {
     *    (See https://sailsjs.com/config/datastores for help.)                 *
     *                                                                          *
     ***************************************************************************/
-    // adapter: 'sails-mssqlserver',
-    // url: 'sqlserver://sa:briot123@localhost:1433/enprodatabase',
+    // adapter: 'sails-sql',
+    // url: 'mssql://sa:briot123@192.168.0.6:1433/TestDatabase1',
     adapter: 'sails-postgresql',
     url: 'postgres://bnsliopfagjtkt:a27131100bed84cdf09b216d3ff6fa2afecf2936ac5359cbe1da866a835011f1@ec2-23-21-147-71.compute-1.amazonaws.com:5432/d6n877b1qc3e8o',
     ssl: true,
     // sqlserver: {
-    //   adapter: 'sails-mssqlserver',
-    //   user: 'sa',
-    //   password: 'briot123',
-    //   host: 'localhost:1433', // azure database
-    //   database: 'enprodatabase',
-    //   options: {
-    //     // encrypt: true   // use this for Azure databases
-    //   }
+      // adapter: 'sails-mssqlserver',
+      // user: 'sa',
+      // password: 'briot123',
+      // host: 'DESKTOP-FMUJ546\\SQLEXPRESS', // azure database
+      // database: 'TestDatabase1',
+      // options: {
+      //   // encrypt: true   // use this for Azure databases
+      // }
     // }
 
     // sqlserver: {
     //   adapter: 'sails-sqlserver',
     //   user: 'sa',
     //   password: 'briot123',
-    //   host: '192.168.0.6',
+    //   host: 'localhost:1433',
     //   database: 'TestDatabase',
     //   // I've had to use this option in some cases
     //   // where the SQL Server refuses my user otherwise

@@ -13,6 +13,7 @@ module.exports = {
     },
     fileData:{
       type:'ref',
+      // columnType: 'varbinary(MAX)'
       columnType: 'bytea' // <-- for PostgreSQL. Use `mediumblob` for MySQL.
     },
     fileType:{
