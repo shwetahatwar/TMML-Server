@@ -13,8 +13,8 @@ module.exports = {
       unique: true,
       required: true
     },
-    machineTypeId:{
-      model:'MachineType'
+    operationType:{
+      type:'string'
     },
     machineGroupId:{
       // model:'MachineGroup'

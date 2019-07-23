@@ -310,90 +310,100 @@ module.exports = {
     var cells = await CostCenter.createEach(json10);
 
     // machine details
-    /*var filepath11 = './documents/templates/bulk-upload/11-BulkUploadMachineDetails.xlsx';
+    var filepath11 = './documents/templates/bulk-upload/11-BulkUploadMachineDetails.xlsx';
     var workbook11 = XLSX.readFile(filepath11);
     var sheet11 = workbook11.Sheets[workbook11.SheetNames[0]];
     var num_rows11 = xls_utils.decode_range(sheet11['!ref']).e.r;
     var json11 = [];
     for(var i = 1, l = num_rows11; i <= l; i++) {
 
-      // machine name
-      var cell0 = xls_utils.encode_cell({c:0, r:i});
-      var cell0Object = sheet11[cell0];
-      var cell0Value = cell0Object['v'];
-      console.log(cell0 + " \t" + cell0Value);
+      var machineName = fetchValueFromExcel(xls_utils, sheet11, 0, i);
+      var machinetype = fetchValueFromExcel(xls_utils, sheet11, 1, i);
+      var machineGroup1 = fetchValueFromExcel(xls_utils, sheet11, 2, i);
+      var machinetype1 = fetchValueFromExcel(xls_utils, sheet11, 3, i);
+      var machineGroup2 = fetchValueFromExcel(xls_utils, sheet11, 4, i);
+      var machinetype2 = fetchValueFromExcel(xls_utils, sheet11, 5, i);
+      var machineGroup3 = fetchValueFromExcel(xls_utils, sheet11, 6, i);
+      var machinetype3 = fetchValueFromExcel(xls_utils, sheet11, 7, i);
+      var machineGroup4 = fetchValueFromExcel(xls_utils, sheet11, 8, i);
+      var machinetype4 = fetchValueFromExcel(xls_utils, sheet11, 9, i);
+      var machineGroup5 = fetchValueFromExcel(xls_utils, sheet11, 10, i);
+      var machinetype5 = fetchValueFromExcel(xls_utils, sheet11, 11, i);
+      var machineGroup6 = fetchValueFromExcel(xls_utils, sheet11, 12, i);
+      var machinetype6 = fetchValueFromExcel(xls_utils, sheet11, 13, i);
+      var machineGroup7 = fetchValueFromExcel(xls_utils, sheet11, 14, i);
+      var machinetype7 = fetchValueFromExcel(xls_utils, sheet11, 15, i);
+      var machineGroup8 = fetchValueFromExcel(xls_utils, sheet11, 16, i);
+      var machinetype8 = fetchValueFromExcel(xls_utils, sheet11, 17, i);
+      var costCenter = fetchValueFromExcel(xls_utils, sheet11, 18, i);
+      var cell = fetchValueFromExcel(xls_utils, sheet11, 19, i);
+      var capacity = fetchValueFromExcel(xls_utils, sheet11, 20, i);
+      var machineweight = fetchValueFromExcel(xls_utils, sheet11, 21, i);
+      var maintenanceFrequency = fetchValueFromExcel(xls_utils, sheet11, 22, i);
+      var machineOperation = fetchValueFromExcel(xls_utils, sheet11, 23, i);
+      var processName = fetchValueFromExcel(xls_utils, sheet11, 24, i);
 
-      // machineTypeId
-      var cell1 = xls_utils.encode_cell({c:1, r:i});
-      var cell1Object = sheet11[cell1];
-      var cell1Value = cell1Object['v'];
-      console.log(cell1 + " \t" + cell1Value);
+      var cells = await Cell.find({name: cell});
+      var cellId = null;
+      if (cells.length > 0) {
+        cellId = cells[0].id;
+      }
 
-      // machineGroupId
-      var cell2 = xls_utils.encode_cell({c:2, r:i});
-      var cell2Object = sheet11[cell2];
-      var cell2Value = cell2Object['v'];
-      console.log(cell2 + " \t" + cell2Value);
+      var group = [];
+      var machinegroups1 = await MachineGroup.find({name: machineGroup1});
+      var machinegroups2 = await MachineGroup.find({name: machineGroup2});
+      var machinegroups3 = await MachineGroup.find({name: machineGroup3});
+      var machinegroups4 = await MachineGroup.find({name: machineGroup4});
+      var machinegroups5 = await MachineGroup.find({name: machineGroup5});
+      var machinegroups6 = await MachineGroup.find({name: machineGroup6});
+      var machinegroups7 = await MachineGroup.find({name: machineGroup7});
+      var machinegroups8 = await MachineGroup.find({name: machineGroup8});
 
-      // costCenterId
-      var cell3 = xls_utils.encode_cell({c:3, r:i});
-      var cell3Object = sheet11[cell3];
-      var cell3Value = cell3Object['v'];
-      console.log(cell3 + " \t" + cell3Value);
+      if (machinegroups1.length > 0) {
+        group.push(machinegroups1[0].id);
+      }
+      if (machinegroups2.length > 0) {
+        group.push(machinegroups2[0].id);
+      }
+      if (machinegroups3.length > 0) {
+        group.push(machinegroups3[0].id);
+      }
+      if (machinegroups4.length > 0) {
+        group.push(machinegroups4[0].id);
+      }
+      if (machinegroups5.length > 0) {
+        group.push(machinegroups5[0].id);
+      }
+      if (machinegroups6.length > 0) {
+        group.push(machinegroups6[0].id);
+      }
+      if (machinegroups7.length > 0) {
+        group.push(machinegroups7[0].id);
+      }
+      if (machinegroups8.length > 0) {
+        group.push(machinegroups8[0].id);
+      }
 
-      // cellId
-      var cell4 = xls_utils.encode_cell({c:4, r:i});
-      var cell4Object = sheet11[cell4];
-      var cell4Value = cell4Object['v'];
-      console.log(cell4 + " \t" + cell4Value);
-
-      // capacity
-      var cell5 = xls_utils.encode_cell({c:5, r:i});
-      var cell5Object = sheet11[cell5];
-      var cell5Value = cell5Object['v'];
-      console.log(cell5 + " \t" + cell5Value);
-
-      //machineWeight
-      var cell6 = xls_utils.encode_cell({c:6, r:i});
-      var cell6Object = sheet11[cell6];
-      var cell6Value = cell6Object['v'];
-      console.log(cell6 + " \t" + cell6Value);
-
-      // frequencey
-      var cell7 = xls_utils.encode_cell({c:7, r:i});
-      var cell7Object = sheet11[cell7];
-      var cell7Value = cell7Object['v'];
-      console.log(cell7 + " \t" + cell7Value);
-
-      // machine operation
-      var cell8 = xls_utils.encode_cell({c:8, r:i});
-      var cell8Object = sheet11[cell8];
-      var cell8Value = cell8Object['v'];
-      console.log(cell8 + " \t" + cell8Value);
-
-      // process name
-      var cell9 = xls_utils.encode_cell({c:9, r:i});
-      var cell9Object = sheet11[cell9];
-      var cell9Value = cell9Object['v'];
-      console.log(cell9 + " \t" + cell9Value);
+      var joinedgroup = group.join(',');
+      console.log(joinedgroup);
 
       json11.push({
-        machineName: cell0value,
-        machineTypeId: null,
-        machineGroupId: null,
+        machineName: machineName,
+        machineGroupId: group,
         costCenterId: null,
-        capacity: cell5Value,
-        cellId: null,
-        machineWeight: cell6Value,
+        capacity: capacity,
+        cellId: cellId,
+        machineWeight: machineweight,
         status: 1,
         maintenanceStatus: 'Available',
+        operationType: machineOperation,
         createdBy: 1,
         updatedBy: 1,
         frequencyInDays: 0,
 
        });
     }
-    var machine details = await CostCenter.createEach(json11);*/
+    var machines = await Machine.createEach(json11);
 
     // Read Raw Material
     /* var filepath13 = './documents/templates/bulk-upload/13-BulkUploadRawMaterialTemplate.xlsx';
@@ -573,8 +583,10 @@ function fetchValueFromExcel(utils, sheet, column, row) {
   var cell1 = utils.encode_cell({c:column, r:row});
   if (cell1 != undefined) {
     var cell1Object = sheet[cell1];
-    cell1Value = cell1Object['v'];
-    console.log(cell1 + " \t" + cell1Value);;
+    if (cell1Object != undefined) {
+      cell1Value = cell1Object['v'];
+      console.log(cell1 + " \t" + cell1Value);;
+    }
 
   }
   return cell1Value;
