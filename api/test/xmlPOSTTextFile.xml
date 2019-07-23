@@ -1,41 +1,32 @@
-<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:sap-com:document:sap:rfc:functions">
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:sap-com:document:sap:soap:functions:mc-style">
    <soapenv:Header/>
    <soapenv:Body>
-      <urn:ZMPPP_COMP_DTL_WEBSERVICE>
-         <T_ALORT>
+      <urn:ZmpppProdBookingWeb>
+         <ZwebInput>
+            <!--Zero or more repetitions:-->
             <item>
-               <ALORT>M101</ALORT>
+               <Zwerks>Plant</Zwerks>
+               <Zdate>Date</Zdate>
+               <Zmatnr>MaterialNumber</Zmatnr>
+               <Zxblnr>JobCardNo</Zxblnr>
+               <Zbktxt>UniqueNumber</Zbktxt>
+               <Zmenge>ComponentquantityComponent</Zmenge>
             </item>
-         </T_ALORT>
-         <T_MATNR>
+         </ZwebInput>
+         <ZwebOutput>
+            <!--Zero or more repetitions:-->
             <item>
-               <MATNR></MATNR>
+               <Zwerks>?</Zwerks>
+               <Zdate>?</Zdate>
+               <Zmatnr>?</Zmatnr>
+               <Zxblnr>?</Zxblnr>
+               <Zbktxt>?</Zbktxt>
+               <Zmenge>?</Zmenge>
+               <Zmblnr>?</Zmblnr>
+               <Zmjahr>?</Zmjahr>
+               <Zremarks>?</Zremarks>
             </item>
-         </T_MATNR>
-         <T_WERKS>
-            <item>
-               <WERKS>7002</WERKS>
-            </item>
-         </T_WERKS>
-         <UDATE_FROM>2019-06-19</UDATE_FROM>
-         <ZCOMP_DTL>
-            <item>
-               <ZIDNRK></ZIDNRK>
-               <ZMAKTX></ZMAKTX>
-               <ZMEINS></ZMEINS>
-               <ZANDAT></ZANDAT>
-               <ZAEDAT></ZAEDAT>
-               <ZMATKL></ZMATKL>
-               <ZMATNR></ZMATNR>
-               <ZMAKTX1></ZMAKTX1>
-               <ZMEINS1></ZMEINS1>
-               <ZANDAT1></ZANDAT1>
-               <ZAEDAT1></ZAEDAT1>
-               <ZMENGE></ZMENGE>
-               <ZLGFSB></ZLGFSB>
-               <ZSTATUS></ZSTATUS>
-            </item>
-         </ZCOMP_DTL>
-      </urn:ZMPPP_COMP_DTL_WEBSERVICE>
+         </ZwebOutput>
+      </urn:ZmpppProdBookingWeb>
    </soapenv:Body>
 </soapenv:Envelope>

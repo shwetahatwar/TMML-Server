@@ -28,6 +28,7 @@ module.exports = {
     var curr_time = d.getTime();
     var barcodeSerial;
     var serialNumber;
+    // console.log(getLocation[0]);
     if(getLocation[0]!=null && getLocation[0]!=undefined){
     	if(getLocation[0]["barcodeSerial"] == "Store"){
     		barcodeSerial = "LS";
@@ -38,10 +39,11 @@ module.exports = {
     	else{
     		barcodeSerial = "LK";
     	}
-      var BarcodeDay = getJobCard[0]["barcodeSerial"];
+      var BarcodeDay = getLocation[0]["barcodeSerial"];
       lastBarcodeDay = BarcodeDay.substring(8,10);
-      // console.log(lastBarcodeDay);
+      console.log("lastBarcodeDay ",lastBarcodeDay);
       var lastBarcodeMintues=BarcodeDay.substring(10,23);
+      console.log("lastBarcodeMintues ",lastBarcodeMintues);
       if(lastBarcodeDay == curr_date){
         if(curr_time == lastBarcodeMintues){
           var lastSerialNumber = getLocation[0]["barcodeSerial"];

@@ -406,7 +406,7 @@ module.exports = {
     var machines = await Machine.createEach(json11);
 
     // Read Raw Material
-    /* var filepath13 = './documents/templates/bulk-upload/13-BulkUploadRawMaterialTemplate.xlsx';
+     var filepath13 = './documents/templates/bulk-upload/13-BulkUploadRawMaterialTemplate.xlsx';
     var workbook13 = XLSX.readFile(filepath13);
     var sheet13 = workbook13.Sheets[workbook13.SheetNames[0]];
     var num_rows13 = xls_utils.decode_range(sheet13['!ref']).e.r;
@@ -471,7 +471,7 @@ module.exports = {
       });
     }
     console.log("json13: ", json13);
-    var materialList = await RawMaterial.createEach(json13);*/
+    var materialList = await RawMaterial.createEach(json13);
 
 
     // Read Access Level

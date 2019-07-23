@@ -64,7 +64,7 @@ module.exports = {
   		status:req.body.status,
   		barcodeSerial:barcodeSerial,
   		frequencyInDays:req.body.frequencyInDays,
-  		machineTypeId:req.body.machineTypeId,
+  		operationType:req.body.operationType,
   		machineGroupId:req.body.machineGroupId,
   		costCenterId:req.body.costCenterId,
   		cellId:req.body.cellId,

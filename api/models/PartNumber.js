@@ -56,6 +56,9 @@ module.exports = {
     rawMaterialQuantity: {
       type: 'number',
     },
+    kanbanLocation:{
+      model:'Location'
+    }
   },
 
 };

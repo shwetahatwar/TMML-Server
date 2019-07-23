@@ -4,7 +4,6 @@
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-
 module.exports = {
   create: async function(req,res){
     var rawMaterialNameIdValue;
@@ -12,13 +11,18 @@ module.exports = {
       where:{'rawMaterialNumber': req.body.rawMaterial.materialNumber}
     })
     .then((newRawMaterialId)=>{rawMaterialNameIdValue = newRawMaterialId["id"]});
-
+    var kanbanLocationId;
+    await Location.findOne({
+      where:{'name': req.body.kanbanLocation.id}
+    })
+    .then((newKanbanId)=>{kanbanLocationId = newKanbanId["id"]});
     var newPartNumberId = await PartNumber.create({
       partNumber:req.body.partnumber,
       description:req.body.description,
       manPower:req.body.manpower,
       SMH:req.body.smh,
       rawMaterialId:rawMaterialNameIdValue,
+      kanbanLocation:kanbanLocationId,
       status:1
     })
     .fetch()
@@ -31,7 +35,6 @@ module.exports = {
       })
       .catch(error=>{console.log(error)});
     }
-
     for(var i=0;i<req.body.processes.length;i++){
       var isGroupName;
       var j = i+1;
@@ -60,19 +63,16 @@ module.exports = {
       })
       .fetch()
       .catch(error=>{console.log(error)});
-
       // console.log(newProcessSequenceId);
       if(isGroupName == false){
         console.log(req.body.processes[i].machines.length)
         for(var machineCount = 0;machineCount<req.body.processes[i].machines.length;machineCount++){
           console.log(req.body.processes[i].machines[machineCount].machineName);
-
           var machineIdValue;
           await Machine.findOne({
             where:{'machineName': req.body.processes[i].machines[machineCount].machineName}
           })
           .then((newMachineId)=>{machineIdValue = newMachineId["id"]});
-
           console.log(machineIdValue)
           await ProcessSequenceMachineRelation.create({
             processSequenceId:newProcessSequenceId["id"],
@@ -91,7 +91,6 @@ module.exports = {
             where:{'machineName': machineGroupMachines[machineCount].machineName}
           })
           .then((newMachineId)=>{machineIdValue = newMachineId["id"]});
-
           console.log(machineIdValue)
           await ProcessSequenceMachineRelation.create({
             processSequenceId:newProcessSequenceId["id"],
@@ -103,9 +102,6 @@ module.exports = {
     }
     res.status(200).send(newPartNumberId);
   },
-
-
-
   newPart: async function(req,res){
     var cycleTime = 0;
     for(var i=0;i<req.body.processes.length;i++){
@@ -149,20 +145,17 @@ module.exports = {
           })
           .fetch()
           .catch(error=>{console.log(error)});
-
           // console.log(newProcessSequenceId);
           if(newProcessSequenceId!=null&&newProcessSequenceId!=undefined){
             if(isGroupName == false){
               // console.log(req.body.processes[i].machines.length)
               for(var machineCount = 0;machineCount<req.body.processes[i].machines.length;machineCount++){
                 // console.log(req.body.processes[i].machines[machineCount].machineName);
-
                 var machineIdValue;
                 await Machine.findOne({
                   where:{'machineName': req.body.processes[i].machines[machineCount].machineName}
                 })
                 .then((newMachineId)=>{machineIdValue = newMachineId["id"]});
-
                 // console.log(machineIdValue)
                 await ProcessSequenceMachineRelation.create({
                   processSequenceId:newProcessSequenceId["id"],
@@ -173,22 +166,48 @@ module.exports = {
             }
             else{
               // console.log(machineGroupId);
-              var machineGroupMachines = await Machine.find({where:{machineGroupId:machineGroupId}});
-              // console.log(machineGroupMachines);
-              for(var machineCount = 0;machineCount<machineGroupMachines.length;machineCount++){
-                var machineIdValue;
-                await Machine.findOne({
-                  where:{'machineName': machineGroupMachines[machineCount].machineName}
-                })
-                .then((newMachineId)=>{machineIdValue = newMachineId["id"]});
-
-                // console.log(machineIdValue);
-                await ProcessSequenceMachineRelation.create({
-                  processSequenceId:newProcessSequenceId["id"],
-                  machineId:machineIdValue
-                })
-                .catch((error)=>{console.log(error)});
+              // if(req.body.machineGroupId)
+              var machineGroup = req.body.processes[i].machineGroupName;
+              var machineGroupMachines;
+              console.log(machineGroup);
+              var machineGroupMachine = await Machine.find().populate('machineGroupId',{where:{id:machineGroupId}});
+              console.log(machineGroupMachine);
+              for(var machineCount = 0;machineCount<machineGroupMachine.length;machineCount++){
+                if(machineGroupMachine[machineCount]["machineGroupId"][0]!=null&&machineGroupMachine[machineCount]["machineGroupId"][0]!=undefined){
+                  await ProcessSequenceMachineRelation.create({
+                    processSequenceId:newProcessSequenceId["id"],
+                    machineId:machineGroupMachine[machineCount]["id"]
+                  });
+                }
               }
+              // for(var machineCount = 0;machineCount<machineGroupMachine.length;machineCount++){
+              //   // console.log(machineGroupMachine[machineCount]["machineGroupId"][0]);
+              //   if(machineGroupMachine[machineCount]["machineGroupId"][0]!=null & machineGroupMachine[machineCount]["machineGroupId"][0]!=undefined){
+              //     console.log(machineGroupMachine[machineCount]["machineGroupId"]);
+              //   }
+              // }
+              // for(var j=0;j<machineGroup.length;j++){
+              //   var machineGroupMachine = await Machine.find({where:{machineGroupId:machineGroupId}});
+              //   console.log(machineGroupMachine);
+              //   console.log(machineGroupMachine);
+              //   machineGroupMachines.push(machineGroupMachine);
+              // }
+              // console.log(machineGroupMachines[0]);
+              // var machineGroupMachines = await Machine.find({where:{machineGroupId:machineGroupId[0]}});
+              // console.log(machineGroupMachines);
+              // for(var machineCount = 0;machineCount<machineGroupMachine.length;machineCount++){
+              //   var machineIdValue;
+              //   await Machine.findOne({
+              //     where:{'machineName': machineGroupMachines[machineCount].machineName}
+              //   })
+              //   .then((newMachineId)=>{machineIdValue = newMachineId["id"]});
+              //   // console.log(machineIdValue);
+              //   await ProcessSequenceMachineRelation.create({
+              //     processSequenceId:newProcessSequenceId["id"],
+              //     machineId:machineIdValue
+              //   })
+              //   .catch((error)=>{console.log(error)});
+              // }
             }
           }
         }
@@ -197,4 +216,3 @@ module.exports = {
     res.status(200).send(newPartNumberId);
   }
 };
-

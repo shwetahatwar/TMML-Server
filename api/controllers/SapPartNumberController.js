@@ -132,7 +132,7 @@ module.exports = {
           xmlResult = JSON.stringify(result);
         });
 
-        var xmlItems = xmlResult["ZCOMP_DTL"];
+        var xmlItems = xmlResult["ZwebOutput"];
 
         for(var i =0;i<xmlItems.length;i++){
           var sapTransaction = await SapTransaction.update({
@@ -155,10 +155,10 @@ module.exports = {
     for(var i=0;i<getJobCardCompleted.length;i++){
       xml = xml.replace("Plant",getJobCardCompleted[i]["plant"]);
       xml = xml.replace("Date",getJobCardCompleted[i]["date"]);
-      xml = xml.replace("Material Number",getJobCardCompleted[i]["material"]);
-      xml = xml.replace("Job Card No",getJobCardCompleted[i]["jobCard"]);
-      xml = xml.replace("Unique  Number",getJobCardCompleted[i]["uniqueNumber"]);
-      xml = xml.replace("Component quantity Component",getJobCardCompleted[i]["quantity"]);
+      xml = xml.replace("MaterialNumber",getJobCardCompleted[i]["material"]);
+      xml = xml.replace("JobCardNo",getJobCardCompleted[i]["jobCard"]);
+      xml = xml.replace("UniqueNumber",getJobCardCompleted[i]["uniqueNumber"]);
+      xml = xml.replace("ComponentquantityComponent",getJobCardCompleted[i]["quantity"]);
       xmlhttp.send(xml);
     }
     

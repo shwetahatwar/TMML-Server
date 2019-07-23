@@ -46,7 +46,10 @@ module.exports = {
 
     var scheduleName = "Machine Shop Monthly Plan";
     scheduleName = scheduleName +" "+ req.body.monthlySchedule[0].Year +"-"+ req.body.monthlySchedule[0].Month;
-
+    if(req.body.monthlySchedule[0].Month.toString().length == 1){
+     req.body.monthlySchedule[0].Month= "0" + req.body.monthlySchedule[0].Month
+    }
+    console.log(req.body.monthlySchedule[0].Month);
     var monthlySchedules = await MonthlySchedule.find({
       year:req.body.monthlySchedule[0].Year,
       month:req.body.monthlySchedule[0].Month,

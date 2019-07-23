@@ -78,18 +78,22 @@ module.exports = {
         var newEmailService = await MailConfig.find({
           maintenanceStatus:req.body.maintenanceStatus
         });
+        var machine = await Machine.find({
+          id:req.body.machineId
+        });
+        var machineName = machine[0]["machineName"];
+        var cellName = machine[0]["cellId"]["name"]
         var mailSubject = newEmailService[0].mailSubject;
         mailSubject = mailSubject.replace("%MACHINE%",machineName);
-        mailSubject = mailSubject.replace("%STATUS%",maintenanceStatus);
+        mailSubject = mailSubject.replace("%STATUS%",req.body.maintenanceStatus);
         mailText= newEmailService[0].mailBody;
         mailText = mailSubject.replace("%NAME%",machineName);
         mailText = mailSubject.replace("%MACHINE%",machineName);
         mailText = mailSubject.replace("%CELL%",cellName);
-        mailText = mailText.replace("%STATUS%",maintenanceStatus);
-        mailText = mailText.replace("%STATUS%",maintenanceStatus);
-        mailText = mailText.replace("%OPERATOR%",operatorName);
-        mailText = mailText.replace("%PART%",partNumber);
-        mailText = mailText.replace("%REMARKS%",remarks);
+        mailText = mailText.replace("%STATUS%",req.body.maintenanceStatus);
+        mailText = mailText.replace("%OPERATOR%",req.body.userName);
+        mailText = mailText.replace("%PART%",req.body.partReplaced);
+        mailText = mailText.replace("%REMARKS%",req.body.remarks);
 
         if(newEmployeeList[0]!=null&&newEmployeeList[0]!=undefined){
           for(var i=0;i<newEmployeeList.length;i++){

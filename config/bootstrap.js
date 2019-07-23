@@ -34,8 +34,12 @@ module.exports.bootstrap = async function() {
   // ```
   
   // console.log("Try Connect");
+
+  // setInterval(function(){
+  //   SapPartNumber.soapRequestGet();
+  //   SapPartNumber.soapRequestPost();
+  // },86400);
   client.connectTCP("192.168.0.23", { port: 502 },function(err,data){
-    
     // console.log(data);
     // console.log(err);
   });
@@ -65,4 +69,5 @@ module.exports.bootstrap = async function() {
       }
     });
   }, 1000);
+  
 };
