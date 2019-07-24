@@ -116,13 +116,14 @@ module.exports = {
   	.fetch()
   	.catch((error)=>{console.log(error)});
   	console.log(newJobCard["id"]);
+    console.log(req.body.suggestedDropLocations);
   	await Joblocationrelation.create({
   		jobcardId:newJobCard["id"],
   		jobProcessSequenceRelationId:0,
   		sourceLocation:1,
   		destinationLocationId:req.body.destinationLocationId,
-      multiplyMachines:req.body.multiplyMachines,
-  		status:"Pending"
+      suggestedDropLocations:req.body.suggestedDropLocations,
+  		processStatus:"Pending"
   	})
   	.catch((error)=>{console.log(error)});
   	res.status(200).send(newJobCard);

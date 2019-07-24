@@ -9,14 +9,6 @@ var nodemailer = require ('nodemailer');
 
 module.exports = {
   update: async function(req,res){
-    // var nodemailer = require('nodemailer');
-    // var transporter = nodemailer.createTransport({
-    //  service: 'Gmail',
-    //  auth: {
-    //    user: 'menikhil.kkamable@gmail.com',
-    //    pass: 'dravid19'
-    //  }
-    // });
 
     var selfSignedConfig = {
       host: '128.9.24.24',
@@ -75,9 +67,7 @@ module.exports = {
         var newEmployeeList = await Employee.find({
           notifyForMachineMaintenance:1
         });
-        var newEmailService = await MailConfig.find({
-          maintenanceStatus:req.body.maintenanceStatus
-        });
+        var newEmailService = await MailConfig.find();
         var machine = await Machine.find({
           id:req.body.machineId
         });
@@ -86,6 +76,7 @@ module.exports = {
         var mailSubject = newEmailService[0].mailSubject;
         mailSubject = mailSubject.replace("%MACHINE%",machineName);
         mailSubject = mailSubject.replace("%STATUS%",req.body.maintenanceStatus);
+        mailSubject = mailSubject.replace("%OPERATOR%",req.body.userName);
         mailText= newEmailService[0].mailBody;
         mailText = mailSubject.replace("%NAME%",machineName);
         mailText = mailSubject.replace("%MACHINE%",machineName);

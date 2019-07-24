@@ -30,10 +30,10 @@ module.exports = {
     var serialNumber;
     // console.log(getLocation[0]);
     if(getLocation[0]!=null && getLocation[0]!=undefined){
-    	if(getLocation[0]["barcodeSerial"] == "Store"){
+    	if(getLocation[0]["locationType"] == "Raw Material Store"){
     		barcodeSerial = "LS";
     	}
-    	else if(getLocation[0]["barcodeSerial"] == "Buffer"){
+    	else if(getLocation[0]["locationType"] == "Buffer"){
     		barcodeSerial = "LB";
     	}
     	else{
@@ -66,6 +66,12 @@ module.exports = {
       }
     }
     else{
+      if(req.body.locationType == "Raw Material Store")
+        barcodeSerial = "LS";
+      else if(req.body.locationType == "Buffer")
+        barcodeSerial = "LB";
+      else
+        barcodeSerial = "LK";
       serialNumber = "001";
     }
 

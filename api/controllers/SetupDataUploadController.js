@@ -130,6 +130,7 @@ module.exports = {
         if (dep.length > 0) {
           depId = dep[0]['id'];
         }
+
         json02.push({
           employeeId: employeeResult,
           name: nameResult,
@@ -137,7 +138,8 @@ module.exports = {
           mobileNumber:  mobileNumberResult,
           status: statusResult,
           notifyForMachineMaintenance: notifyForMachineMaintenanceResult,
-          department: depId
+          department: depId,
+          barcodeSerial:employeeResult,
         });
       });
     }
@@ -315,6 +317,7 @@ module.exports = {
     var sheet11 = workbook11.Sheets[workbook11.SheetNames[0]];
     var num_rows11 = xls_utils.decode_range(sheet11['!ref']).e.r;
     var json11 = [];
+    var machineLocation = [];
     for(var i = 1, l = num_rows11; i <= l; i++) {
 
       var machineName = fetchValueFromExcel(xls_utils, sheet11, 0, i);
@@ -455,8 +458,11 @@ module.exports = {
         frequencyInDays: 0,
         barcodeSerial:newBarcodeSerial,
        });
+      
+      machineLocation.push({name:machineName,locationType:'Machine',barcodeSerial:newBarcodeSerial});
     }
     var machines = await Machine.createEach(json11);
+    var machineLocations = await Location.createEach(machineLocation);
 
     // Read Raw Material
      var filepath13 = './documents/templates/bulk-upload/13-BulkUploadRawMaterialTemplate.xlsx';
@@ -616,6 +622,17 @@ module.exports = {
     }
     var shifts = await Shift.createEach(json18);
 
+    await MailConfig.create({
+      mailSubject:'%MACHINE% status changed to %STATUS% by %OPERATOR%',
+      mailBody:'Dear %NAME%'+
+'%MACHINE% of %CELL% status changed to %STATUS% by %OPERATOR%'+
+'%PART%'+
+'Remarks: %Remarks%'+
+'Regards'+
+'TMML Machine Shop Solution System',
+      senderUsername:'Santosh Adaki',
+      maintenanceStatus:'NA'
+    });
 
     return res.status(200).send("Seed Database");
   }
