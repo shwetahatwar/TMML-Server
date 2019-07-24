@@ -46,10 +46,10 @@ module.exports = {
 
     var scheduleName = "Machine Shop Monthly Plan";
     scheduleName = scheduleName +" "+ req.body.monthlySchedule[0].Year +"-"+ req.body.monthlySchedule[0].Month;
-    if(req.body.monthlySchedule[0].Month.toString().length == 1){
-     req.body.monthlySchedule[0].Month= "0" + req.body.monthlySchedule[0].Month
-    }
-    console.log(req.body.monthlySchedule[0].Month);
+    // if(req.body.monthlySchedule[0].Month.toString().length == 1){
+    //  req.body.monthlySchedule[0].Month= "0" + req.body.monthlySchedule[0].Month
+    // }
+    // console.log(req.body.monthlySchedule[0].Month);
     var monthlySchedules = await MonthlySchedule.find({
       year:req.body.monthlySchedule[0].Year,
       month:req.body.monthlySchedule[0].Month,
@@ -70,9 +70,12 @@ module.exports = {
     console.log(mothlyScheduleId);
     if(mothlyScheduleId!=null&&mothlyScheduleId!=undefined){
       for(var i=0;i<req.body.monthlySchedule.length;i++){
+        console.log(req.body.monthlySchedule[i]);
         var newPartNumber = await PartNumber.find({
           partNumber:req.body.monthlySchedule[i].PartNumber
+          // partNumber:req.body.monthlySchedule[i].Description
         });
+        console.log(newPartNumber);
         if(newPartNumber!=null&&newPartNumber!=undefined){
           MonthlySchedulePartRelation.create({
             monthlyScheduleId:mothlyScheduleId["id"],

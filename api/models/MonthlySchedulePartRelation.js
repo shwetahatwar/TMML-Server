@@ -31,7 +31,7 @@ module.exports = {
       type:'string'
     },
     requiredInMonth:{
-      type:'number'
+      type:'string'
     },
     CAT:{
       type:'string' //MAT, SRF, EVR, IB

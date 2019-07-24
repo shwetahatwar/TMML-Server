@@ -27,7 +27,7 @@ module.exports = {
       type:'string' // New, Pending for Raw Material, Under Processing, Completed
     },
     estimatedDate:{
-      type:'number'
+      type:'string'
     },
     barcodeSerial:{
       type:'string'
