@@ -15,7 +15,7 @@
 
 module.exports.models = {
 
-
+  // datastore: 'sqlserver',
   /***************************************************************************
   *                                                                          *
   * Whether model methods like `.create()` and `.update()` should ignore     *

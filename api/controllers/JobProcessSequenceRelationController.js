@@ -4,7 +4,6 @@
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-
 module.exports = {
   create: async function(req,res){
     var jobCard = await JobCard.find({
@@ -66,11 +65,9 @@ module.exports = {
             });
           }
           res.send(newJobProcess);
-
           var sourceLocation = await Location.find({
             barcodeSerial:req.body.sourceLocation
           });
-
           var jobLocationRelationId = await Joblocationrelation.findOne({
             jobcardId:req.body.jobId,
             processStatus:"Pending",
@@ -98,7 +95,6 @@ module.exports = {
       res.send("Job Card Not Found");
     }
   },
-
   update: async function(req,res){
     if(req.body.machineStrockId != null&& req.body.machineStrockId!=undefined){
       await MachineStrokes.update({
@@ -194,7 +190,6 @@ module.exports = {
         processStatus:"Pending"
       });
       if(checkJobProcessSequence[0]!=null&&checkJobProcessSequence[0]!=undefined){
-
       }
       else{
         var checkJobProcessSequence1 = await JobProcessSequenceRelation.find({
@@ -202,13 +197,11 @@ module.exports = {
           processStatus:"Complete"
         });
         if(checkJobProcessSequence1[0]!=null&&checkJobProcessSequence1[0]!=undefined){
-
         }
         else{
           var jobProcessSequenceTransaction = await JobProcessSequenceTransaction.find({
             jobCardId:req.body.jobcardId
           });
-
           var quantity =0;
           for(var i =0;i<jobProcessSequenceTransaction.length;i++){
             quantity = quantity +jobProcessSequenceTransaction[0]["quantity"]
@@ -221,14 +214,20 @@ module.exports = {
             jobcardStatus:"Completed",
             actualQuantity:quantity
           });
-          var jobProcessSequenceRelation = JobProcessSequenceRelation.find({
+          console.log(req.body.jobcardId +"Line 224");
+          var jobProcessSequenceRelation = await JobProcessSequenceRelation.find({
             jobId:req.body.jobcardId
           });
-          var processSequence = ProcessSequence.find({
+          console.log(jobProcessSequenceRelation[0]["processSequenceId"]);
+          var processSequence = await ProcessSequence.find({
             id:jobProcessSequenceRelation[0]["processSequenceId"]
           });
-          var partNumber = PartNumber.find({
+          console.log("Process Sequence" + processSequence);
+          var partNumber = await PartNumber.find({
             id:processSequence[0]["partId"]
+          });
+          var jobCardBarcode = await JobCard.find({
+            id:req.body.jobcardId
           });
           await SapTransaction.create({
             plant:"Tata Marcopolo Dharwad",

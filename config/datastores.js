@@ -48,35 +48,34 @@ module.exports.datastores = {
     *    (See https://sailsjs.com/config/datastores for help.)                 *
     *                                                                          *
     ***************************************************************************/
-    adapter: 'sails-sql',
-    url: 'mssql://sa:briot123@192.168.0.6:1433/TestDatabase1',
-    // adapter: 'sails-postgresql',
-    // url: 'postgres://bnsliopfagjtkt:a27131100bed84cdf09b216d3ff6fa2afecf2936ac5359cbe1da866a835011f1@ec2-23-21-147-71.compute-1.amazonaws.com:5432/d6n877b1qc3e8o',
-    // ssl: true,
-    // sqlserver: {
-      // adapter: 'sails-mssqlserver',
-      // user: 'sa',
-      // password: 'briot123',
-      // host: 'DESKTOP-FMUJ546\\SQLEXPRESS', // azure database
-      // database: 'TestDatabase1',
-      // options: {
-      //   // encrypt: true   // use this for Azure databases
-      // }
-    // }
+    // adapter: 'sails-mssql', Working
+    // url: 'mssql://sa:briot123@192.168.0.6:1433/TestDatabase1', Working
 
-    // sqlserver: {
-    //   adapter: 'sails-sqlserver',
-    //   user: 'sa',
-    //   password: 'briot123',
-    //   host: 'localhost:1433',
-    //   database: 'TestDatabase',
-    //   // I've had to use this option in some cases
-    //   // where the SQL Server refuses my user otherwise
-    //   options: {
-    //       encrypt: false
-    //   }
-    // },
+
+    adapter: 'sails-postgresql', postgres
+    url: 'postgres://bnsliopfagjtkt:a27131100bed84cdf09b216d3ff6fa2afecf2936ac5359cbe1da866a835011f1@ec2-23-21-147-71.compute-1.amazonaws.com:5432/d6n877b1qc3e8o', postgres
+    ssl: true,
+    
+    // adapter: 'sails-sqlserver-sailsv1',
+    // user: 'sa',
+    // password: 'briot123',
+    // host: '192.168.0.6', // azure database
+    // database: 'TestDatabase1',
+    // options: {
+    //   // encrypt: true   // use this for Azure databases
+    // }
   },
+
+  // sqlserver: {
+  //   adapter: 'sails-mssqlserver',
+  //   user: 'sa',
+  //   password: 'briot123',
+  //   host: '192.168.0.6:1433', // azure database
+  //   database: 'TestDatabase1',
+  //   options: {
+  //     // encrypt: true   // use this for Azure databases
+  //   }
+  // }
 
 
 };

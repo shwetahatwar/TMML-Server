@@ -53,6 +53,7 @@ module.exports.routes = {
   'POST /JobCardComplete': 'JobCard.completeJobCard',
   'GET /testMail': 'TestUpload.testMail',
   'PUT /Joblocationrelation/update': 'Joblocationrelation.update',
+  'POST /employeeBulkUpload': 'Employee.employeeBulkUpload',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 
