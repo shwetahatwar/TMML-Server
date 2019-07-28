@@ -12,16 +12,20 @@ module.exports = {
       model:'Machine',
     },
     strokes: {
-        type: 'number'
+        type: 'number',
+        columnType: 'bigint',
     },
     startTime: {
-        type: 'number'
+        type: 'number',
+        columnType: 'bigint',
     },
     endTime: {
-        type: 'number'
+        type: 'number',
+        columnType: 'bigint',
     },
     multifactor: {
         type: 'number',
+        columnType: 'bigint',
         defaultsTo: 1
     },
     createdBy: {

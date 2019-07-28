@@ -133,7 +133,7 @@ module.exports = {
       sequenceNumber:sequenceNumber
     });
     console.log(processSequence);
-    if(processSequence[0!=null&&processSequence[0!=undefined]]){
+    if(processSequence[0]!=null&&processSequence[0]!=undefined){
       var newJobProcess = await JobProcessSequenceRelation.update({
         id:newJobProcessSequenceId[0]["id"]
       })

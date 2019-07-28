@@ -10,11 +10,13 @@ module.exports = {
   attributes: {
     name:{
       type:'string',
+      columnType: '_stringkey',
       unique: true,
       required: true
     },
     status:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     createdBy: {
       model:'User'

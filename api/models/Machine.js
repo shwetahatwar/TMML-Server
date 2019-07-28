@@ -10,6 +10,7 @@ module.exports = {
   attributes: {
     machineName:{
       type:'string',
+      columnType: '_stringkey',
       unique: true,
       required: true
     },
@@ -25,16 +26,19 @@ module.exports = {
       model:'CostCenter'
     },
     capacity:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     cellId:{
       model:'Cell'
     },
     machineWeight:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     status:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     maintenanceStatus: {
       type: 'string'
@@ -49,19 +53,23 @@ module.exports = {
       model:'User'
     },
     frequencyInDays:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     nextMaintenanceOn:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     lastMaintenanceOn:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     lastMaintenanceBy:{
       model:'Employee'
     },
     isAutomacticCount:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     maintenanceDetails: {
       collection: 'MaintenanceTransaction',

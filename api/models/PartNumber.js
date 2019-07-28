@@ -10,6 +10,7 @@ module.exports = {
   attributes: {
     partNumber:{
       type:'string',
+      columnType: '_stringkey',
       unique: true,
       required: true
     },
@@ -17,19 +18,23 @@ module.exports = {
       type:'string'
     },
     manPower:{
-      type:'number'
+      type:'number',
+      columnType: 'float',
     },
     SMH:{
-      type:'number'   // this will be calculated based on cycle time (represented in hours)
+      type:'number',   // this will be calculated based on cycle time (represented in hours)
+      columnType: 'float',
     },
     rawMaterialId:{
       model:'RawMaterial'
     },
     partCreationDate: { // coming from SAP
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     partChangeDate: { // coming from SAP
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     partStatus: { // coming from SAP
       type:'string' //N- New, C – Changed, B- Blocked
@@ -45,7 +50,8 @@ module.exports = {
       via: 'partId',
     },
     status:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     uom: { // unit of measurement coming from SAP
       type: 'string',
@@ -55,6 +61,7 @@ module.exports = {
     },
     rawMaterialQuantity: {
       type: 'number',
+      columnType: 'bigint',
     },
     kanbanLocation:{
       model:'Location'

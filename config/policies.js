@@ -32,9 +32,9 @@ module.exports.policies = {
   AccessLevelController:{
   	'*':'isLoggedIn'
   },
-  AppUserController:{
-    '*':'isLoggedIn'
-  },
+  // AppUserController:{
+  //   '*':'isLoggedIn'
+  // },
   CellController:{
     '*':'isLoggedIn'
   },

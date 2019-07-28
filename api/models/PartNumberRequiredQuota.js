@@ -13,9 +13,11 @@ module.exports = {
     },
     requiredQuantity: {
       type:'number',
+      columnType: 'bigint',
     },
     monthYear: {
-      type: 'number'
+      type: 'number',
+      columnType: 'bigint',
     },
     componentDetails: { // a chesis or component where this part will be consumed
       type: 'string',

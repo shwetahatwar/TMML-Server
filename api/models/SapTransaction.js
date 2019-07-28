@@ -12,7 +12,8 @@ module.exports = {
       type:'string'
     },
     date:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     material:{
       type:'string'
@@ -21,16 +22,19 @@ module.exports = {
       type:'string'
     },
     uniqueNumber:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     quantity:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     documentNumber:{
       type:'string'
     },
     documentYear:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     remarks:{
       type:'string'

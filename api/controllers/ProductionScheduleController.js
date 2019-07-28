@@ -438,7 +438,7 @@ module.exports = {
             if(newPartNumberId!=null && newPartNumberId!=undefined){
               await ProductionSchedulePartRelation.create({
                 scheduleId: req.body.productionScheduleId,
-                partNumberId: newPartNumberId[i]["id"],
+                partNumberId: newPartNumberId[0]["id"],
                 requestedQuantity: req.body.dailySchedule[i][day],
                 estimatedCompletionDate: 0,
                 isJobCardCreated: false,

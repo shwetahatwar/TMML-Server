@@ -21,7 +21,8 @@ module.exports = {
       model:'Location'
     },
     quantity:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     note:{
       type:'string'
@@ -33,19 +34,23 @@ module.exports = {
       model:'User'
     },
     startTime:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     endTime:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     duration:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     operatorId:{
       model:'User'
     },
     sequenceNumber:{
       type:'number',
+      columnType: 'bigint',
       allowNull: true
     }
   },

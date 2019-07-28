@@ -6,11 +6,12 @@ module.exports = function(req,res,next) {
       if (err) {
         console.log("isLoggedIn - Error in authentication: ", err);
         req.user = undefined;
-      } else if (decode != undefined && decode.userid != undefined){
+      } else if (decode && decode.userid){
+        console.log("Is Logged In",req.body);
         console.log("isLoggedIn - valid decode user: ", decode);
         req.user = decode;
-        if (req.body != undefined) {
-          if (req.createdBy === undefined) {
+        if (req.body) {
+          if (!req.body.createdBy) {
             req.body.createdBy = decode.userid;
           }
           req.body.updatedBy = decode.userid;

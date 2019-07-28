@@ -10,7 +10,8 @@ module.exports = {
   attributes: {
     rawMaterialNumber:{
       type:'number',
-      // columnType: 'integer',
+      columnType: 'bigint',
+      // columnType: 'bigint',
       // autoCreatedAt: true,
       // autoMigrations: { columnType: '_numbertimestamp' },
       unique: true,
@@ -21,12 +22,14 @@ module.exports = {
     },
     rmCreateDate:{
       type:'number',
+      columnType: 'bigint',
       // autoCreatedAt: true,
       // autoMigrations: { columnType: '_numbertimestamp' },
       // columnType: 'int8',
     },
     rmUpdateDate:{
       type:'number',
+      columnType: 'bigint',
       // autoCreatedAt: true,
       // autoMigrations: { columnType: '_numbertimestamp' },
       // columnType: 'int8',
@@ -35,7 +38,8 @@ module.exports = {
       model:'MaterialType'
     },
     status:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     createdBy: {
       model:'User'

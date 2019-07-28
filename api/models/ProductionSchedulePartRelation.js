@@ -15,7 +15,8 @@ module.exports = {
       model:'PartNumber'
     },
     requestedQuantity:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     scheduleStatus:{
       type:'string'
@@ -24,10 +25,12 @@ module.exports = {
       model:'User'
     },
     estimatedCompletionDate:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     isJobCardCreated:{ // this should be bool right?
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     jobcard: {
       collection: 'JobCard',

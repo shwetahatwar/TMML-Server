@@ -21,7 +21,8 @@ module.exports = {
       type:'string'
     },
     status:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     createdBy:{
       model:'User'

@@ -10,6 +10,7 @@ module.exports = {
   attributes: {
     roleName:{
       type:'string',
+      columnType: '_stringkey',
       unique: true,
       required: true
     }

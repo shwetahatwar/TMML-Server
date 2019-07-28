@@ -12,7 +12,8 @@ module.exports = {
       model:'JobCard'
     },
     jobProcessSequenceRelationId :{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     sourceLocation:{
       model:'Location'

@@ -10,6 +10,7 @@ module.exports = {
   attributes: {
     employeeId: {
       type: 'string',
+      columnType: '_stringkey',
       unique: true,
       required: true
     },
@@ -20,16 +21,19 @@ module.exports = {
       type:'string'
     },
     mobileNumber:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     barcodeSerial:{
       type:'string'
     },
     status:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     notifyForMachineMaintenance:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     createdBy: {
       model:'User'

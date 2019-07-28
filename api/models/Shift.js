@@ -14,21 +14,27 @@ module.exports = {
     },
     startTimeInSeconds:{
       type:'number', // seconds from 86400 from mid-night
+      columnType: 'bigint',
     },
     endTimeInSeconds:{
       type:'number',
+      columnType: 'bigint',
     },
     teaBreakStartInSeconds:{
       type:'number',
+      columnType: 'bigint',
     },
     teaBreakEndInSeconds:{
       type:'number',
+      columnType: 'bigint',
     },
     lunchBreakStartInSeconds:{
       type:'number',
+      columnType: 'bigint',
     },
     lunchBreakEndInSeconds:{
       type:'number',
+      columnType: 'bigint',
     },
     cell:{
       model:'Cell',

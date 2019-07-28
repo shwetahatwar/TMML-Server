@@ -10,6 +10,7 @@ module.exports = {
   attributes: {
     type:{
       type:'string',  // sms or email
+      columnType: '_stringkey',
       unique: true,
       required: true
     },

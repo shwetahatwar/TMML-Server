@@ -12,19 +12,24 @@ module.exports = {
       model:'PartNumber'
     },
     sequenceNumber:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     loadingTime:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     processTime:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     unloadingTime:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     cycleTime:{ // looks lthis is again summation of loadingTime + processTime + unloadingTime
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     machineGroupId:{
       model:'MachineGroup'

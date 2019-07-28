@@ -12,7 +12,8 @@ module.exports = {
       model:'Machine'
     },
     maintenanceOn:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     maintenanceBy:{
       model:'Employee'

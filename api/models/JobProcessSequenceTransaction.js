@@ -15,7 +15,8 @@ module.exports = {
       model:'JobProcessSequenceRelation'
     },
     quantity:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     }
   },
 };

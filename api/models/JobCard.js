@@ -15,13 +15,16 @@ module.exports = {
       model:'Trolley'
     },
     requestedQuantity:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     actualQuantity:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     status:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     jobcardStatus:{
       type:'string' // New, Pending for Raw Material, Under Processing, Completed
