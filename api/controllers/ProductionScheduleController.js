@@ -41,15 +41,17 @@ module.exports = {
 
   dailyUpload: async function(req,res){
     // console.log(req.body.dailySchedule[0].getOwnPropertyNames);
+    var dailySchedule = JSON.parse(req.body.dailySchedule);
+    console.log(dailySchedule);
     if(req.body.actions=="New"){
-      var obj=Object.getOwnPropertyNames(req.body.dailySchedule[0]);
+      var obj=Object.getOwnPropertyNames(dailySchedule[0]);
       var day1=obj[2];
       var day2=obj[3];
       var day3=obj[4];
       var day4=obj[5];
       var day5=obj[6];
       console.log(day1);
-      console.log(req.body.dailySchedule[0][day1]);
+      console.log(dailySchedule[0][day1]);
       var day;
       for(var counter=0;counter<5;counter++)
       if(counter==0){
@@ -101,20 +103,20 @@ module.exports = {
           })
           .fetch()
           .catch(error => console.log(error));
-          for(var i=0;i<req.body.dailySchedule.length;i++){
-            console.log(req.body.dailySchedule[i]["partnumber"]);
+          for(var i=0;i<dailySchedule.length;i++){
+            console.log(dailySchedule[i]["partnumber"]);
             var newPartNumberId = await PartNumber.find({
-              partNumber:req.body.dailySchedule[i]["partnumber"]
+              partNumber:dailySchedule[i]["partnumber"]
             });
-            console.log(newPartNumberId);
+            console.log("Line 110", newPartNumberId);
             if(newPartNumberId!=null && newPartNumberId!=undefined){
               await ProductionSchedulePartRelation.create({
                 scheduleId: newproductionScheduleId["id"],
-                partNumberId: newPartNumberId[i]["id"],
-                requestedQuantity: req.body.dailySchedule[i][day1],
+                partNumberId: newPartNumberId[0]["id"],
+                requestedQuantity: dailySchedule[i][day1],
                 estimatedCompletionDate: 0,
                 isJobCardCreated: false,
-                partRemark: req.body.dailySchedule[i].remarks,
+                partRemark: dailySchedule[i].remarks,
                 scheduleStatus:"New"
               })
               .then()
@@ -174,15 +176,15 @@ module.exports = {
           })
           .fetch()
           .catch(error => console.log(error));
-          for(var i=0;i<req.body.dailySchedule.length;i++){
+          for(var i=0;i<dailySchedule.length;i++){
             var newPartNumberId = await PartNumber.find({
-              partNumber:req.body.dailySchedule[i]["partnumber"]
+              partNumber:dailySchedule[i]["partnumber"]
             });
             if(newPartNumberId!=null && newPartNumberId!=undefined){
               await ProductionSchedulePartRelation.create({
                 scheduleId: newproductionScheduleId["id"],
-                partNumberId: newPartNumberId[i]["id"],
-                requestedQuantity: req.body.dailySchedule[i][day2],
+                partNumberId: newPartNumberId[0]["id"],
+                requestedQuantity: dailySchedule[i][day2],
                 estimatedCompletionDate: 0,
                 isJobCardCreated: false,
                 partRemark: "",
@@ -242,15 +244,15 @@ module.exports = {
           })
           .fetch()
           .catch(error => console.log(error));
-          for(var i=0;i<req.body.dailySchedule.length;i++){
+          for(var i=0;i<dailySchedule.length;i++){
             var newPartNumberId = await PartNumber.find({
-              partNumber:req.body.dailySchedule[i]["partnumber"]
+              partNumber:dailySchedule[i]["partnumber"]
             });
             if(newPartNumberId!=null && newPartNumberId!=undefined){
               await ProductionSchedulePartRelation.create({
                 scheduleId: newproductionScheduleId["id"],
-                partNumberId: newPartNumberId[i]["id"],
-                requestedQuantity: req.body.dailySchedule[i][day3],
+                partNumberId: newPartNumberId[0]["id"],
+                requestedQuantity: dailySchedule[i][day3],
                 estimatedCompletionDate: 0,
                 isJobCardCreated: false,
                 partRemark: "",
@@ -310,15 +312,15 @@ module.exports = {
           })
           .fetch()
           .catch(error => console.log(error));
-          for(var i=0;i<req.body.dailySchedule.length;i++){
+          for(var i=0;i<dailySchedule.length;i++){
             var newPartNumberId = await PartNumber.find({
-              partNumber:req.body.dailySchedule[i]["partnumber"]
+              partNumber:dailySchedule[i]["partnumber"]
             });
             if(newPartNumberId!=null && newPartNumberId!=undefined){
               await ProductionSchedulePartRelation.create({
                 scheduleId: newproductionScheduleId["id"],
-                partNumberId: newPartNumberId[i]["id"],
-                requestedQuantity: req.body.dailySchedule[i][day4],
+                partNumberId: newPartNumberId[0]["id"],
+                requestedQuantity: dailySchedule[i][day4],
                 estimatedCompletionDate: 0,
                 isJobCardCreated: false,
                 partRemark: "",
@@ -378,15 +380,15 @@ module.exports = {
           })
           .fetch()
           .catch(error => console.log(error));
-          for(var i=0;i<req.body.dailySchedule.length;i++){
+          for(var i=0;i<dailySchedule.length;i++){
             var newPartNumberId = await PartNumber.find({
-              partNumber:req.body.dailySchedule[i]["partnumber"]
+              partNumber:dailySchedule[i]["partnumber"]
             });
             if(newPartNumberId!=null && newPartNumberId!=undefined){
               await ProductionSchedulePartRelation.create({
                 scheduleId: newproductionScheduleId["id"],
-                partNumberId: newPartNumberId[i]["id"],
-                requestedQuantity: req.body.dailySchedule[i][day5],
+                partNumberId: newPartNumberId[0]["id"],
+                requestedQuantity: dailySchedule[i][day5],
                 estimatedCompletionDate: 0,
                 isJobCardCreated: false,
                 partRemark: "",

@@ -54,6 +54,8 @@ module.exports.routes = {
   'GET /testMail': 'TestUpload.testMail',
   'PUT /Joblocationrelation/update': 'Joblocationrelation.update',
   'POST /employeeBulkUpload': 'Employee.employeeBulkUpload',
+  'GET /Joblocationrelation/getData': 'Joblocationrelation.getData',
+  'GET /JobProcessSequenceRelation/getData': 'JobProcessSequenceRelation.getData',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 
