@@ -115,14 +115,23 @@ module.exports = {
   	})
   	.fetch()
   	.catch((error)=>{console.log(error)});
-  	console.log(newJobCard["id"]);
-    console.log(req.body.suggestedDropLocations);
+  	var machineGroupNew = await Machine.find()
+    .populate('machineGroupId');
+    var suggestedLocations = "";
+    for(var i=0;i<machineGroupNew.length;i++){
+      console.log(machineGroupNew[i]["machineGroupId"][0]);
+      if(req.body.suggestedDropLocations == machineGroupNew[i]["machineGroupId"][0]["id"]){
+        suggestedLocations = suggestedLocations + "," + machineGroupNew[i]["machineName"];
+      }
+    }
+    console.log(suggestedLocations)
+    console.log(machineGroupNew[0]["machineGroupId"][0]["id"]);
   	await Joblocationrelation.create({
   		jobcardId:newJobCard["id"],
   		jobProcessSequenceRelationId:0,
   		sourceLocation:1,
   		destinationLocationId:req.body.destinationLocationId,
-      suggestedDropLocations:req.body.suggestedDropLocations,
+      suggestedDropLocations:suggestedLocations,
   		processStatus:"Pending"
   	})
   	.catch((error)=>{console.log(error)});
@@ -236,6 +245,13 @@ module.exports = {
       jobcardStatus:"Completed",
       updatedBy:req.body.userId
     });
+    await Joblocationrelation.create({
+        jobcardId:req.body.jobcardId,
+        jobProcessSequenceRelationId:0,
+        sourceLocation:newLocationBarcode[0]["id"],
+        suggestedDropLocations:"Store",
+        processStatus:"Pending"
+      });
     await JobProcessSequenceRelation.update({
       jobId:req.body.jobcardId
     })

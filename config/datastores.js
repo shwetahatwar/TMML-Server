@@ -49,7 +49,7 @@ module.exports.datastores = {
     *                                                                          *
     ***************************************************************************/
     adapter: 'sails-mssql', //Working
-    url: 'mssql://sa:briot123@192.168.0.6:1433/TestDatabase1', //Working
+    url: 'mssql://sa:briot123@192.168.43.7:1433/TestDatabase1', //Working
 
 
     // adapter: 'sails-postgresql', postgres
