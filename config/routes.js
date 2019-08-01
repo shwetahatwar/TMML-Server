@@ -56,6 +56,8 @@ module.exports.routes = {
   'POST /employeeBulkUpload': 'Employee.employeeBulkUpload',
   'GET /Joblocationrelation/getData': 'Joblocationrelation.getData',
   'GET /JobProcessSequenceRelation/getData': 'JobProcessSequenceRelation.getData',
+  'POST /stopProcessSequence': 'JobProcessSequenceRelation.stopProcess',
+  'POST /Trolley/create': 'Trolley.create',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

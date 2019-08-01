@@ -28,7 +28,7 @@ module.exports = {
     var barcodeSerial = "MA";
     var serialNumber;
     if(getMachine[0]!=null && getMachine[0]!=undefined){
-      var BarcodeDay = getJobCard[0]["barcodeSerial"];
+      var BarcodeDay = getMachine[0]["barcodeSerial"];
       lastBarcodeDay = BarcodeDay.substring(8,10);
       // console.log(lastBarcodeDay);
       var lastBarcodeMintues=BarcodeDay.substring(10,23);

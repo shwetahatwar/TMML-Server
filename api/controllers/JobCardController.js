@@ -248,7 +248,7 @@ module.exports = {
     await Joblocationrelation.create({
         jobcardId:req.body.jobcardId,
         jobProcessSequenceRelationId:0,
-        sourceLocation:newLocationBarcode[0]["id"],
+        sourceLocation:0,
         suggestedDropLocations:"Store",
         processStatus:"Pending"
       });
