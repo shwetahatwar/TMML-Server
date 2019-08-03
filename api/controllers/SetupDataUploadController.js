@@ -394,7 +394,7 @@ module.exports = {
       var getMachine = await Machine.find()
       .sort('id DESC')
       .limit(1);
-      
+
       var d = new Date();
       var curr_date = d.getDate();
       var curr_date = d.getDate();
@@ -443,6 +443,25 @@ module.exports = {
       newBarcodeSerial = barcodeSerial + curr_year + curr_month + curr_date + curr_time + serialNumber;
       console.log(newBarcodeSerial);
 
+      var lowerMaintenanceFrequency = maintenanceFrequency.toLowerCase();
+      var frequencyInDays = 0;
+      if (lowerMaintenanceFrequency == "weekly"){
+        frequencyInDays = 7;
+      } else if (lowerMaintenanceFrequency == "bi-monthly") {
+        frequencyInDays = 15;
+      } else if (lowerMaintenanceFrequency == "monthly") {
+        frequencyInDays = 30;
+      } else if (lowerMaintenanceFrequency == "quarterly") {
+        frequencyInDays = 90;
+      } else if (lowerMaintenanceFrequency == "4-monthly") {
+        frequencyInDays = 120;
+      }
+      else if (lowerMaintenanceFrequency == "half yearly"){
+        frequencyInDays = 180;
+      } else if (lowerMaintenanceFrequency == "half yearly") {
+        frequencyInDays = 360;
+      }
+
       json11.push({
         machineName: machineName,
         machineGroupId: group,
@@ -455,10 +474,10 @@ module.exports = {
         operationType: machineOperation,
         createdBy: 1,
         updatedBy: 1,
-        frequencyInDays: 0,
+        frequencyInDays: frequencyInDays,
         barcodeSerial:newBarcodeSerial,
        });
-      
+
       machineLocation.push({name:machineName,locationType:'Machine',barcodeSerial:newBarcodeSerial});
     }
     var machines = await Machine.createEach(json11);
