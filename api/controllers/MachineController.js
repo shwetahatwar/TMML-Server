@@ -68,7 +68,9 @@ module.exports = {
   		machineGroupId:req.body.machineGroupId,
   		costCenterId:req.body.costCenterId,
   		cellId:req.body.cellId,
-      maintenanceStatus:req.body.maintenanceStatus
+      maintenanceStatus:req.body.maintenanceStatus,
+      nextMaintenanceOn:req.body.nextMaintenanceOn,
+      machineWeight:req.body.machineWeight
   	})
   	.fetch()
   	.catch((error)=>{

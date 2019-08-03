@@ -622,6 +622,176 @@ module.exports = {
     }
     var shifts = await Shift.createEach(json18);
 
+    //Part Number
+    var filepath19 = './documents/templates/bulk-upload/14-BulkUploadPartNumberTemplate-s1.xlsx';
+    var workbook19 = XLSX.readFile(filepath19);
+    var sheet19 = workbook19.Sheets[workbook19.SheetNames[0]];
+    var num_rows19 = xls_utils.decode_range(sheet19['!ref']).e.r;
+    var json19 = [];
+    partNumberArray = [];
+    for(var i = 1, l = num_rows19; i <= l; i++){
+      var partNumber = fetchValueFromExcel(xls_utils, sheet19, 0, i);
+      var partDescription = fetchValueFromExcel(xls_utils, sheet19, 1, i);
+      var sapLocation = fetchValueFromExcel(xls_utils, sheet19, 2, i);
+      var materialType = fetchValueFromExcel(xls_utils, sheet19, 3, i);
+      var unitOfMeasurement = fetchValueFromExcel(xls_utils, sheet19, 4, i);
+      var rawMaterialNumber = fetchValueFromExcel(xls_utils, sheet19, 5, i);
+      var rawMaterialQuantity = fetchValueFromExcel(xls_utils, sheet19, 6, i);
+      var rawMaterialUOM = fetchValueFromExcel(xls_utils, sheet19, 7, i);
+      var materailGroup = fetchValueFromExcel(xls_utils, sheet19, 8, i);
+      var status = fetchValueFromExcel(xls_utils, sheet19, 9, i);
+      
+      var locationId = await Location.find({name:sapLocation});
+      if(locationId!=null&&locationId!=undefined){
+        
+      }
+      else{
+        locationId=null;
+      }
+      // console.log("Line 650",rawMaterialNumber);
+      var rawMaterialNumberId = await RawMaterial.find({rawMaterialNumber:rawMaterialNumber});
+      var checkPartNumber = partNumberArray.includes(partNumber);
+      if(!checkPartNumber){
+        partNumberArray.push(partNumber);
+      
+        if(rawMaterialNumberId[0]!=null&&rawMaterialNumberId[0]!=undefined){
+          json19.push({
+            partNumber: partNumber,
+            description: partDescription,
+            manPower: 0,
+            SMH: 0,
+            rawMaterialId: rawMaterialNumberId[0]["id"],
+            partCreationDate: 0,
+            partChangeDate: 0,
+            partStatus:'N',
+            status:status,
+            uom:unitOfMeasurement,
+            materialGroup:materailGroup,
+            rawMaterialQuantity:rawMaterialQuantity
+          });
+        }
+      }
+    }
+    var parts = await PartNumber.createEach(json19);
+
+    //Part Number ProcessSequence
+    var filepath20 = './documents/templates/bulk-upload/14-BulkUploadPartNumberTemplate-s2.xlsx';
+    var workbook20 = XLSX.readFile(filepath20);
+    var sheet20 = workbook20.Sheets[workbook20.SheetNames[0]];
+    var num_rows20 = xls_utils.decode_range(sheet20['!ref']).e.r;
+    var json20 = [];
+    // partNumberArray = [];
+    for(var i = 1, l = num_rows20; i <= l; i++){
+      var partNumber = fetchValueFromExcel(xls_utils, sheet20, 0, i);
+      var manPower = fetchValueFromExcel(xls_utils, sheet20, 3, i);
+      var SMH = fetchValueFromExcel(xls_utils, sheet20, 4, i);
+      var j=1;
+
+      await PartNumber.update({
+        partNumber:partNumber
+      })
+      .set({
+        manPower:manPower,
+        SMH:SMH
+      });
+      var newPartNumberId = await PartNumber.find({
+        partNumber:partNumber
+      });
+      if(newPartNumberId[0]!=null&&newPartNumberId[0]!=undefined){
+
+        var processName1 = fetchValueFromExcel(xls_utils, sheet20, 5, i);
+        var processLoding1 = fetchValueFromExcel(xls_utils, sheet20, 6, i);
+        var processprocess1 = fetchValueFromExcel(xls_utils, sheet20, 7, i);
+        var processunloading1 = fetchValueFromExcel(xls_utils, sheet20, 8, i);
+        var processcycle1 = fetchValueFromExcel(xls_utils, sheet20, 9, i);
+
+        await processCreate(processName1,newPartNumberId[0]["id"],j,processLoding1,processprocess1,processunloading1,processcycle1);
+
+        var processName2 = fetchValueFromExcel(xls_utils, sheet20, 10, i);
+        var processLoding2 = fetchValueFromExcel(xls_utils, sheet20, 11, i);
+        var processprocess2 = fetchValueFromExcel(xls_utils, sheet20, 12, i);
+        var processunloading2 = fetchValueFromExcel(xls_utils, sheet20, 13, i);
+        var processcycle2 = fetchValueFromExcel(xls_utils, sheet20, 14, i);
+        j++;
+
+        await processCreate(processName2,newPartNumberId[0]["id"],j,processLoding2,processprocess2,processunloading2,processcycle2);
+
+        var processName3 = fetchValueFromExcel(xls_utils, sheet20, 15, i);
+        var processLoding3 = fetchValueFromExcel(xls_utils, sheet20, 16, i);
+        var processprocess3 = fetchValueFromExcel(xls_utils, sheet20, 17, i);
+        var processunloading3 = fetchValueFromExcel(xls_utils, sheet20, 18, i);
+        var processcycle3 = fetchValueFromExcel(xls_utils, sheet20, 19, i);
+        j++;
+
+        await processCreate(processName3,newPartNumberId[0]["id"],j,processLoding3,processprocess3,processunloading3,processcycle3);
+
+        var processName4 = fetchValueFromExcel(xls_utils, sheet20, 20, i);
+        var processLoding4 = fetchValueFromExcel(xls_utils, sheet20, 21, i);
+        var processprocess4 = fetchValueFromExcel(xls_utils, sheet20, 22, i);
+        var processunloading4 = fetchValueFromExcel(xls_utils, sheet20, 23, i);
+        var processcycle4 = fetchValueFromExcel(xls_utils, sheet20, 24, i);
+        j++;
+
+        await processCreate(processName4,newPartNumberId[0]["id"],j,processLoding4,processprocess4,processunloading4,processcycle4);
+
+        var processName5 = fetchValueFromExcel(xls_utils, sheet20, 25, i);
+        var processLoding5 = fetchValueFromExcel(xls_utils, sheet20, 26, i);
+        var processprocess5 = fetchValueFromExcel(xls_utils, sheet20, 27, i);
+        var processunloading5 = fetchValueFromExcel(xls_utils, sheet20, 28, i);
+        var processcycle5 = fetchValueFromExcel(xls_utils, sheet20, 29, i);
+        j++;
+
+        await processCreate(processName5,newPartNumberId[0]["id"],j,processLoding5,processprocess5,processunloading5,processcycle5);
+
+        var processName6 = fetchValueFromExcel(xls_utils, sheet20, 30, i);
+        var processLoding6 = fetchValueFromExcel(xls_utils, sheet20, 31, i);
+        var processprocess6 = fetchValueFromExcel(xls_utils, sheet20, 32, i);
+        var processunloading6 = fetchValueFromExcel(xls_utils, sheet20, 33, i);
+        var processcycle6 = fetchValueFromExcel(xls_utils, sheet20, 34, i);
+        j++;
+
+        await processCreate(processName6,newPartNumberId[0]["id"],j,processLoding6,processprocess6,processunloading6,processcycle6);
+
+        var processName7 = fetchValueFromExcel(xls_utils, sheet20, 35, i);
+        var processLoding7 = fetchValueFromExcel(xls_utils, sheet20, 36, i);
+        var processprocess7 = fetchValueFromExcel(xls_utils, sheet20, 37, i);
+        var processunloading7 = fetchValueFromExcel(xls_utils, sheet20, 38, i);
+        var processcycle7 = fetchValueFromExcel(xls_utils, sheet20, 39, i);
+        j++;
+
+        await processCreate(processName7,newPartNumberId[0]["id"],j,processLoding7,processprocess7,processunloading7,processcycle7);
+
+        var processName8 = fetchValueFromExcel(xls_utils, sheet20, 40, i);
+        var processLoding8 = fetchValueFromExcel(xls_utils, sheet20, 41, i);
+        var processprocess8 = fetchValueFromExcel(xls_utils, sheet20, 42, i);
+        var processunloading8 = fetchValueFromExcel(xls_utils, sheet20, 43, i);
+        var processcycle8 = fetchValueFromExcel(xls_utils, sheet20, 44, i);
+        j++;
+
+        await processCreate(processName8,newPartNumberId[0]["id"],j,processLoding8,processprocess8,processunloading8,processcycle8);
+
+        var processName9 = fetchValueFromExcel(xls_utils, sheet20, 45, i);
+        var processLoding9 = fetchValueFromExcel(xls_utils, sheet20, 46, i);
+        var processprocess9 = fetchValueFromExcel(xls_utils, sheet20, 47, i);
+        var processunloading9 = fetchValueFromExcel(xls_utils, sheet20, 48, i);
+        var processcycle9 = fetchValueFromExcel(xls_utils, sheet20, 49, i);
+        j++;
+
+        await processCreate(processName9,newPartNumberId[0]["id"],j,processLoding9,processprocess9,processunloading9,processcycle9);
+
+        var processName10 = fetchValueFromExcel(xls_utils, sheet20, 50, i);
+        var processLoding10 = fetchValueFromExcel(xls_utils, sheet20, 51, i);
+        var processprocess10 = fetchValueFromExcel(xls_utils, sheet20, 52, i);
+        var processunloading10 = fetchValueFromExcel(xls_utils, sheet20, 53, i);
+        var processcycle10 = fetchValueFromExcel(xls_utils, sheet20, 54, i);
+        j++;
+
+        await processCreate(processName10,newPartNumberId[0]["id"],j,processLoding10,processprocess10,processunloading10,processcycle10);
+      }
+    }
+      
+
+
     await MailConfig.create({
       mailSubject:'%MACHINE% status changed to %STATUS% by %OPERATOR%',
       mailBody:'Dear %NAME%'+
@@ -660,4 +830,50 @@ function fetchValueFromExcel(utils, sheet, column, row) {
 
   }
   return cell1Value;
+}
+
+async function processCreate(processName,newPartNumberId,count,processLoding,processprocess,processunloading,processcycle){
+  console.log("In Process Create");
+  if(processName != null && processName != undefined){
+      var machineGroupId = await MachineGroup.find({
+        name:processName
+      });
+      if(machineGroupId[0] != null && machineGroupId[0] != undefined){
+        var newProcessSequenceId = await ProcessSequence.create({
+          partId:newPartNumberId,
+          sequenceNumber:count,
+          loadingTime: processLoding,
+          processTime:processprocess,
+          unloadingTime:processunloading,
+          cycleTime:processcycle,
+          machineGroupId:machineGroupId[0]["id"],
+          isGroup:true
+        })
+        .fetch()
+        .catch(error=>{console.log(error)});
+        console.log(machineGroupId);
+
+        var machineGroupNew = await Machine.find()
+        .populate('machineGroupId');
+        var machineGroupMachines = [];
+        for(var i=0;i<machineGroupNew.length;i++){
+          if(machineGroupId[0]["id"] == machineGroupNew[i]["machineGroupId"][0]["id"]){
+            machineGroupMachines.push(machineGroupNew[i]["machineName"]);
+          }
+        }
+        // var machineGroupMachines = await Machine.find({where:{machineGroupId:machineGroupId[0]["id"]}});
+        console.log(machineGroupMachines);
+        for(var machineCount = 0;machineCount<machineGroupMachines.length;machineCount++){
+          var machineIdValue;
+          var newMachineId = await Machine.find({
+            machineName:machineGroupMachines[machineCount]["machineName"]
+          });
+          await ProcessSequenceMachineRelation.create({
+            processSequenceId:newProcessSequenceId["id"],
+            machineId:newMachineId[0]["id"]
+          })
+          .catch((error)=>{console.log(error)});
+        }
+      }
+    }
 }
