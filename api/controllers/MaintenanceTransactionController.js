@@ -17,15 +17,18 @@ module.exports = {
     var transporter = nodemailer.createTransport(selfSignedConfig);
 
     var employeeBarcode = req.body.employeeBarcode;
+    console.log(req.body.employeeBarcode);
     var employee = null;
     var employeeDBId = 0;
-    if (employeeBarcode != undefined) {
+    if (employeeBarcode != undefined && employeeBarcode !=0 && employeeBarcode!=null) {
       employees = await Employee.find({employeeId: employeeBarcode});
       if (employees.length > 0) {
-        employeeDBId = employees[0].id;
+        employeeDBId = employees[0]["id"];
       }
-    } else {
-      emplyeeId = null;
+    } 
+    else {
+      console.log("in Else", employeeDBId);
+      employeeDBId = null;
     }
 
     console.log("employeeDBId:  ", employeeDBId);
@@ -43,7 +46,9 @@ module.exports = {
 
     console.log("Current Date: " + maintenanceTime + "\tNext Date: " + nextMaintenanceDate);
 
-    var machineUpdated = await Machine.update({ id:req.body.machineId })
+    var machineUpdated = await Machine.update({ 
+      id:req.body.machineId
+    })
     .set({
       maintenanceStatus:req.body.maintenanceStatus,
       lastMaintenanceBy: employeeDBId,

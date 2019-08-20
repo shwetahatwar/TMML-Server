@@ -114,6 +114,12 @@ module.exports.policies = {
   ShiftController: {
     '*': 'isLoggedIn',
   },
+  MonthlyScheduleController: {
+    '*': 'isLoggedIn',
+  },
+  MonthlySchedulePartRelationController: {
+    '*': 'isLoggedIn',
+  },
   MessageController: {
     '*': 'isLoggedIn',
   }

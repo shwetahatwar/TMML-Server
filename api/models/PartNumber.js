@@ -29,11 +29,10 @@ module.exports = {
       model:'RawMaterial'
     },
     partCreationDate: { // coming from SAP
-      type:'number',
-      columnType: 'bigint',
+      type:'string',
     },
     partChangeDate: { // coming from SAP
-      type:'number',
+      type:'string',
       columnType: 'bigint',
     },
     partStatus: { // coming from SAP
@@ -51,7 +50,7 @@ module.exports = {
     },
     status:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     uom: { // unit of measurement coming from SAP
       type: 'string',
@@ -61,7 +60,7 @@ module.exports = {
     },
     rawMaterialQuantity: {
       type: 'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     kanbanLocation:{
       model:'Location'

@@ -13,7 +13,7 @@ module.exports = {
     },
     strokes: {
         type: 'number',
-        columnType: 'bigint',
+        columnType: 'integer',
     },
     startTime: {
         type: 'number',
@@ -25,7 +25,7 @@ module.exports = {
     },
     multifactor: {
         type: 'number',
-        columnType: 'bigint',
+        columnType: 'integer',
         defaultsTo: 1
     },
     createdBy: {

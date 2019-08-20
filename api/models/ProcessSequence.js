@@ -13,23 +13,23 @@ module.exports = {
     },
     sequenceNumber:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     loadingTime:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     processTime:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     unloadingTime:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     cycleTime:{ // looks lthis is again summation of loadingTime + processTime + unloadingTime
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     machineGroupId:{
       model:'MachineGroup'

@@ -22,7 +22,7 @@ module.exports = {
     },
     quantity:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     note:{
       type:'string'
@@ -50,7 +50,7 @@ module.exports = {
     },
     sequenceNumber:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
       allowNull: true
     }
   },

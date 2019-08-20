@@ -16,7 +16,7 @@ module.exports = {
     },
     requestedQuantity:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     scheduleStatus:{
       type:'string'
@@ -30,7 +30,7 @@ module.exports = {
     },
     isJobCardCreated:{ // this should be bool right?
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     jobcard: {
       collection: 'JobCard',

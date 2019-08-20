@@ -29,11 +29,11 @@ module.exports = {
     },
     status:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     notifyForMachineMaintenance:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     createdBy: {
       model:'User'

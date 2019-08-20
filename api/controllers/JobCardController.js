@@ -13,30 +13,32 @@ module.exports = {
     .limit(1);
 
     var d = new Date();
-    var curr_date = d.getDate();
-    if(curr_date.toString().length == 1){
-      curr_date = "0" + curr_date
-    }
-    var curr_month = parseInt(d.getMonth()) + 1;
-    curr_month = ""+curr_month;
-    if(curr_month.toString().length == 1){
-      curr_month = "0" + curr_month
-    }
-    var curr_year = d.getFullYear();
+    console.log(d);
+    // var curr_date = d.getDate();
+    // if(curr_date.toString().length == 1){
+    //   curr_date = "0" + curr_date
+    // }
+    // var curr_month = parseInt(d.getMonth()) + 1;
+    // curr_month = ""+curr_month;
+    // if(curr_month.toString().length == 1){
+    //   curr_month = "0" + curr_month
+    // }
+    // var curr_year = d.getFullYear();
+    // console.log(curr_year);
     var curr_time = d.getTime();
-    // console.log(curr_time);
+    console.log(curr_time);
     var barcodeSerial = "JO";
     var serialNumber;
     if(getJobCard[0]!=null && getJobCard[0]!=undefined){
       var BarcodeDay = getJobCard[0]["barcodeSerial"];
-      lastBarcodeDay = BarcodeDay.substring(8,10);
+      // lastBarcodeDay = BarcodeDay.substring(8,10);
       // console.log(lastBarcodeDay);
-      var lastBarcodeMintues=BarcodeDay.substring(10,23);
-      console.log(lastBarcodeMintues);
-      if(lastBarcodeDay == curr_date){
+      var lastBarcodeMintues = BarcodeDay.substring(2,15);
+      console.log("Line 35",lastBarcodeMintues);
+      // if(lastBarcodeDay == curr_date){
         if(curr_time == lastBarcodeMintues){
           var lastSerialNumber = getJobCard[0]["barcodeSerial"];
-          lastSerialNumber = lastSerialNumber.substring(23,26);
+          lastSerialNumber = lastSerialNumber.substring(15,17);
           console.log(lastSerialNumber);
           serialNumber = parseInt(lastSerialNumber) + 1;
           if(serialNumber.toString().length == 1){
@@ -49,16 +51,16 @@ module.exports = {
         else{
           serialNumber = "001";
         }
-      }
-      else{
-        serialNumber = "001";
-      }
+      // }
+      // else{
+      //   serialNumber = "001";
+      // }
     }
     else{
       serialNumber = "001";
     }
 
-    barcodeSerial = barcodeSerial + curr_year + curr_month + curr_date + curr_time + serialNumber;
+    barcodeSerial = barcodeSerial + curr_time + serialNumber;
 
     var partNumber = await PartNumber.find({
       id:req.body.partNumber
@@ -115,17 +117,27 @@ module.exports = {
   	})
   	.fetch()
   	.catch((error)=>{console.log(error)});
-  	var machineGroupNew = await Machine.find()
-    .populate('machineGroupId');
-    var suggestedLocations = "";
-    for(var i=0;i<machineGroupNew.length;i++){
-      console.log(machineGroupNew[i]["machineGroupId"][0]);
-      if(req.body.suggestedDropLocations == machineGroupNew[i]["machineGroupId"][0]["id"]){
-        suggestedLocations = suggestedLocations + "," + machineGroupNew[i]["machineName"];
-      }
+  	// var machineGroupNew = await Machine.find()
+   //  .populate('machineGroupId');
+   //  var suggestedLocations = "";
+   //  for(var i=0;i<machineGroupNew.length;i++){
+   //    console.log(machineGroupNew[i]["machineGroupId"][0]);
+   //    if(req.body.suggestedDropLocations == machineGroupNew[i]["machineGroupId"][0]["id"]){
+   //      suggestedLocations = suggestedLocations + "," + machineGroupNew[i]["machineName"];
+   //    }
+   //  }
+   
+    var machineGroups = await MachineGroup.find({
+      id:req.body.suggestedDropLocations
+    })
+    .populate("machines");
+    console.log("Line 200",machineGroups[0]);
+    var suggestedLocations="";
+    for(var i=0;i<machineGroups[0]["machines"].length;i++){
+      suggestedLocations = suggestedLocations + "," + machineGroups[0]["machines"][i]["machineName"];
     }
     console.log(suggestedLocations)
-    console.log(machineGroupNew[0]["machineGroupId"][0]["id"]);
+    // console.log(machineGroupNew[0]["machineGroupId"][0]["id"]);
   	await Joblocationrelation.create({
   		jobcardId:newJobCard["id"],
   		jobProcessSequenceRelationId:0,
@@ -155,19 +167,19 @@ module.exports = {
         var processSequence = await ProcessSequence.find({
           partId:productionSchedulePartRelation[0]["partNumberId"]
         });
-        console.log(processSequence);
+        console.log("Line 170",processSequence);
         if(processSequence!=null&&processSequence!=undefined){
           if(processSequence.length == 1){
             var machineGroup = await MachineGroup.find({
               id:processSequence[0]["machineGroupId"]
             });
-            console.log(machineGroup);
+            console.log("Line 176",machineGroup);
             // processSequence1 = machineGroup[0]["machineTypeId"];
             if(machineGroup!=null&&machineGroup!=undefined){
               var machineType = await MachineType.find({
                 id:machineGroup[0]["machineTypeId"]
               });
-              console.log(machineType);
+              console.log("Line 182",machineType);
               processSequence1 = machineType[0]["name"];
             }
           }
@@ -175,17 +187,19 @@ module.exports = {
             var machineGroup = await MachineGroup.find({
               id:processSequence[0]["machineGroupId"]
             });
-            processSequence1 = machineGroup[0]["machineTypeId"];
+            console.log("Line 190",machineGroup);
+            // processSequence1 = machineGroup[0]["machineTypeId"];
             if(machineGroup!=null&&machineGroup!=undefined){
               var machineType = await MachineType.find({
                 id:machineGroup[0]["machineTypeId"]
               });
               processSequence1 = machineType[0]["name"];
             }
+            console.log("line 198", processSequence1);
             var machineGroup = await MachineGroup.find({
               id:processSequence[1]["machineGroupId"]
             });
-            processSequence1 = machineGroup[0]["machineTypeId"];
+            // processSequence1 = machineGroup[0]["machineTypeId"];
             if(machineGroup!=null&&machineGroup!=undefined){
               var machineType = await MachineType.find({
                 id:machineGroup[0]["machineTypeId"]
@@ -193,11 +207,11 @@ module.exports = {
               processSequence2 = machineType[0]["name"];
             }
           }
-          else{
+          else if(processSequence.length == 3){
             var machineGroup = await MachineGroup.find({
               id:processSequence[0]["machineGroupId"]
             });
-            processSequence1 = machineGroup[0]["machineTypeId"];
+            // processSequence1 = machineGroup[0]["machineTypeId"];
             if(machineGroup!=null&&machineGroup!=undefined){
               var machineType = await MachineType.find({
                 id:machineGroup[0]["machineTypeId"]
@@ -207,7 +221,7 @@ module.exports = {
             var machineGroup = await MachineGroup.find({
               id:processSequence[1]["machineGroupId"]
             });
-            processSequence1 = machineGroup[0]["machineTypeId"];
+            // processSequence1 = machineGroup[0]["machineTypeId"];
             if(machineGroup!=null&&machineGroup!=undefined){
               var machineType = await MachineType.find({
                 id:machineGroup[0]["machineTypeId"]
@@ -217,7 +231,7 @@ module.exports = {
             var machineGroup = await MachineGroup.find({
               id:processSequence[2]["machineGroupId"]
             });
-            processSequence1 = machineGroup[0]["machineTypeId"];
+            // processSequence1 = machineGroup[0]["machineTypeId"];
             if(machineGroup!=null&&machineGroup!=undefined){
               var machineType = await MachineType.find({
                 id:machineGroup[0]["machineTypeId"]

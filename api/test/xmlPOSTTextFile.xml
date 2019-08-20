@@ -16,15 +16,15 @@
          <ZwebOutput>
             <!--Zero or more repetitions:-->
             <item>
-               <Zwerks>?</Zwerks>
-               <Zdate>?</Zdate>
-               <Zmatnr>?</Zmatnr>
-               <Zxblnr>?</Zxblnr>
-               <Zbktxt>?</Zbktxt>
-               <Zmenge>?</Zmenge>
-               <Zmblnr>?</Zmblnr>
-               <Zmjahr>?</Zmjahr>
-               <Zremarks>?</Zremarks>
+               <Zwerks></Zwerks>
+               <Zdate></Zdate>
+               <Zmatnr></Zmatnr>
+               <Zxblnr></Zxblnr>
+               <Zbktxt></Zbktxt>
+               <Zmenge></Zmenge>
+               <Zmblnr></Zmblnr>
+               <Zmjahr></Zmjahr>
+               <Zremarks></Zremarks>
             </item>
          </ZwebOutput>
       </urn:ZmpppProdBookingWeb>

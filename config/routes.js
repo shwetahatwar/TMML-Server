@@ -27,6 +27,8 @@ module.exports.routes = {
   'POST /employeeBulkUpload':'EmployeeBulkUploadController.upload',
   'POST /productionScheduleBulkUpload': 'ProductionScheduleBulkUpload.upload',
   'POST /partNumberBulkUpload': 'PartNumberBulkUpload.upload',
+  'POST /partNumberBulkUploadExcel': 'PartNumber.bulkUpload',
+  'POST /partNumberProcessSequenceBulkUploadExcel': 'ProcessSequence.bulkUpload',
   'POST /iot/jobstrokes' : 'MachineStrokes.jobstrokes',
   'POST /ProductionSchedule/create' : 'ProductionSchedule.create',
   'POST /PartNumber/create' : 'PartNumber.create',
@@ -58,6 +60,7 @@ module.exports.routes = {
   'GET /JobProcessSequenceRelation/getData': 'JobProcessSequenceRelation.getData',
   'POST /stopProcessSequence': 'JobProcessSequenceRelation.stopProcess',
   'POST /Trolley/create': 'Trolley.create',
+  'POST /parseJson': 'SapPartNumberController.parseJson',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

@@ -319,6 +319,14 @@ module.exports = {
     var json11 = [];
     var machineLocation = [];
     for(var i = 1, l = num_rows11; i <= l; i++) {
+      var counter = 0;
+      if(i.toString.length == 1){
+        counter = "00" + i;
+      }
+      else if(i.toString.length == 2){
+        counter = "0" + i;
+      }
+      var barcodeSerial = "MA" + counter;
 
       var machineName = fetchValueFromExcel(xls_utils, sheet11, 0, i);
       var machinetype = fetchValueFromExcel(xls_utils, sheet11, 1, i);
@@ -390,77 +398,33 @@ module.exports = {
       var joinedgroup = group.join(',');
       console.log(joinedgroup);
 
-      var newBarcodeSerial;
-      var getMachine = await Machine.find()
-      .sort('id DESC')
-      .limit(1);
+      // var newBarcodeSerial;
+      // var getMachine = await Machine.find()
+      // .sort('id DESC')
+      // .limit(1);
 
-      var d = new Date();
-      var curr_date = d.getDate();
-      var curr_date = d.getDate();
-      if(curr_date.toString().length == 1){
-        curr_date = "0" + curr_date
-      }
-      var curr_month = parseInt(d.getMonth()) + 1;
-      curr_month = ""+curr_month;
-      if(curr_month.toString().length == 1){
-        curr_month = "0" + curr_month
-      }
-      var curr_year = d.getFullYear();
-      var curr_time = d.getTime();
-      var barcodeSerial = "MA";
-      var serialNumber;
-      if(getMachine[0]!=null && getMachine[0]!=undefined){
-        var BarcodeDay = getJobCard[0]["barcodeSerial"];
-        lastBarcodeDay = BarcodeDay.substring(8,10);
-        // console.log(lastBarcodeDay);
-        var lastBarcodeMintues=BarcodeDay.substring(10,23);
-        if(lastBarcodeDay == curr_date){
-          if(curr_time == lastBarcodeMintues){
-            var lastSerialNumber = getMachine[0]["barcodeSerial"];
-            lastSerialNumber = lastSerialNumber.substring(23,26);
-            console.log(lastSerialNumber);
-            serialNumber = parseInt(lastSerialNumber) + 1;
-            if(serialNumber.toString().length == 1){
-              serialNumber = "00" + serialNumber
-            }
-            else if(serialNumber.toString().length == 2){
-              serialNumber = "0" + serialNumber
-            }
-          }
-          else{
-            serialNumber = "001";
-          }
-        }
-        else{
-          serialNumber = "001";
-        }
-      }
-      else{
-        serialNumber = "001";
-      }
+      // var getMachine = await Machine.find()
+      // .sort('id DESC')
+      // .limit(1);
+      // var barcodeSerial;
+      // if(getMachine[0]!=null && getMachine[0]!=undefined){
+      //   var getBarcode = getMachine[0]["barcodeSerial"];
+      //   var counter = getBarcode.substring(2,5);
+      //   counter = parseInt(counter) + 1;
+      //   if(counter.length == 1){
+      //     counter = "00" + counter
+      //   }else if(counter.length == 2){
+      //     counter = "0" + counter
+      //   }else{
+      //     counter = counter;
+      //   }
+      //   barcodeSerial = "MA"+counter;
+      // }
+      // else{
+      //   barcodeSerial = "MA001"
+      // }
 
-      newBarcodeSerial = barcodeSerial + curr_year + curr_month + curr_date + curr_time + serialNumber;
-      console.log(newBarcodeSerial);
 
-      var lowerMaintenanceFrequency = maintenanceFrequency.toLowerCase();
-      var frequencyInDays = 0;
-      if (lowerMaintenanceFrequency == "weekly"){
-        frequencyInDays = 7;
-      } else if (lowerMaintenanceFrequency == "bi-monthly") {
-        frequencyInDays = 15;
-      } else if (lowerMaintenanceFrequency == "monthly") {
-        frequencyInDays = 30;
-      } else if (lowerMaintenanceFrequency == "quarterly") {
-        frequencyInDays = 90;
-      } else if (lowerMaintenanceFrequency == "4-monthly") {
-        frequencyInDays = 120;
-      }
-      else if (lowerMaintenanceFrequency == "half yearly"){
-        frequencyInDays = 180;
-      } else if (lowerMaintenanceFrequency == "half yearly") {
-        frequencyInDays = 360;
-      }
 
       json11.push({
         machineName: machineName,
@@ -474,11 +438,11 @@ module.exports = {
         operationType: machineOperation,
         createdBy: 1,
         updatedBy: 1,
-        frequencyInDays: frequencyInDays,
-        barcodeSerial:newBarcodeSerial,
+        frequencyInDays: 0,
+        barcodeSerial:barcodeSerial,
        });
 
-      machineLocation.push({name:machineName,locationType:'Machine',barcodeSerial:newBarcodeSerial});
+      machineLocation.push({name:machineName,locationType:'Machine',barcodeSerial:barcodeSerial});
     }
     var machines = await Machine.createEach(json11);
     var machineLocations = await Location.createEach(machineLocation);
@@ -659,10 +623,10 @@ module.exports = {
       var rawMaterialUOM = fetchValueFromExcel(xls_utils, sheet19, 7, i);
       var materailGroup = fetchValueFromExcel(xls_utils, sheet19, 8, i);
       var status = fetchValueFromExcel(xls_utils, sheet19, 9, i);
-      
+
       var locationId = await Location.find({name:sapLocation});
       if(locationId!=null&&locationId!=undefined){
-        
+
       }
       else{
         locationId=null;
@@ -672,7 +636,7 @@ module.exports = {
       var checkPartNumber = partNumberArray.includes(partNumber);
       if(!checkPartNumber){
         partNumberArray.push(partNumber);
-      
+
         if(rawMaterialNumberId[0]!=null&&rawMaterialNumberId[0]!=undefined){
           json19.push({
             partNumber: partNumber,
@@ -808,7 +772,7 @@ module.exports = {
         await processCreate(processName10,newPartNumberId[0]["id"],j,processLoding10,processprocess10,processunloading10,processcycle10);
       }
     }
-      
+
 
 
     await MailConfig.create({

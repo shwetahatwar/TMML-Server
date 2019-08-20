@@ -16,15 +16,15 @@ module.exports = {
     },
     requestedQuantity:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     actualQuantity:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     status:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     jobcardStatus:{
       type:'string' // New, Pending for Raw Material, Under Processing, Completed

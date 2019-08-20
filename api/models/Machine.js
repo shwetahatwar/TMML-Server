@@ -27,18 +27,18 @@ module.exports = {
     },
     capacity:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     cellId:{
       model:'Cell'
     },
     machineWeight:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     status:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     maintenanceStatus: {
       type: 'string'
@@ -54,7 +54,7 @@ module.exports = {
     },
     frequencyInDays:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     nextMaintenanceOn:{
       type:'number',
@@ -69,7 +69,7 @@ module.exports = {
     },
     isAutomacticCount:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     maintenanceDetails: {
       collection: 'MaintenanceTransaction',

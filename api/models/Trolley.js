@@ -22,7 +22,7 @@ module.exports = {
     },
     status:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     createdBy:{
       model:'User'

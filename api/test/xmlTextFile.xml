@@ -8,16 +8,16 @@
             </item>
          </T_ALORT>
          <T_MATNR>
-            <item>
-               <MATNR></MATNR>
-            </item>
          </T_MATNR>
          <T_WERKS>
             <item>
                <WERKS>7002</WERKS>
             </item>
          </T_WERKS>
-         <UDATE_FROM>2019-06-19</UDATE_FROM>
+         <UDATE_FROM>01.08.2019</UDATE_FROM>
+         <UDATE_TO></UDATE_TO>
+         <UTIME_FROM></UTIME_FROM>
+         <UTIME_TO></UTIME_TO>
          <ZCOMP_DTL>
             <item>
                <ZIDNRK></ZIDNRK>

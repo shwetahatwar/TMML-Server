@@ -11,53 +11,70 @@ module.exports = {
     var getMachine = await Machine.find()
     .sort('id DESC')
     .limit(1);
-
-    var d = new Date();
-    var curr_date = d.getDate();
-    var curr_date = d.getDate();
-    if(curr_date.toString().length == 1){
-      curr_date = "0" + curr_date
-    }
-    var curr_month = parseInt(d.getMonth()) + 1;
-    curr_month = ""+curr_month;
-    if(curr_month.toString().length == 1){
-      curr_month = "0" + curr_month
-    }
-    var curr_year = d.getFullYear();
-    var curr_time = d.getTime();
-    var barcodeSerial = "MA";
-    var serialNumber;
+    var barcodeSerial;
     if(getMachine[0]!=null && getMachine[0]!=undefined){
-      var BarcodeDay = getMachine[0]["barcodeSerial"];
-      lastBarcodeDay = BarcodeDay.substring(8,10);
-      // console.log(lastBarcodeDay);
-      var lastBarcodeMintues=BarcodeDay.substring(10,23);
-      if(lastBarcodeDay == curr_date){
-        if(curr_time == lastBarcodeMintues){
-          var lastSerialNumber = getMachine[0]["barcodeSerial"];
-          lastSerialNumber = lastSerialNumber.substring(23,26);
-          console.log(lastSerialNumber);
-          serialNumber = parseInt(lastSerialNumber) + 1;
-          if(serialNumber.toString().length == 1){
-            serialNumber = "00" + serialNumber
-          }
-          else if(serialNumber.toString().length == 2){
-            serialNumber = "0" + serialNumber
-          }
-        }
-        else{
-          serialNumber = "001";
-        }
+      var getBarcode = getMachine[0]["barcodeSerial"];
+      var counter = getBarcode.substring(2,5);
+      counter = parseInt(counter) + 1;
+      if(counter.length == 1){
+        counter = "00" + counter
+      }else if(counter.length == 2){
+        counter = "0" + counter
+      }else{
+        counter = counter;
       }
-      else{
-        serialNumber = "001";
-      }
+      barcodeSerial = "MA"+counter;
     }
     else{
-      serialNumber = "001";
+      barcodeSerial = "MA001"
     }
 
-    barcodeSerial = barcodeSerial + curr_year + curr_month + curr_date + curr_time + serialNumber;
+    // var d = new Date();
+    // var curr_date = d.getDate();
+    // var curr_date = d.getDate();
+    // if(curr_date.toString().length == 1){
+    //   curr_date = "0" + curr_date
+    // }
+    // var curr_month = parseInt(d.getMonth()) + 1;
+    // curr_month = ""+curr_month;
+    // if(curr_month.toString().length == 1){
+    //   curr_month = "0" + curr_month
+    // }
+    // var curr_year = d.getFullYear();
+    // var curr_time = d.getTime();
+    // var barcodeSerial = "MA";
+    // var serialNumber;
+    // if(getMachine[0]!=null && getMachine[0]!=undefined){
+    //   var BarcodeDay = getMachine[0]["barcodeSerial"];
+    //   lastBarcodeDay = BarcodeDay.substring(8,10);
+    //   // console.log(lastBarcodeDay);
+    //   var lastBarcodeMintues=BarcodeDay.substring(10,23);
+    //   if(lastBarcodeDay == curr_date){
+    //     if(curr_time == lastBarcodeMintues){
+    //       var lastSerialNumber = getMachine[0]["barcodeSerial"];
+    //       lastSerialNumber = lastSerialNumber.substring(23,26);
+    //       console.log(lastSerialNumber);
+    //       serialNumber = parseInt(lastSerialNumber) + 1;
+    //       if(serialNumber.toString().length == 1){
+    //         serialNumber = "00" + serialNumber
+    //       }
+    //       else if(serialNumber.toString().length == 2){
+    //         serialNumber = "0" + serialNumber
+    //       }
+    //     }
+    //     else{
+    //       serialNumber = "001";
+    //     }
+    //   }
+    //   else{
+    //     serialNumber = "001";
+    //   }
+    // }
+    // else{
+    //   serialNumber = "001";
+    // }
+
+    // barcodeSerial = barcodeSerial + curr_year + curr_month + curr_date + curr_time + serialNumber;
   	var machine = await Machine.create({
   		machineName:req.body.machineName,
   		capacity:req.body.capacity	,

@@ -13,7 +13,7 @@ module.exports = {
     },
     jobProcessSequenceRelationId :{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     sourceLocation:{
       model:'Location'

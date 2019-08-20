@@ -12,8 +12,7 @@ module.exports = {
       type:'string'
     },
     date:{
-      type:'number',
-      columnType: 'bigint',
+      type:'string'
     },
     material:{
       type:'string'
@@ -27,14 +26,14 @@ module.exports = {
     },
     quantity:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     documentNumber:{
       type:'string'
     },
     documentYear:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     remarks:{
       type:'string'
@@ -42,4 +41,3 @@ module.exports = {
   },
 
 };
-

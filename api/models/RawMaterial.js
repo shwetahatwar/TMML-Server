@@ -11,35 +11,32 @@ module.exports = {
     rawMaterialNumber:{
       type:'number',
       columnType: 'bigint',
-      // columnType: 'bigint',
-      // autoCreatedAt: true,
-      // autoMigrations: { columnType: '_numbertimestamp' },
       unique: true,
       required: true
     },
     description:{
       type:'string'
     },
+     uom:{
+      type:'string'
+    },
+     remarks:{
+      type:'string'
+    },
     rmCreateDate:{
       type:'number',
       columnType: 'bigint',
-      // autoCreatedAt: true,
-      // autoMigrations: { columnType: '_numbertimestamp' },
-      // columnType: 'int8',
     },
     rmUpdateDate:{
       type:'number',
       columnType: 'bigint',
-      // autoCreatedAt: true,
-      // autoMigrations: { columnType: '_numbertimestamp' },
-      // columnType: 'int8',
     },
     materialTypeId:{
       model:'MaterialType'
     },
     status:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     createdBy: {
       model:'User'

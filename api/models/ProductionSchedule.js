@@ -33,7 +33,7 @@ module.exports = {
     },
     status: {
       type: 'number', // New, In Progress, Completed?
-      columnType: 'bigint',
+      columnType: 'integer',
     },
     partNumberMonthlyRequiredQuota: {
       model: 'PartNumberRequiredQuota'

@@ -7,6 +7,8 @@
 
 module.exports = {
   move: async function(req,res){
+    var newMachineStatus;
+    var newJoblocationrelationId;
   	var singleJoblocationrelation = await Joblocationrelation.find({
   		id:req.body.jobLocationRelationId
   	});
@@ -18,43 +20,65 @@ module.exports = {
   	if (location == null || location == undefined) {
   		res.send("Location Not Found");
   	}
-  	var status;
-    console.log(location);
-  	if(location[0]["locationType"]=="Machine"){
-  		status = "Complete"
-  	}
-    else if(location[0]["locationType"]=="Kanban Location"){
-      status = "Final Location"
+    else{
+    	var status;
+      console.log(location);
+    	if(location[0]["locationType"]=="Machine"){
+    		status = "Complete"
+        var machineStatus = await Machine.find({
+          barcodeSerial:req.body.barcodeSerial
+        });
+        console.log("Line 29", machineStatus);
+        if(machineStatus[0]["maintenanceStatus"] != "Available"){
+          // res.send("Machine not Available");
+          newMachineStatus = "notAvailable";
+        }
+    	}
+      else if(location[0]["locationType"]=="Kanban Location"){
+        status = "Final Location"
+      }
+    	else{
+        // if(newMachineStatus == "notAvailable"){
+      		var newJoblocationrelation = await Joblocationrelation.create({
+      			jobcardId:location["jobCardId"],
+      			jobProcessSequenceRelationId:location["jobProcessSequenceRelationId"],
+      			sourceLocation:location["id"],
+      			multiplyMachines:location["multiplyMachines"],
+      			processStatus:"Pending"
+      		});
+      		console.log("Line 34",newJoblocationrelation);
+      		status = "In Buffer"
+        // }
+    	}
+      if(newMachineStatus != "notAvailable"){
+      	newJoblocationrelationId = await Joblocationrelation.update({
+      		id:req.body.jobLocationRelationId
+      	})
+      	.set({
+      		destinationLocationId:location[0]["id"],
+      		processStatus:status
+      	})
+        .fetch();
+      }
+      if(newMachineStatus == "notAvailable")
+    	 res.status("Machine Not Available").send(404);
+      else{
+        console.log(newJoblocationrelationId);
+       res.send(newJoblocationrelationId);
+      }
     }
-  	else{
-  		var newJoblocationrelation = await Joblocationrelation.create({
-  			jobcardId:location["jobCardId"],
-  			jobProcessSequenceRelationId:location["jobProcessSequenceRelationId"],
-  			sourceLocation:location["id"],
-  			multiplyMachines:location["multiplyMachines"],
-  			processStatus:"Pending"
-  		});
-  		console.log("Line 34",newJoblocationrelation);
-  		status = "In Buffer"
-  	}
-  	await Joblocationrelation.update({
-  		id:req.body.jobLocationRelationId
-  	})
-  	.set({
-  		destinationLocationId:location[0]["id"],
-  		processStatus:status
-  	});
-  	res.send(200);
   },
 
   update:async function(req,res){
+    console.log("Line 73", req.body);
     var jobLocationRelationId = await Joblocationrelation.update({
       id:req.body.jobLocationRelationId
     })
     .set({
       processStatus:"Picked"
-    });
-    res.send("Updated");
+    }).fetch();
+    console.log(jobLocationRelationId);
+    res.send(jobLocationRelationId);
   },
 
   getData:async function(req,res){
@@ -72,7 +96,7 @@ module.exports = {
     // console.log(jobLocationRelationNew[0]);
     for(var i=0;i<jobLocationRelationNew.length;i++){
       console.log(jobLocationRelationNew[i]["processStatus"]);
-      if(jobLocationRelationNew[i]["processStatus"]!="Complete"){
+      if(jobLocationRelationNew[i]["processStatus"]!="Complete" && jobLocationRelationNew[i]["processStatus"]!="Final Location"){
         newJoblocationrelationJson.push(jobLocationRelationNew[i]);
       }
     }
@@ -81,4 +105,3 @@ module.exports = {
   }
 
 };
-

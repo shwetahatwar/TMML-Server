@@ -11,7 +11,7 @@
 // var ModbusRTU = require("modbus-serial");
 // var client = new ModbusRTU();
 // var machineStrokes = require('../api/controllers/MachineStrokesController');
-
+//
 // var activeStrockOne = true;
 // var activeStrockTwo = true;
 
@@ -32,14 +32,14 @@ module.exports.bootstrap = async function() {
   //   // etc.
   // ]);
   // ```
-  
+
   // console.log("Try Connect");
 
   // setInterval(function(){
-  //   SapPartNumber.soapRequestGet();
-  //   SapPartNumber.soapRequestPost();
+  //   // SapPartNumber.soapRequestGet();
+  //   // SapPartNumber.soapRequestPost();
   // },86400);
-  // client.connectTCP("192.168.0.23", { port: 502 },function(err,data){
+  // client.connectTCP("172.25.124.44", { port: 502 },function(err,data){
   //   // console.log(data);
   //   // console.log(err);
   // });
@@ -48,7 +48,7 @@ module.exports.bootstrap = async function() {
   //   client.readHoldingRegisters(0, 16,async function(err, data) {
   //     if(data){
   //       // console.log(data.data);
-        
+  //
   //       if(data.data[0] == 1){
   //         if(activeStrockOne == true){
   //           // var date = (data.data[10]+0x10000).toString(16).substr(-2).toUpperCase() + "-" + (data.data[11]+0x10000).toString(16).substr(-2).toUpperCase() + "-" + (data.data[12]+0x10000).toString(16).substr(-2).toUpperCase();
@@ -62,12 +62,12 @@ module.exports.bootstrap = async function() {
   //       else{
   //         activeStrockOne = true;
   //       }
-        
+  //
   //     }
   //     else if(err){
-  //       // console.log(err);
+  //       console.log(err);
   //     }
   //   });
   // }, 1000);
-  
+
 };

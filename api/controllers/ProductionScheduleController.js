@@ -1,9 +1,9 @@
 /**
- * ProductionScheduleController
- *
- * @description :: Server-side actions for handling incoming requests.
- * @help        :: See https://sailsjs.com/docs/concepts/actions
- */
+* ProductionScheduleController
+*
+* @description :: Server-side actions for handling incoming requests.
+* @help        :: See https://sailsjs.com/docs/concepts/actions
+*/
 
 module.exports = {
   create: async function (req, res) {
@@ -23,7 +23,7 @@ module.exports = {
       console.log(req.body.partMaster[i].partNumberId);
       var newPartNumber = await PartNumber.findOne({ partNumber: req.body.partMaster[i].partNumberId });
       console.log(newPartNumber);
-      if (newPartNumber != null && newPartNumber != undefined) {
+      if (newPartNumber[0] != null && newPartNumber[0] != undefined) {
         await ProductionSchedulePartRelation.create({
           scheduleId: newproductionScheduleId["id"],
           partNumberId: newPartNumber["id"],
@@ -134,7 +134,7 @@ module.exports = {
         var getProductionScheduleId = await ProductionSchedule.find({
           where: { productionScheduleId: { contains: checkProductionSchedule } },
           sort: [{ id: 'DESC'}]
-        });
+       });
         var postProductionScheduleId
         if(getProductionScheduleId[0]!=null&&getProductionScheduleId[0]!=undefined){
           var latestProductionScheduleId = getProductionScheduleId[0]["productionScheduleId"];
@@ -163,7 +163,7 @@ module.exports = {
         });
         console.log(getMonthlyScheduleId);
         if(getMonthlyScheduleId[0]!=null&&getMonthlyScheduleId[0]!=undefined){
-          var newproductionScheduleId = await ProductionSchedule.create({
+         var newproductionScheduleId = await ProductionSchedule.create({
             productionScheduleId: postProductionScheduleId,
             estimatedCompletionDate: req.body.estimatedCompletionDate,
             actualCompletionDate: req.body.actualCompletionDate,
@@ -367,7 +367,7 @@ module.exports = {
         });
         console.log(getMonthlyScheduleId);
         if(getMonthlyScheduleId[0]!=null&&getMonthlyScheduleId[0]!=undefined){
-          var newproductionScheduleId = await ProductionSchedule.create({
+         var newproductionScheduleId = await ProductionSchedule.create({
             productionScheduleId: postProductionScheduleId,
             estimatedCompletionDate: req.body.estimatedCompletionDate,
             actualCompletionDate: req.body.actualCompletionDate,
@@ -403,12 +403,13 @@ module.exports = {
       res.send();
     }
     else{
+      console.log("Line 406",req.body.productionScheduleId);
       var getProductionScheduleId = await ProductionSchedule.find({id:req.body.productionScheduleId});
       if(getProductionScheduleId[0]!=null&&getProductionScheduleId[0]!=undefined){
-        console.log(getProductionScheduleId);
+        console.log("Line 408", getProductionScheduleId);
         if(getProductionScheduleId[0]["scheduleStatus"]=="New"){
           await ProductionSchedulePartRelation.destroy({scheduleId:req.body.productionScheduleId});
-          var obj=Object.getOwnPropertyNames(req.body.dailySchedule[0]);
+          var obj=Object.getOwnPropertyNames(dailySchedule[0]);
           var day1=obj[2];
           var day2=obj[3];
           var day3=obj[4];
@@ -417,7 +418,7 @@ module.exports = {
           var day;
           var productionScheduleDate = getProductionScheduleId[0]["productionScheduleId"];
           productionScheduleDate = productionScheduleDate.substr(24,10)
-          console.log(productionScheduleDate);
+          console.log("Line 420", productionScheduleDate);
           if(productionScheduleDate == day1){
             day = day1
           }
@@ -433,23 +434,34 @@ module.exports = {
           else if(productionScheduleDate == day5){
             day = day5
           }
-          for(var i=0;i<req.body.dailySchedule.length;i++){
+          console.log("Line 437",dailySchedule.length);
+          for(var i=0;i<dailySchedule.length;i++){
+            console.log("Line 439", dailySchedule[i]["Part Number"]);
             var newPartNumberId = await PartNumber.find({
-              partNumber:req.body.dailySchedule[i].partnumber
+              partNumber:dailySchedule[i]["Part Number"]
             });
+            console.log("Line 440", newPartNumberId);
+            console.log("Line 442", dailySchedule[i]);
+
+            var quantity = dailySchedule[i][day];
+            var remarks = dailySchedule[i]["Remarks for first date in column"];
             if(newPartNumberId!=null && newPartNumberId!=undefined){
-              await ProductionSchedulePartRelation.create({
-                scheduleId: req.body.productionScheduleId,
-                partNumberId: newPartNumberId[0]["id"],
-                requestedQuantity: req.body.dailySchedule[i][day],
-                estimatedCompletionDate: 0,
-                isJobCardCreated: false,
-                partRemark: req.body.dailySchedule[i].remarks,
-                scheduleStatus:"New"
-              })
-              .then()
-              .catch(error => console.log(error));
+              console.log("Line 448",newPartNumberId);
+              for(var j=0;j<newPartNumberId.length;j++){
+                await ProductionSchedulePartRelation.create({
+                  scheduleId: req.body.productionScheduleId,
+                  partNumberId: newPartNumberId[j]["id"],
+                  requestedQuantity: quantity,
+                  estimatedCompletionDate: 0,
+                  isJobCardCreated: false,
+                  partRemark: remarks,
+                  scheduleStatus:"New"
+                })
+                .then()
+                .catch(error => console.log(error));
+              }
             }
+            // break;
           }
           res.send();
         }
@@ -478,12 +490,12 @@ module.exports = {
       var monthlySchedulePartNumbers = await MonthlySchedulePartRelation.find({
         monthlyScheduleId:monthlySchedule[0]["id"]
       }).populate('partNumber');
-    }
+   }
 
     console.log("MonthlySchedulePartRelation: ", monthlySchedulePartNumbers);
 
     // console.log(monthlySchedulePartNumbers.length);
-    if(monthlySchedulePartNumbers.length > 0 && monthlySchedulePartNumbers[0] != null && monthlySchedulePartNumbers[0] != undefined){
+    if(monthlySchedulePartNumbers[0] != null && monthlySchedulePartNumbers[0] != undefined){
       console.log('monthly schedule id: ', monthlySchedule[0]["id"]);
       var dailySchedule = await ProductionSchedule.find({
         monthlyScheduleId:monthlySchedule[0]["id"]

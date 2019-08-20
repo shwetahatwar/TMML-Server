@@ -56,21 +56,25 @@ module.exports = {
       year:monthlySchedule[0].Year,
       month:monthlySchedule[0].Month,
     });
-
-    if (monthlySchedules != undefined && monthlySchedules.length > 0) {
-      res.send('Monthly schedule already exist!');
-      return;
+    var mothlyScheduleId;
+    console.log("line 60",monthlySchedules);
+    if (monthlySchedules[0] != undefined && monthlySchedules[0] != null) {
+      // res.send('Monthly schedule already exist!');
+      // return;
+      console.log("In If");
+      monthlyScheduleId = monthlySchedules[0]["id"];
     }
-
-    var mothlyScheduleId = await MonthlySchedule.create({
-      year:monthlySchedule[0].Year,
-      month:monthlySchedule[0].Month,
-      scheduleName:scheduleName
-    })
-    .fetch()
-    .catch(error=>{console.log(error)});
-    console.log(mothlyScheduleId);
-    if(mothlyScheduleId!=null&&mothlyScheduleId!=undefined){
+    else {
+      mothlyScheduleId = await MonthlySchedule.create({
+        year:monthlySchedule[0].Year,
+        month:monthlySchedule[0].Month,
+        scheduleName:scheduleName
+      })
+      .fetch()
+      .catch(error=>{console.log(error)});
+    }
+    console.log(monthlyScheduleId[0]);
+    if(monthlyScheduleId!=null&&monthlyScheduleId!=undefined){
       for(var i=0;i<monthlySchedule.length;i++){
         console.log(monthlySchedule[i]);
         var newPartNumber = await PartNumber.find({
@@ -78,9 +82,9 @@ module.exports = {
           // partNumber:req.body.monthlySchedule[i].Description
         });
         console.log(newPartNumber);
-        if(newPartNumber!=null&&newPartNumber!=undefined){
+        if(newPartNumber[0]!=null&&newPartNumber[0]!=undefined){
           MonthlySchedulePartRelation.create({
-            monthlyScheduleId:mothlyScheduleId["id"],
+            monthlyScheduleId:monthlyScheduleId,
             partNumber:newPartNumber[0]["id"],
             description:monthlySchedule[i].Description,
             UOM:monthlySchedule[i].UOM,

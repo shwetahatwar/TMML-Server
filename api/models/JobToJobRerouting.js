@@ -22,7 +22,7 @@ module.exports = {
     },
     quantity:{
       type:'number',
-      columnType: 'bigint',
+      columnType: 'integer',
     }
   },
 
