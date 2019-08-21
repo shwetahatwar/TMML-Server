@@ -35,8 +35,8 @@ module.exports = {
     		});
 	      // console.log(partcheck);
 	      // break;
-		      var j=1;
-					var processName1 = partNumberProcessSequenceBulkUpload[i].process_1;
+	      	var j=1;
+			var processName1 = partNumberProcessSequenceBulkUpload[i].process_1;
 	        var processLoding1 = partNumberProcessSequenceBulkUpload[i].loadingTimeP1;
 	        var processprocess1 = partNumberProcessSequenceBulkUpload[i].processTimeP1;
 	        var processunloading1 = partNumberProcessSequenceBulkUpload[i].unloadingTimeP1;
@@ -150,50 +150,59 @@ async function processCreate(processName,newPartNumberId,count,processLoding,pro
         name:processName
       });
       if(machineGroupId[0] != null && machineGroupId[0] != undefined){
-        await ProcessSequence.create({
-          partId:newPartNumberId,
-          sequenceNumber:count,
-          loadingTime: processLoding,
-          processTime:processprocess,
-          unloadingTime:processunloading,
-          cycleTime:processcycle,
-          machineGroupId:machineGroupId[0]["id"],
-          isGroup:true
-        })
-        .catch(error=>{console.log(error)});
-        console.log("line 142", machineGroupId);
+      	var getProcessSequence = await ProcessSequence.find({
+	      	partId:newPartNumberId,
+	      	sequenceNumber:count,
+	      	machineGroupId:machineGroupId[0]["id"]
+	      });
+	      if(getProcessSequence[0] != null && getProcessSequence[0] != undefined){
+	      }
+	      else{
+	        await ProcessSequence.create({
+	          partId:newPartNumberId,
+	          sequenceNumber:count,
+	          loadingTime: processLoding,
+	          processTime:processprocess,
+	          unloadingTime:processunloading,
+	          cycleTime:processcycle,
+	          machineGroupId:machineGroupId[0]["id"],
+	          isGroup:true
+	        })
+	        .catch(error=>{console.log(error)});
+	        console.log("line 142", machineGroupId);
 
 
-        var newProcessSequenceId = await ProcessSequence.find({
-        	partId:newPartNumberId,
-          sequenceNumber:count
-        });
+	        var newProcessSequenceId = await ProcessSequence.find({
+	        	partId:newPartNumberId,
+	          sequenceNumber:count
+	        });
 
-        console.log("line 149",newProcessSequenceId);
+	        console.log("line 149",newProcessSequenceId);
 
-        var machineGroupNew = await Machine.find()
-        .populate('machineGroupId');
-        var machineGroupMachines = [];
-        for(var i=0;i<machineGroupNew.length;i++){
-          if(machineGroupId[0]["id"] == machineGroupNew[i]["machineGroupId"][0]["id"]){
-            machineGroupMachines.push(machineGroupNew[i]["machineName"]);
-          }
-        }
-        // var machineGroupMachines = await Machine.find({where:{machineGroupId:machineGroupId[0]["id"]}});
-        console.log(machineGroupMachines);
-        for(var machineCount = 0;machineCount<machineGroupMachines.length;machineCount++){
-          var machineIdValue;
-          var newMachineId = await Machine.find({
-            machineName:machineGroupMachines[machineCount]["machineName"]
-          });
-          if(newMachineId[0] != null && newMachineId[0] != undefined && newProcessSequenceId[0] != null && newProcessSequenceId[0] != undefined){
-	          await ProcessSequenceMachineRelation.create({
-	            processSequenceId:newProcessSequenceId[0]["id"],
-	            machineId:newMachineId[0]["id"]
-	          })
-	          .catch((error)=>{console.log(error)});
+	        var machineGroupNew = await Machine.find()
+	        .populate('machineGroupId');
+	        var machineGroupMachines = [];
+	        for(var i=0;i<machineGroupNew.length;i++){
+	          if(machineGroupId[0]["id"] == machineGroupNew[i]["machineGroupId"][0]["id"]){
+	            machineGroupMachines.push(machineGroupNew[i]["machineName"]);
+	          }
 	        }
-        }
+	        // var machineGroupMachines = await Machine.find({where:{machineGroupId:machineGroupId[0]["id"]}});
+	        console.log(machineGroupMachines);
+	        for(var machineCount = 0;machineCount<machineGroupMachines.length;machineCount++){
+	          var machineIdValue;
+	          var newMachineId = await Machine.find({
+	            machineName:machineGroupMachines[machineCount]["machineName"]
+	          });
+	          if(newMachineId[0] != null && newMachineId[0] != undefined && newProcessSequenceId[0] != null && newProcessSequenceId[0] != undefined){
+		          await ProcessSequenceMachineRelation.create({
+		            processSequenceId:newProcessSequenceId[0]["id"],
+		            machineId:newMachineId[0]["id"]
+		          })
+		          .catch((error)=>{console.log(error)});
+		        }
+	        }
+	      }
       }
     }
 }

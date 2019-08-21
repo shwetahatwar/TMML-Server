@@ -48,10 +48,13 @@ module.exports.datastores = {
     *    (See https://sailsjs.com/config/datastores for help.)                 *
     *                                                                          *
     ***************************************************************************/
-    adapter: 'sails-mssql', //Working
-    url: 'mssql://tmml:tmml123@172.25.121.49:50084/TestDatabase', //Working
+    // adapter: 'sails-mssql', //Working
+    // url: 'mssql://tmml:tmml123@172.25.121.49:50084/TestDatabase', //Working
     // connectionTimeout: 300000,
     // requestTimeout: 0,
+
+    adapter: 'sails-mssql', //Working
+    url: 'mssql://sa:briot123@192.168.0.16:1433/TestDatabase1', //Working
 
     // adapter: 'sails-postgresql', postgres
     // url: 'postgres://bnsliopfagjtkt:a27131100bed84cdf09b216d3ff6fa2afecf2936ac5359cbe1da866a835011f1@ec2-23-21-147-71.compute-1.amazonaws.com:5432/d6n877b1qc3e8o', postgres
