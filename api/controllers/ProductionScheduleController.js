@@ -479,8 +479,11 @@ module.exports = {
   dailyMonthlyReport: async function(req,res){
 
     var monthlySchedule = await MonthlySchedule.find({
-      year:req.body.year,
-      month:req.body.month
+      where:{
+        year:req.body.year,
+        month:req.body.month
+      },
+      select:['id']
     });
 
     console.log('monthlySchedule: ', monthlySchedule);
@@ -498,7 +501,10 @@ module.exports = {
     if(monthlySchedulePartNumbers[0] != null && monthlySchedulePartNumbers[0] != undefined){
       console.log('monthly schedule id: ', monthlySchedule[0]["id"]);
       var dailySchedule = await ProductionSchedule.find({
-        monthlyScheduleId:monthlySchedule[0]["id"]
+        where:{
+          monthlyScheduleId:monthlySchedule[0]["id"]
+        },
+        select:['id']
       });
     }
     // console.log(dailySchedule.length);
@@ -511,8 +517,11 @@ module.exports = {
             // console.log(dailySchedule[j]["id"]);
             // console.log(monthlySchedulePartNumbers[i]["partNumber"]);
             var dailySchedulePartNumbers = await ProductionSchedulePartRelation.find({
-              scheduleId:dailySchedule[j]["id"],
-              partNumberId:monthlySchedulePartNumbers[i]["partNumber"]['id']
+              where:{
+                scheduleId:dailySchedule[j]["id"],
+                partNumberId:monthlySchedulePartNumbers[i]["partNumber"]['id']
+              },
+              select:['requestedQuantity']
             });
             // console.log(dailySchedulePartNumbers);
             if(dailySchedulePartNumbers[0]!=null && dailySchedulePartNumbers!=undefined){
