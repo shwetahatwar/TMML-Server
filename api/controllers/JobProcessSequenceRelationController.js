@@ -254,7 +254,43 @@ module.exports = {
     jobcardStatus:"Completed",
     actualQuantity:req.body.quantity
     });
-      var dateTime = new Date();
+      // var dateTime = new Date();
+      var uniqueNumberSap;
+      var sapEntry = await SapTransaction.find({
+        where:{
+          plant:"7002"
+        },
+        select: ['id','uniqueNumber']
+      })
+      .sort('id DESC');
+      if(sapEntry[0] != null && sapEntry[0] != undefined){
+        uniqueNumberSap = sapEntry[0]["uniqueNumber"];
+        var serialNumberSapStart = uniqueNumberSap.substring(0,2);
+        var serialNumberSapEnd = uniqueNumberSap.substring(2,8);
+
+        if(serialNumberSapEnd == 999999){
+          var serialNumberSapFirstStart = serialNumberSapStart.substring(0,1);
+          var serialNumberSapLastStart = serialNumberSapStart.substring(1,2);
+          var serialNumberSapLatest;
+          if(serialNumberSapLastStart == 'Z'){
+            serialNumberSapLatest = String.fromCharCode(serialNumberSapFirstStart.charCodeAt() + 1);
+            serialNumberSapLatest = serialNumberSapLatest + 'A';
+          }
+          else{
+            serialNumberSapLatest = String.fromCharCode(serialNumberSapLastStart.charCodeAt() + 1);
+            serialNumberSapLatest = serialNumberSapLatest + serialNumberSapLatest;
+          }
+          uniqueNumberSap = serialNumberSapStart + "000001";
+        }
+        else{
+          serialNumberSapEnd = parseInt(serialNumberSapEnd) + 1;
+          var newQuantity = pad(serialNumberSapEnd, 6);
+          uniqueNumberSap = serialNumberSapStart + newQuantity;
+        }
+      }
+      else{
+        uniqueNumberSap = "AA000001"
+      }
       var dateTimeFormat;
       var d = new Date();
       var curr_date = d.getDate();
@@ -275,18 +311,13 @@ module.exports = {
         date:dateTimeFormat,
         material:newPartNumberAdded,
         jobCard:jobCardBarcode[0]["barcodeSerial"],
-        uniqueNumber:dateTime,
+        uniqueNumber:uniqueNumberSap,
         quantity:req.body.quantity,
         documentNumber: 0
       });
-      var sapEntry = await SapTransaction.find({
-        material:newPartNumberAdded,
-        jobCard:jobCardBarcode[0]["barcodeSerial"],
-        quantity:req.body.quantity,
-        documentNumber: 0
-      });
+
       console.log("Line 285",sapEntry);
-      await manualSapTransaction("7002",dateTimeFormat,newPartNumberAdded,jobCardBarcode[0]["barcodeSerial"],sapEntry[0]["uniqueNumber"],req.body.quantity);
+      await manualSapTransaction("7002",dateTimeFormat,newPartNumberAdded,jobCardBarcode[0]["barcodeSerial"],uniqueNumberSap,req.body.quantity);
       // var checkJobProcessSequence = await JobProcessSequenceRelation.find({
       //   jobId:req.body.jobId,
       //   processStatus:"Pending"
@@ -459,7 +490,43 @@ module.exports = {
     jobcardStatus:"Completed",
     actualQuantity:req.body.quantity
     });
-      var dateTime = new Date();
+      // var dateTime = new Date();
+      var uniqueNumberSap;
+      var sapEntry = await SapTransaction.find({
+        where:{
+          plant:"7002"
+        },
+        select: ['id','uniqueNumber']
+      })
+      .sort('id DESC');
+      if(sapEntry[0] != null && sapEntry[0] != undefined){
+        uniqueNumberSap = sapEntry[0]["uniqueNumber"];
+        var serialNumberSapStart = uniqueNumberSap.substring(0,2);
+        var serialNumberSapEnd = uniqueNumberSap.substring(2,8);
+        if(serialNumberSapEnd == 999999){
+          var serialNumberSapFirstStart = serialNumberSapStart.substring(0,1);
+          var serialNumberSapLastStart = serialNumberSapStart.substring(1,2);
+          var serialNumberSapLatest;
+          if(serialNumberSapLastStart == 'Z'){
+            serialNumberSapLatest = String.fromCharCode(serialNumberSapFirstStart.charCodeAt() + 1);
+            serialNumberSapLatest = serialNumberSapLatest + 'A';
+          }
+          else{
+            serialNumberSapLatest = String.fromCharCode(serialNumberSapLastStart.charCodeAt() + 1);
+            serialNumberSapLatest = serialNumberSapLatest + serialNumberSapLatest;
+          }
+          uniqueNumberSap = serialNumberSapLatest + "000001";
+        }
+        else{
+          serialNumberSapEnd = parseInt(serialNumberSapEnd) + 1;
+          var newQuantity = pad(serialNumberSapEnd, 6);
+          uniqueNumberSap = serialNumberSapStart + newQuantity;
+          //uniqueNumberSap = serialNumberSapStart + serialNumberSapEnd;
+        }
+      }
+      else{
+        uniqueNumberSap = "AA000001"
+      }
       var dateTimeFormat;
       var d = new Date();
       var curr_date = d.getDate();
@@ -481,18 +548,12 @@ module.exports = {
         date:dateTimeFormat,
         material:newPartNumberAdded,
         jobCard:jobCardBarcode[0]["barcodeSerial"],
-        uniqueNumber:dateTime,
+        uniqueNumber:uniqueNumberSap,
         quantity:req.body.quantity,
         documentNumber: 0
       });
-      var sapEntry = await SapTransaction.find({
-        material:newPartNumberAdded,
-        jobCard:jobCardBarcode[0]["barcodeSerial"],
-        quantity:req.body.quantity,
-        documentNumber: 0
-      });
-      console.log("Line 487",sapEntry);
-      await manualSapTransaction("7002",dateTimeFormat,newPartNumberAdded,jobCardBarcode[0]["barcodeSerial"],sapEntry[0]["uniqueNumber"],req.body.quantity);
+      // console.log("Line 487",sapEntry);
+      await manualSapTransaction("7002",dateTimeFormat,newPartNumberAdded,jobCardBarcode[0]["barcodeSerial"],uniqueNumberSap,req.body.quantity);
 
       // var checkJobProcessSequence = await JobProcessSequenceRelation.find({
       //   jobId:req.body.jobId,
@@ -596,4 +657,12 @@ async function manualSapTransaction(plantAdd,dateAdd,materialAdd,jobcardAdd,uniq
       }
     }
   }
+}
+
+function pad(number, length) {
+  var str = '' + number;
+  while (str.length < length) {
+    str = '0' + str;
+  }
+  return str;
 }
