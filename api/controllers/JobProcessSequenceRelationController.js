@@ -247,13 +247,13 @@ module.exports = {
       var partNumber = await PartNumber.find({
         id:processSequence[0]["partId"]
       });
-    var updatedJobCard = await JobCard.update({
-    id:req.body.jobId
-    })
-    .set({
-    jobcardStatus:"Completed",
-    actualQuantity:req.body.quantity
-    });
+      var updatedJobCard = await JobCard.update({
+        id:req.body.jobId
+      })
+      .set({
+        jobcardStatus:"Completed",
+        actualQuantity:req.body.quantity
+      });
       // var dateTime = new Date();
       var uniqueNumberSap;
       var sapEntry = await SapTransaction.find({
@@ -305,7 +305,8 @@ module.exports = {
       }
       var curr_year = d.getFullYear();
       //console.log(curr_year);
-      dateTimeFormat = curr_year + "-" + curr_month + "-" + curr_date;
+      // dateTimeFormat = curr_year + "-" + curr_month + "-" + curr_date;
+      dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
       var newPartNumberAdded = "000000" + partNumber[0]["partNumber"];
       await SapTransaction.create({
         plant:"7002",
@@ -319,72 +320,13 @@ module.exports = {
 
       console.log("Line 285",sapEntry);
       await manualSapTransaction("7002",dateTimeFormat,newPartNumberAdded,jobCardBarcode[0]["barcodeSerial"],uniqueNumberSap,req.body.quantity);
-      // var checkJobProcessSequence = await JobProcessSequenceRelation.find({
-      //   jobId:req.body.jobId,
-      //   processStatus:"Pending"
-      // });
-      // if(checkJobProcessSequence[0]!=null&&checkJobProcessSequence[0]!=undefined){
-      // }
-      // else{
-      //     var jobProcessSequenceTransaction = await JobProcessSequenceTransaction.find({
-      //       jobCardId:req.body.jobId
-      //     });
-      //     var quantity =0;
-      //     for(var i =0;i<jobProcessSequenceTransaction.length;i++){
-      //       quantity = quantity + parseInt(jobProcessSequenceTransaction[0]["quantity"]);
-      //     }
-      //     var dateTime = new Date();
-      //     var updatedJobCard = await JobCard.update({
-      //       id:req.body.jobId
-      //     })
-      //     .set({
-      //       jobcardStatus:"Completed",
-      //       actualQuantity:quantity
-      //     });
-      //     //console.log(updatedJobCard);
-      //     //console.log(req.body.jobId +"Line 224");
-      //     var jobProcessSequenceRelation = await JobProcessSequenceRelation.find({
-      //       jobId:req.body.jobId
-      //     });
-      //     //console.log(jobProcessSequenceRelation[0]["processSequenceId"]);
-      //     var processSequence = await ProcessSequence.find({
-      //       id:jobProcessSequenceRelation[0]["processSequenceId"]
-      //     });
-      //     //console.log("Process Sequence" + processSequence);
-      //     var partNumber = await PartNumber.find({
-      //       id:processSequence[0]["partId"]
-      //     });
-      //     var jobCardBarcode = await JobCard.find({
-      //       id:req.body.jobId
-      //     });
-      //     var dateTimeFormat;
-      //     var d = new Date();
-      //     var curr_date = d.getDate();
-      //     if(curr_date.toString().length == 1){
-      //       curr_date = "0" + curr_date
-      //     }
-      //     var curr_month = parseInt(d.getMonth()) + 1;
-      //     curr_month = ""+curr_month;
-      //     if(curr_month.toString().length == 1){
-      //       curr_month = "0" + curr_month
-      //     }
-      //     var curr_year = d.getFullYear();
-      //     //console.log(curr_year);
-
-      //     dateTimeFormat = curr_year + "-" + curr_month + "-" + curr_date;
-      //     var newPartNumberAdded = "000000" + partNumber[0]["partNumber"]
-      //     await SapTransaction.create({
-      //       plant:"7002",
-      //       date:dateTimeFormat,
-      //       material:newPartNumberAdded,
-      //       jobCard:jobCardBarcode[0]["barcodeSerial"],
-      //       uniqueNumber:dateTime,
-      //       quantity:quantity,
-      //       documentNumber: 0
-      //     });
-      //     await manualSapTransaction("7002",dateTimeFormat,newPartNumberAdded,jobCardBarcode[0]["barcodeSerial"],dateTime,quantity);
-      //   // }
-      // }
+      await PartNumber.update({
+        id:processSequence[0]["partId"]
+      })
+      .set({
+        remarks:req.body.note
+      });
+      
       res.send("Final Location");
     }
   },
@@ -491,121 +433,79 @@ module.exports = {
     jobcardStatus:"Completed",
     actualQuantity:req.body.quantity
     });
-      // var dateTime = new Date();
-      var uniqueNumberSap;
-      var sapEntry = await SapTransaction.find({
-        where:{
-          plant:"7002"
-        },
-        select: ['id','uniqueNumber']
-      })
-      .sort('id DESC');
-      if(sapEntry[0] != null && sapEntry[0] != undefined){
-        uniqueNumberSap = sapEntry[0]["uniqueNumber"];
-        uniqueNumberSap = sapEntry[0]["uniqueNumber"];
-        var serialNumberSapStart = uniqueNumberSap.substring(0,2);
-        var serialNumberSapEnd = uniqueNumberSap.substring(2,8);
-        if(serialNumberSapEnd == "999999"){
-          var serialNumberSapFirstStart = serialNumberSapStart.substring(0,1);
-          var serialNumberSapLastStart = serialNumberSapStart.substring(1,2);
-          var serialNumberSapLatest;
-          if(serialNumberSapLastStart == 'Z'){
-            serialNumberSapLatest = String.fromCharCode(serialNumberSapFirstStart.charCodeAt() + 1);
-            serialNumberSapLatest = serialNumberSapLatest + 'A';
-            console.log(serialNumberSapLatest);
-          }
-          else{
-            serialNumberSapLatest = String.fromCharCode(serialNumberSapLastStart.charCodeAt() + 1);
-            serialNumberSapLatest = serialNumberSapFirstStart + serialNumberSapLatest;
-          }
-          uniqueNumberSap = serialNumberSapLatest + "000001";
+    // var dateTime = new Date();
+    var uniqueNumberSap;
+    var sapEntry = await SapTransaction.find({
+      where:{
+        plant:"7002"
+      },
+      select: ['id','uniqueNumber']
+    })
+    .sort('id DESC');
+    if(sapEntry[0] != null && sapEntry[0] != undefined){
+      uniqueNumberSap = sapEntry[0]["uniqueNumber"];
+      uniqueNumberSap = sapEntry[0]["uniqueNumber"];
+      var serialNumberSapStart = uniqueNumberSap.substring(0,2);
+      var serialNumberSapEnd = uniqueNumberSap.substring(2,8);
+      if(serialNumberSapEnd == "999999"){
+        var serialNumberSapFirstStart = serialNumberSapStart.substring(0,1);
+        var serialNumberSapLastStart = serialNumberSapStart.substring(1,2);
+        var serialNumberSapLatest;
+        if(serialNumberSapLastStart == 'Z'){
+          serialNumberSapLatest = String.fromCharCode(serialNumberSapFirstStart.charCodeAt() + 1);
+          serialNumberSapLatest = serialNumberSapLatest + 'A';
+          console.log(serialNumberSapLatest);
         }
         else{
-          serialNumberSapEnd = parseInt(serialNumberSapEnd) + 1;
-          var newQuantity = pad(serialNumberSapEnd, 6);
-          uniqueNumberSap = serialNumberSapStart + newQuantity;
+          serialNumberSapLatest = String.fromCharCode(serialNumberSapLastStart.charCodeAt() + 1);
+          serialNumberSapLatest = serialNumberSapFirstStart + serialNumberSapLatest;
         }
+        uniqueNumberSap = serialNumberSapLatest + "000001";
       }
       else{
-        uniqueNumberSap = "AA000001"
+        serialNumberSapEnd = parseInt(serialNumberSapEnd) + 1;
+        var newQuantity = pad(serialNumberSapEnd, 6);
+        uniqueNumberSap = serialNumberSapStart + newQuantity;
       }
-      var dateTimeFormat;
-      var d = new Date();
-      var curr_date = d.getDate();
-      if(curr_date.toString().length == 1){
-        curr_date = "0" + curr_date
-      }
-      var curr_month = parseInt(d.getMonth()) + 1;
-      curr_month = ""+curr_month;
-      if(curr_month.toString().length == 1){
-        curr_month = "0" + curr_month
-      }
-      var curr_year = d.getFullYear();
-      //console.log(curr_year);
-
-      dateTimeFormat = curr_year + "-" + curr_month + "-" + curr_date;
-      var newPartNumberAdded = "000000" + partNumber[0]["partNumber"];
-      await SapTransaction.create({
-        plant:"7002",
-        date:dateTimeFormat,
-        material:newPartNumberAdded,
-        jobCard:jobCardBarcode[0]["barcodeSerial"],
-        uniqueNumber:uniqueNumberSap,
-        quantity:req.body.quantity,
-        documentNumber: 0
-      });
-      // console.log("Line 487",sapEntry);
-      await manualSapTransaction("7002",dateTimeFormat,newPartNumberAdded,jobCardBarcode[0]["barcodeSerial"],uniqueNumberSap,req.body.quantity);
-
-      // var checkJobProcessSequence = await JobProcessSequenceRelation.find({
-      //   jobId:req.body.jobId,
-      //   processStatus:"Pending"
-      // });
-      // if(checkJobProcessSequence[0]!=null&&checkJobProcessSequence[0]!=undefined){
-      // }
-      // else{
-      //     var jobProcessSequenceTransaction = await JobProcessSequenceTransaction.find({
-      //       jobCardId:req.body.jobId
-      //    });
-      //     var quantity =0;
-      //     for(var i =0;i<jobProcessSequenceTransaction.length;i++){
-      //       quantity = quantity + parseInt(jobProcessSequenceTransaction[0]["quantity"]);
-      //     }
-      //     var dateTime = new Date();
-      //     var updatedJobCard = await JobCard.update({
-      //       id:req.body.jobId
-      //     })
-      //     .set({
-      //       jobcardStatus:"Completed",
-      //       actualQuantity:quantity
-      //     });
-      //     //console.log(updatedJobCard);
-      //     //console.log(req.body.jobId +"Line 224");
-      //     var jobProcessSequenceRelation = await JobProcessSequenceRelation.find({
-      //       jobId:req.body.jobId
-      //     });
-      //     //console.log(jobProcessSequenceRelation[0]["processSequenceId"]);
-      //     var processSequence = await ProcessSequence.find({
-      //       id:jobProcessSequenceRelation[0]["processSequenceId"]
-      //     });
-      //     //console.log("Process Sequence" + processSequence);
-      //     var partNumber = await PartNumber.find({
-      //       id:processSequence[0]["partId"]
-      //     });
-      //     var jobCardBarcode = await JobCard.find({
-      //       id:req.body.jobId
-      //     });
-      //     await SapTransaction.create({
-      //       plant:"Tata Marcopolo Dharwad",
-      //       date:dateTime,
-      //       material:partNumber[0]["partNumber"],
-      //       jobCard:jobCardBarcode[0]["barcodeSerial"],
-      //       uniqueNumber:dateTime,
-      //       quantity:quantity,
-      //       documentNumber: 0
-      //     });
-      //   // }
-      // }
+    }
+    else{
+      uniqueNumberSap = "AA000001"
+    }
+    var dateTimeFormat;
+    var d = new Date();
+    var curr_date = d.getDate();
+    if(curr_date.toString().length == 1){
+      curr_date = "0" + curr_date
+    }
+    var curr_month = parseInt(d.getMonth()) + 1;
+    curr_month = ""+curr_month;
+    if(curr_month.toString().length == 1){
+      curr_month = "0" + curr_month
+    }
+    var curr_year = d.getFullYear();
+    curr_year = curr_year.substring(2,4);
+    //console.log(curr_year);
+    dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
+    // dateTimeFormat = curr_year + "-" + curr_month + "-" + curr_date;
+    var newPartNumberAdded = "000000" + partNumber[0]["partNumber"];
+    await SapTransaction.create({
+      plant:"7002",
+      date:dateTimeFormat,
+      material:newPartNumberAdded,
+      jobCard:jobCardBarcode[0]["barcodeSerial"],
+      uniqueNumber:uniqueNumberSap,
+      quantity:req.body.quantity,
+      documentNumber: 0
+    });
+    // console.log("Line 487",sapEntry);
+    await manualSapTransaction("7002",dateTimeFormat,newPartNumberAdded,jobCardBarcode[0]["barcodeSerial"],uniqueNumberSap,req.body.quantity);
+    await PartNumber.update({
+      id:processSequence[0]["partId"]
+    })
+    .set({
+      remarks:req.body.note
+    });
+    res.send("Final Location");
   }
 };
 

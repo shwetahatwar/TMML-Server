@@ -180,7 +180,7 @@ module.exports = {
             var newPartNumberId = await PartNumber.find({
               partNumber:dailySchedule[i]["partnumber"]
             });
-            if(newPartNumberId!=null && newPartNumberId!=undefined){
+            if(newPartNumberId[0] != null && newPartNumberId[0] != undefined){
               await ProductionSchedulePartRelation.create({
                 scheduleId: newproductionScheduleId["id"],
                 partNumberId: newPartNumberId[0]["id"],
@@ -248,7 +248,7 @@ module.exports = {
             var newPartNumberId = await PartNumber.find({
               partNumber:dailySchedule[i]["partnumber"]
             });
-            if(newPartNumberId!=null && newPartNumberId!=undefined){
+            if(newPartNumberId[0] != null && newPartNumberId[0] != undefined){
               await ProductionSchedulePartRelation.create({
                 scheduleId: newproductionScheduleId["id"],
                 partNumberId: newPartNumberId[0]["id"],
@@ -316,7 +316,7 @@ module.exports = {
             var newPartNumberId = await PartNumber.find({
               partNumber:dailySchedule[i]["partnumber"]
             });
-            if(newPartNumberId!=null && newPartNumberId!=undefined){
+            if(newPartNumberId[0] != null && newPartNumberId[0] != undefined){
               await ProductionSchedulePartRelation.create({
                 scheduleId: newproductionScheduleId["id"],
                 partNumberId: newPartNumberId[0]["id"],
@@ -384,7 +384,7 @@ module.exports = {
             var newPartNumberId = await PartNumber.find({
               partNumber:dailySchedule[i]["partnumber"]
             });
-            if(newPartNumberId!=null && newPartNumberId!=undefined){
+            if(newPartNumberId[0] != null && newPartNumberId[0] != undefined){
               await ProductionSchedulePartRelation.create({
                 scheduleId: newproductionScheduleId["id"],
                 partNumberId: newPartNumberId[0]["id"],
@@ -445,7 +445,7 @@ module.exports = {
 
             var quantity = dailySchedule[i][day];
             var remarks = dailySchedule[i]["Remarks for first date in column"];
-            if(newPartNumberId!=null && newPartNumberId!=undefined){
+            if(newPartNumberId[0] != null && newPartNumberId[0]!= undefined){
               console.log("Line 448",newPartNumberId);
               for(var j=0;j<newPartNumberId.length;j++){
                 await ProductionSchedulePartRelation.create({
@@ -485,7 +485,7 @@ module.exports = {
 
     console.log('monthlySchedule: ', monthlySchedule);
 
-    if(monthlySchedule != undefined && monthlySchedule.length > 0 && monthlySchedule[0] !=null){
+    if(monthlySchedule[0] != undefined && monthlySchedule.length > 0 && monthlySchedule[0] != null){
       console.log('monthlySchedulePartNumbers: ', monthlySchedule[0]["id"]);
       var monthlySchedulePartNumbers = await MonthlySchedulePartRelation.find({
         monthlyScheduleId:monthlySchedule[0]["id"]
@@ -506,7 +506,7 @@ module.exports = {
     if(monthlySchedulePartNumbers != null && monthlySchedulePartNumbers != undefined){
       for(var i=0; i < monthlySchedulePartNumbers.length; i++){
         var partNumberQuantity = 0;
-        if(dailySchedule!=null&&dailySchedule!=undefined){
+        if(dailySchedule[0] != null && dailySchedule[0] != undefined){
           for(var j=0;j<dailySchedule.length;j++){
             // console.log(dailySchedule[j]["id"]);
             // console.log(monthlySchedulePartNumbers[i]["partNumber"]);
@@ -515,7 +515,7 @@ module.exports = {
               partNumberId:monthlySchedulePartNumbers[i]["partNumber"]['id']
             });
             // console.log(dailySchedulePartNumbers);
-            if(dailySchedulePartNumbers[0]!=null && dailySchedulePartNumbers!=undefined){
+            if(dailySchedulePartNumbers[0]!=null && dailySchedulePartNumbers[0] != undefined){
               partNumberQuantity = partNumberQuantity + dailySchedulePartNumbers[0]["requestedQuantity"];
             }
           }

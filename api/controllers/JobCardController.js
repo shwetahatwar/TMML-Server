@@ -101,10 +101,31 @@ module.exports = {
     estimatedDate = estimatedDate - timestamp;
     var dt = new Date();
     dt.setSeconds( dt.getSeconds() + estimatedDate );
-    estimatedDate = dt.toString();
-    estimatedDate = estimatedDate.substr(0,24);
+    // estimatedDate = dt.toString();
+    // estimatedDate = estimatedDate.substr(0,24);
+    var curr_date = dt.getDate();
+    if(curr_date.toString().length == 1){
+      curr_date = "0" + curr_date
+    }
+    var curr_month = parseInt(dt.getMonth()) + 1;
+    curr_month = ""+curr_month;
+    if(curr_month.toString().length == 1){
+      curr_month = "0" + curr_month
+    }
+    var curr_year = dt.getFullYear();
+    // console.log(curr_year);
+    var hours = dt.getHours();
+    var minutes = dt.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    //return strTime;
+    
+    estimatedDate = curr_date + "-" + curr_month + "-" + curr_year + " " + strTime;
     console.log(estimatedDate);
-
+    
   	var newJobCard = await JobCard.create({
   		productionSchedulePartRelationId:req.body.productionSchedulePartRelationId,
   		requestedQuantity:req.body.requestedQuantity,
@@ -291,7 +312,99 @@ module.exports = {
       quantity:req.body.quantity,
       documentNumber:0
     });
-  }
+  },
 
+  getJobcardCount:async function(req,res){
+    var responseArray = [];
+    var newGetProductionScheduleId = await ProductionSchedulePartRelation.find({
+      scheduleId: req.query.scheduleId
+    }).populate('jobcard');
+    if(newGetProductionScheduleId[0] != null && newGetProductionScheduleId[0] != undefined){
+      console.log("Total Job Card", newGetProductionScheduleId[0]["jobcard"].length);
+      var totalJobCards = newGetProductionScheduleId[0]["jobcard"].length;
+      var inProgressRequestQuantity = 0;
+      var pendingRequestQuantity = 0;
+      var completedRequestQuantity = 0;
+      var newRequestQuantity = 0;
+      var inProgressActualQuantity = 0;
+      var pendingActualQuantity = 0;
+      var completedActualQuantity = 0;
+      var newActualQuantity = 0;
+      var inProgressJobCardQuantity = 0;
+      var pendingJobCardQuantity = 0;
+      var completedJobCardQuantity = 0;
+      var newJobCardQuantity = 0;
+
+      for(var i=0; i<newGetProductionScheduleId[0]["jobcard"].length; i++){
+        // console.log(newGetProductionScheduleId[0]["jobcard"][i]["jobcardStatus"]);
+        if(newGetProductionScheduleId[0]["jobcard"][i]["jobcardStatus"] == "In Progress"){
+          inProgressRequestQuantity = inProgressRequestQuantity + newGetProductionScheduleId[0]["jobcard"][i]["requestedQuantity"];
+          inProgressActualQuantity = inProgressActualQuantity + newGetProductionScheduleId[0]["jobcard"][i]["actualQuantity"];
+          inProgressJobCardQuantity++;
+        }
+        else if(newGetProductionScheduleId[0]["jobcard"][i]["jobcardStatus"] == "Pending"){
+          pendingRequestQuantity = pendingRequestQuantity + newGetProductionScheduleId[0]["jobcard"][i]["requestedQuantity"];
+          pendingActualQuantity = pendingActualQuantity + newGetProductionScheduleId[0]["jobcard"][i]["actualQuantity"];
+          pendingJobCardQuantity++;
+        }
+        else if(newGetProductionScheduleId[0]["jobcard"][i]["jobcardStatus"] == "Completed"){
+          completedRequestQuantity = completedRequestQuantity + newGetProductionScheduleId[0]["jobcard"][i]["requestedQuantity"];
+          completedActualQuantity = completedActualQuantity + newGetProductionScheduleId[0]["jobcard"][i]["actualQuantity"];
+          completedJobCardQuantity++;
+        }
+        else{
+          newRequestQuantity = newRequestQuantity + newGetProductionScheduleId[0]["jobcard"][i]["requestedQuantity"];
+          newActualQuantity = newActualQuantity + newGetProductionScheduleId[0]["jobcard"][i]["actualQuantity"];
+          newJobCardQuantity++;
+
+        }
+      }
+      console.log("inProgressRequestQuantity",inProgressRequestQuantity);
+      console.log("pendingRequestQuantity",pendingRequestQuantity);
+      console.log("completedRequestQuantity",completedRequestQuantity);
+      console.log("newRequestQuantity",newRequestQuantity);
+      console.log("inProgressActualQuantity",inProgressActualQuantity);
+      console.log("pendingActualQuantity",pendingActualQuantity);
+      console.log("completedActualQuantity",completedActualQuantity);
+      console.log("newActualQuantity",newActualQuantity);
+      console.log("inProgressJobCardQuantity",inProgressJobCardQuantity);
+      console.log("pendingJobCardQuantity",pendingJobCardQuantity);
+      console.log("completedJobCardQuantity",completedJobCardQuantity);
+      console.log("newJobCardQuantity",newJobCardQuantity);
+
+      var requestedData = {
+        inProgressRequestQuantity:inProgressRequestQuantity,
+        pendingRequestQuantity:pendingRequestQuantity,
+        completedRequestQuantity:completedRequestQuantity,
+        newRequestQuantity:newRequestQuantity,
+        inProgressActualQuantity:inProgressActualQuantity,
+        pendingActualQuantity:pendingActualQuantity,
+        completedActualQuantity:completedActualQuantity,
+        newActualQuantity:newActualQuantity,
+        inProgressJobCardQuantity:inProgressJobCardQuantity,
+        pendingJobCardQuantity:pendingJobCardQuantity,
+        completedJobCardQuantity:completedJobCardQuantity,
+        newJobCardQuantity:newJobCardQuantity
+      }
+      responseArray.push(requestedData);
+    }
+    res.send(responseArray);
+  },
+
+  getJobCardByPartNumber:async function(req,res){
+    var jobCardData=[];
+    var newGetProductionScheduleId = await ProductionSchedulePartRelation.find({
+      partNumberId: req.query.partId
+    }).populate('jobcard')
+    .populate('partNumberId');
+    if(newGetProductionScheduleId[0] != null && newGetProductionScheduleId[0] != undefined){
+      // console.log(newGetProductionScheduleId.length);
+      // for(var i=0; i<newGetProductionScheduleId.length; i++){
+      //   if(newGetProductionScheduleId[i]["jobcard"][0] != null && newGetProductionScheduleId[i]["jobcard"][0] != undefined)
+      //   jobCardData.push(newGetProductionScheduleId[i]["jobcard"]);
+      // }
+    }
+    res.send(newGetProductionScheduleId);
+  }
 };
 

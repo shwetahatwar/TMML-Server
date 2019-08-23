@@ -203,7 +203,8 @@ module.exports = {
   soapRequestPost:async function(req,res){
     console.log("In");
     const xmlhttp = new XMLHttpRequest();
-    xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
+    // xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
+    xmlhttp.open('POST', 'http://fjqaqts.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
     xmlhttp.onreadystatechange = async function() {
       if (xmlhttp.readyState == 4) {
         // alert(xmlhttp.responseText);

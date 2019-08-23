@@ -64,6 +64,10 @@ module.exports = {
     },
     kanbanLocation:{
       model:'Location'
+    },
+    remarks:{
+      type: 'string',
+      defaultsTo: 'NA'
     }
   },
 
