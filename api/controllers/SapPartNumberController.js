@@ -203,7 +203,7 @@ module.exports = {
   soapRequestPost:async function(req,res){
     console.log("In");
     const xmlhttp = new XMLHttpRequest();
-      xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
+    xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
     xmlhttp.onreadystatechange = async function() {
       if (xmlhttp.readyState == 4) {
         // alert(xmlhttp.responseText);
@@ -236,8 +236,8 @@ module.exports = {
     var getJobCardCompleted = await SapTransaction.find({
       documentNumber: 0
     });
-    // for(var i=0;i<getJobCardCompleted.length;i++){
-      // if(getJobCardCompleted[0]["plant"]!= null && getJobCardCompleted[0]["plant"]!=undefined){
+    if(getJobCardCompleted[0] != null && getJobCardCompleted[0] != undefined){
+      if(getJobCardCompleted[0]["plant"]!= null && getJobCardCompleted[0]["plant"]!=undefined){
         xml = xml.replace("Plant",getJobCardCompleted[0]["plant"]);
         if(getJobCardCompleted[0]["date"]!= null && getJobCardCompleted[0]["date"]!=undefined){
           xml = xml.replace("Date",getJobCardCompleted[0]["date"]);
@@ -249,15 +249,15 @@ module.exports = {
                 xml = xml.replace("UniqueNumber",getJobCardCompleted[0]["uniqueNumber"]);
                 if(getJobCardCompleted[0]["quantity"]!= null && getJobCardCompleted[0]["quantity"]!=undefined){
                   xml = xml.replace("ComponentquantityComponent",getJobCardCompleted[0]["quantity"]);
-                  console.log("Line 250",xml);
+                  console.log("Line 252",xml);
                   xmlhttp.send(xml);
                 }
               }
             }
           }
         }
-      // }
-    // }
+      }
+    }
     res.send();
   },
 

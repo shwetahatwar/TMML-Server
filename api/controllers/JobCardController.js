@@ -38,7 +38,7 @@ module.exports = {
       // if(lastBarcodeDay == curr_date){
         if(curr_time == lastBarcodeMintues){
           var lastSerialNumber = getJobCard[0]["barcodeSerial"];
-          lastSerialNumber = lastSerialNumber.substring(15,17);
+          lastSerialNumber = lastSerialNumber.substring(15,18);
           console.log(lastSerialNumber);
           serialNumber = parseInt(lastSerialNumber) + 1;
           if(serialNumber.toString().length == 1){

@@ -21,8 +21,8 @@ module.exports = {
       type:'string'
     },
     uniqueNumber:{
-      type:'number',
-      columnType: 'bigint',
+      type:'string',
+      // columnType: 'bigint',
     },
     quantity:{
       type:'number',

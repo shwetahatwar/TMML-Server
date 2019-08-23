@@ -14,7 +14,8 @@ module.exports = {
     	console.log("Line 14", partNumberProcessSequenceBulkUpload[0]);
     	for(var i=0; i<partNumberProcessSequenceBulkUpload.length; i++){
     		var partNumberBulkUpload = await PartNumber.find({
-    			partNumber: partNumberProcessSequenceBulkUpload[i].partNumber
+					where: {partNumber: partNumberProcessSequenceBulkUpload[i].partNumber},
+					select: ['id']
     		});
     		// console.log("line 18" ,partNumberBulkUpload[0]["id"]);
     		// console.log("line 20", partNumberProcessSequenceBulkUpload[i].SMH);
@@ -30,13 +31,13 @@ module.exports = {
 		        manPower:partNumberProcessSequenceBulkUpload[i].manPower,
 		        SMH:partNumberProcessSequenceBulkUpload[i].SMH
 		      });
-		      var partcheck = await PartNumber.find({
-    			partNumber: partNumberProcessSequenceBulkUpload[i].partNumber
-    		});
+		      // var partcheck = await PartNumber.find({
+    			// partNumber: partNumberProcessSequenceBulkUpload[i].partNumber
+    		// });
 	      // console.log(partcheck);
 	      // break;
-	      	var j=1;
-			var processName1 = partNumberProcessSequenceBulkUpload[i].process_1;
+		      var j=1;
+					var processName1 = partNumberProcessSequenceBulkUpload[i].process_1;
 	        var processLoding1 = partNumberProcessSequenceBulkUpload[i].loadingTimeP1;
 	        var processprocess1 = partNumberProcessSequenceBulkUpload[i].processTimeP1;
 	        var processunloading1 = partNumberProcessSequenceBulkUpload[i].unloadingTimeP1;
@@ -147,13 +148,17 @@ async function processCreate(processName,newPartNumberId,count,processLoding,pro
   console.log("In Process Create",processName,newPartNumberId,count,processLoding,processprocess,processunloading,processcycle);
   if(processName != null && processName != undefined){
       var machineGroupId = await MachineGroup.find({
-        name:processName
+				where: {name:processName},
+				select: ['id']
       });
       if(machineGroupId[0] != null && machineGroupId[0] != undefined){
-      	var getProcessSequence = await ProcessSequence.find({
-	      	partId:newPartNumberId,
-	      	sequenceNumber:count,
-	      	machineGroupId:machineGroupId[0]["id"]
+				var getProcessSequence = await ProcessSequence.find({
+					where: {
+						partId:newPartNumberId,
+	      		sequenceNumber:count,
+	      		machineGroupId:machineGroupId[0]["id"]
+					},
+					select: ['id']
 	      });
 	      if(getProcessSequence[0] != null && getProcessSequence[0] != undefined){
 	      }
@@ -173,8 +178,11 @@ async function processCreate(processName,newPartNumberId,count,processLoding,pro
 
 
 	        var newProcessSequenceId = await ProcessSequence.find({
-	        	partId:newPartNumberId,
-	          sequenceNumber:count
+						where: {
+							partId:newPartNumberId,
+		          sequenceNumber:count
+						},
+						select: ['id']
 	        });
 
 	        console.log("line 149",newProcessSequenceId);
@@ -192,7 +200,8 @@ async function processCreate(processName,newPartNumberId,count,processLoding,pro
 	        for(var machineCount = 0;machineCount<machineGroupMachines.length;machineCount++){
 	          var machineIdValue;
 	          var newMachineId = await Machine.find({
-	            machineName:machineGroupMachines[machineCount]["machineName"]
+							where: {machineName:machineGroupMachines[machineCount]["machineName"]},
+							select: ['id']
 	          });
 	          if(newMachineId[0] != null && newMachineId[0] != undefined && newProcessSequenceId[0] != null && newProcessSequenceId[0] != undefined){
 		          await ProcessSequenceMachineRelation.create({
@@ -203,6 +212,6 @@ async function processCreate(processName,newPartNumberId,count,processLoding,pro
 		        }
 	        }
 	      }
-      }
+			}
     }
 }

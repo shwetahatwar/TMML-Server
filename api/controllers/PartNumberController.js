@@ -3,7 +3,7 @@
  *
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
-*/
+ */
 
 var request = require('request');
 module.exports = {
@@ -105,6 +105,18 @@ module.exports = {
     res.status(200).send(newPartNumberId);
   },
 
+  getPartSMHZero : async function(req,res){
+    var getCount = [];
+    var newCount = await PartNumber.count({
+      SMH:0,
+      status:1
+    });
+    // console.log("Line 113", getCount);
+    // res.status(200);
+    getCount.push(newCount);
+    res.send(getCount);
+  },
+
   newPart: async function(req,res){
     var cycleTime = 0;
     for(var i=0;i<req.body.processes.length;i++){
@@ -196,10 +208,10 @@ module.exports = {
                     });
                     // console.log("Line 197", newBody[i]["machine_machineGroupId"]["id"]);
                   }
-                }  
+                }
               });
-              
-              
+
+
 
               // var machineGroups = await MachineGroup.find({
               //   id:req.body.processes[i].machineGroupName

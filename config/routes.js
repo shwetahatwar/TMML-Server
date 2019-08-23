@@ -61,6 +61,7 @@ module.exports.routes = {
   'POST /stopProcessSequence': 'JobProcessSequenceRelation.stopProcess',
   'POST /Trolley/create': 'Trolley.create',
   'POST /parseJson': 'SapPartNumberController.parseJson',
+   'GET /getPartSMHZero': 'PartNumberController.getPartSMHZero',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

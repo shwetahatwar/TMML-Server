@@ -109,7 +109,7 @@ module.exports = {
               partNumber:dailySchedule[i]["partnumber"]
             });
             console.log("Line 110", newPartNumberId);
-            if(newPartNumberId!=null && newPartNumberId!=undefined){
+            if(newPartNumberId[0]!=null && newPartNumberId[0]!=undefined){
               await ProductionSchedulePartRelation.create({
                 scheduleId: newproductionScheduleId["id"],
                 partNumberId: newPartNumberId[0]["id"],
@@ -479,11 +479,8 @@ module.exports = {
   dailyMonthlyReport: async function(req,res){
 
     var monthlySchedule = await MonthlySchedule.find({
-      where:{
-        year:req.body.year,
-        month:req.body.month
-      },
-      select:['id']
+      year:req.body.year,
+      month:req.body.month
     });
 
     console.log('monthlySchedule: ', monthlySchedule);
@@ -501,10 +498,7 @@ module.exports = {
     if(monthlySchedulePartNumbers[0] != null && monthlySchedulePartNumbers[0] != undefined){
       console.log('monthly schedule id: ', monthlySchedule[0]["id"]);
       var dailySchedule = await ProductionSchedule.find({
-        where:{
-          monthlyScheduleId:monthlySchedule[0]["id"]
-        },
-        select:['id']
+        monthlyScheduleId:monthlySchedule[0]["id"]
       });
     }
     // console.log(dailySchedule.length);
@@ -517,11 +511,8 @@ module.exports = {
             // console.log(dailySchedule[j]["id"]);
             // console.log(monthlySchedulePartNumbers[i]["partNumber"]);
             var dailySchedulePartNumbers = await ProductionSchedulePartRelation.find({
-              where:{
-                scheduleId:dailySchedule[j]["id"],
-                partNumberId:monthlySchedulePartNumbers[i]["partNumber"]['id']
-              },
-              select:['requestedQuantity']
+              scheduleId:dailySchedule[j]["id"],
+              partNumberId:monthlySchedulePartNumbers[i]["partNumber"]['id']
             });
             // console.log(dailySchedulePartNumbers);
             if(dailySchedulePartNumbers[0]!=null && dailySchedulePartNumbers!=undefined){

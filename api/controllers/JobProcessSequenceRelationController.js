@@ -265,22 +265,23 @@ module.exports = {
       .sort('id DESC');
       if(sapEntry[0] != null && sapEntry[0] != undefined){
         uniqueNumberSap = sapEntry[0]["uniqueNumber"];
+        uniqueNumberSap = sapEntry[0]["uniqueNumber"];
         var serialNumberSapStart = uniqueNumberSap.substring(0,2);
         var serialNumberSapEnd = uniqueNumberSap.substring(2,8);
-
-        if(serialNumberSapEnd == 999999){
+        if(serialNumberSapEnd == "999999"){
           var serialNumberSapFirstStart = serialNumberSapStart.substring(0,1);
           var serialNumberSapLastStart = serialNumberSapStart.substring(1,2);
           var serialNumberSapLatest;
           if(serialNumberSapLastStart == 'Z'){
             serialNumberSapLatest = String.fromCharCode(serialNumberSapFirstStart.charCodeAt() + 1);
             serialNumberSapLatest = serialNumberSapLatest + 'A';
+            console.log(serialNumberSapLatest);
           }
           else{
             serialNumberSapLatest = String.fromCharCode(serialNumberSapLastStart.charCodeAt() + 1);
-            serialNumberSapLatest = serialNumberSapLatest + serialNumberSapLatest;
+            serialNumberSapLatest = serialNumberSapFirstStart + serialNumberSapLatest;
           }
-          uniqueNumberSap = serialNumberSapStart + "000001";
+          uniqueNumberSap = serialNumberSapLatest + "000001";
         }
         else{
           serialNumberSapEnd = parseInt(serialNumberSapEnd) + 1;
@@ -501,19 +502,21 @@ module.exports = {
       .sort('id DESC');
       if(sapEntry[0] != null && sapEntry[0] != undefined){
         uniqueNumberSap = sapEntry[0]["uniqueNumber"];
+        uniqueNumberSap = sapEntry[0]["uniqueNumber"];
         var serialNumberSapStart = uniqueNumberSap.substring(0,2);
         var serialNumberSapEnd = uniqueNumberSap.substring(2,8);
-        if(serialNumberSapEnd == 999999){
+        if(serialNumberSapEnd == "999999"){
           var serialNumberSapFirstStart = serialNumberSapStart.substring(0,1);
           var serialNumberSapLastStart = serialNumberSapStart.substring(1,2);
           var serialNumberSapLatest;
           if(serialNumberSapLastStart == 'Z'){
             serialNumberSapLatest = String.fromCharCode(serialNumberSapFirstStart.charCodeAt() + 1);
             serialNumberSapLatest = serialNumberSapLatest + 'A';
+            console.log(serialNumberSapLatest);
           }
           else{
             serialNumberSapLatest = String.fromCharCode(serialNumberSapLastStart.charCodeAt() + 1);
-            serialNumberSapLatest = serialNumberSapLatest + serialNumberSapLatest;
+            serialNumberSapLatest = serialNumberSapFirstStart + serialNumberSapLatest;
           }
           uniqueNumberSap = serialNumberSapLatest + "000001";
         }
@@ -521,7 +524,6 @@ module.exports = {
           serialNumberSapEnd = parseInt(serialNumberSapEnd) + 1;
           var newQuantity = pad(serialNumberSapEnd, 6);
           uniqueNumberSap = serialNumberSapStart + newQuantity;
-          //uniqueNumberSap = serialNumberSapStart + serialNumberSapEnd;
         }
       }
       else{
@@ -609,8 +611,8 @@ module.exports = {
 
 
 async function manualSapTransaction(plantAdd,dateAdd,materialAdd,jobcardAdd,uniqueNumberAdd,quantityAdd){
-  jobcardAdd = jobcardAdd.substring(3,15);
-  uniqueNumberAdd = uniqueNumberAdd.substring(1,12);
+  // jobcardAdd = jobcardAdd.substring(3,18);
+  // uniqueNumberAdd = uniqueNumberAdd.substring(1,12);
   console.log("In Manual SAP",uniqueNumberAdd);
   const xmlhttp = new XMLHttpRequest();
   xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
