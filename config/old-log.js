@@ -10,23 +10,6 @@
  * https://sailsjs.com/docs/concepts/logging
  */
 
-
-var winston = require('winston');
-const customLogger = winston.createLogger({
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.File({
-      filename: 'combined.log',
-      level: 'verbose'
-    }),
-    new winston.transports.File({
-      filename: 'errors.log',
-      level: 'error'
-    })
-  ]
-});
-
-
 module.exports.log = {
 
   /***************************************************************************
@@ -41,10 +24,6 @@ module.exports.log = {
   *                                                                          *
   ***************************************************************************/
 
-  // Pass in our custom logger, and pass all log levels through.
-  custom: customLogger,
-  level: 'verbose',
-  // Disable captain's log so it doesn't prefix or stringify our meta data.
-  inspect: false
+  level: 'verbose'
 
 };
