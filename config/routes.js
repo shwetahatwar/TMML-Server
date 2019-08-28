@@ -62,8 +62,7 @@ module.exports.routes = {
   'POST /Trolley/create': 'Trolley.create',
   'POST /parseJson': 'SapPartNumberController.parseJson',
    'GET /getPartSMHZero': 'PartNumberController.getPartSMHZero',
-   'GET /getJobcardCount':'JobCard.getJobcardCount',
-   'GET /getJobCardByPartNumber':'JobCard.getJobCardByPartNumber'
+   'GET /getJobcardCount':'JobCard.getJobcardCount'
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

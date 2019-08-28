@@ -36,6 +36,10 @@ module.exports = {
     },
     isGroup:{
       type:'boolean'
+    },
+    status:{
+      type:'number',
+      columnType: 'integer',
     }
   },
 

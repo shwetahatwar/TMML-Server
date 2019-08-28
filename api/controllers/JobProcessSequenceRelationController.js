@@ -304,10 +304,13 @@ module.exports = {
         curr_month = "0" + curr_month
       }
       var curr_year = d.getFullYear();
+      curr_year = curr_year.substring(2,4);
+      //console.log(curr_year);
+      dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
       //console.log(curr_year);
       // dateTimeFormat = curr_year + "-" + curr_month + "-" + curr_date;
-      dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
-      var newPartNumberAdded = "000000" + partNumber[0]["partNumber"];
+      // dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
+      var newPartNumberAdded = partNumber[0]["partNumber"];
       await SapTransaction.create({
         plant:"7002",
         date:dateTimeFormat,
@@ -326,7 +329,7 @@ module.exports = {
       .set({
         remarks:req.body.note
       });
-      
+
       res.send("Final Location");
     }
   },
@@ -487,7 +490,7 @@ module.exports = {
     //console.log(curr_year);
     dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
     // dateTimeFormat = curr_year + "-" + curr_month + "-" + curr_date;
-    var newPartNumberAdded = "000000" + partNumber[0]["partNumber"];
+    var newPartNumberAdded = partNumber[0]["partNumber"];
     await SapTransaction.create({
       plant:"7002",
       date:dateTimeFormat,
@@ -515,7 +518,7 @@ async function manualSapTransaction(plantAdd,dateAdd,materialAdd,jobcardAdd,uniq
   // uniqueNumberAdd = uniqueNumberAdd.substring(1,12);
   console.log("In Manual SAP",uniqueNumberAdd);
   const xmlhttp = new XMLHttpRequest();
-  xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
+  xmlhttp.open('POST', 'http://fjqaqts.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
   xmlhttp.onreadystatechange = async function() {
     if (xmlhttp.readyState == 4) {
       var xml = xmlhttp.responseText;

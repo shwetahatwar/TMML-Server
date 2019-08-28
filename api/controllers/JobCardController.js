@@ -72,7 +72,7 @@ module.exports = {
       cell:req.body.cell
     });
     shiftTime = shiftTime[0];
-    
+
     console.log(shiftTime);
     var millis = new Date();
     var hrs = millis.getHours();
@@ -80,7 +80,7 @@ module.exports = {
     var min = millis.getMinutes();
     min = min * 60;
     var sec = millis.getSeconds();
-    var timestamp = hrs+min+sec; 
+    var timestamp = hrs+min+sec;
 
     console.log(timestamp,"timestamp");
     var estimatedDate = timestamp + SMH;
@@ -96,36 +96,36 @@ module.exports = {
         console.log("Lunch")
       }
     }
-    
+
     console.log(estimatedDate,timestamp);
     estimatedDate = estimatedDate - timestamp;
     var dt = new Date();
     dt.setSeconds( dt.getSeconds() + estimatedDate );
-    // estimatedDate = dt.toString();
-    // estimatedDate = estimatedDate.substr(0,24);
-    var curr_date = dt.getDate();
-    if(curr_date.toString().length == 1){
-      curr_date = "0" + curr_date
-    }
-    var curr_month = parseInt(dt.getMonth()) + 1;
-    curr_month = ""+curr_month;
-    if(curr_month.toString().length == 1){
-      curr_month = "0" + curr_month
-    }
-    var curr_year = dt.getFullYear();
-    // console.log(curr_year);
-    var hours = dt.getHours();
-    var minutes = dt.getMinutes();
-    var ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0'+minutes : minutes;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
-    //return strTime;
-    
-    estimatedDate = curr_date + "-" + curr_month + "-" + curr_year + " " + strTime;
+    estimatedDate = dt.toString();
+    estimatedDate = estimatedDate.substr(0,24);
+    // var curr_date = dt.getDate();
+    // if(curr_date.toString().length == 1){
+    //   curr_date = "0" + curr_date
+    // }
+    // var curr_month = parseInt(dt.getMonth()) + 1;
+    // curr_month = ""+curr_month;
+    // if(curr_month.toString().length == 1){
+    //   curr_month = "0" + curr_month
+    // }
+    // var curr_year = dt.getFullYear();
+    // // console.log(curr_year);
+    // var hours = dt.getHours();
+    // var minutes = dt.getMinutes();
+    // var ampm = hours >= 12 ? 'pm' : 'am';
+    // hours = hours % 12;
+    // hours = hours ? hours : 12; // the hour '0' should be '12'
+    // minutes = minutes < 10 ? '0'+minutes : minutes;
+    // var strTime = hours + ':' + minutes + ' ' + ampm;
+    // //return strTime;
+    //
+    // estimatedDate = curr_date + "-" + curr_month + "-" + curr_year + " " + strTime;
     console.log(estimatedDate);
-    
+
   	var newJobCard = await JobCard.create({
   		productionSchedulePartRelationId:req.body.productionSchedulePartRelationId,
   		requestedQuantity:req.body.requestedQuantity,
@@ -147,7 +147,7 @@ module.exports = {
    //      suggestedLocations = suggestedLocations + "," + machineGroupNew[i]["machineName"];
    //    }
    //  }
-   
+
     var machineGroups = await MachineGroup.find({
       id:req.body.suggestedDropLocations
     })
@@ -316,6 +316,7 @@ module.exports = {
 
   getJobcardCount:async function(req,res){
     var responseArray = [];
+    console.log("line 319",req.query.scheduleId);
     var newGetProductionScheduleId = await ProductionSchedulePartRelation.find({
       scheduleId: req.query.scheduleId
     }).populate('jobcard');
@@ -407,4 +408,3 @@ module.exports = {
     res.send(newGetProductionScheduleId);
   }
 };
-

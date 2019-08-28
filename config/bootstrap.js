@@ -11,6 +11,7 @@
 // var ModbusRTU = require("modbus-serial");
 // var client = new ModbusRTU();
 // var machineStrokes = require('../api/controllers/MachineStrokesController');
+var sapPartNumber = require('../api/controllers/SapPartNumberController');
 //
 // var activeStrockOne = true;
 // var activeStrockTwo = true;
@@ -34,7 +35,9 @@ module.exports.bootstrap = async function() {
   // ```
 
   // console.log("Try Connect");
-
+  // setInterval(async function(){
+  //   await sapPartNumber.soapRequestPost();
+  // },30000);
   // setInterval(function(){
   //   // SapPartNumber.soapRequestGet();
   //   // SapPartNumber.soapRequestPost();

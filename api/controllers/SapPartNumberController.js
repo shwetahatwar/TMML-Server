@@ -201,65 +201,82 @@ module.exports = {
   },
 
   soapRequestPost:async function(req,res){
-    console.log("In");
-    const xmlhttp = new XMLHttpRequest();
-    // xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
-    xmlhttp.open('POST', 'http://fjqaqts.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
-    xmlhttp.onreadystatechange = async function() {
-      if (xmlhttp.readyState == 4) {
-        // alert(xmlhttp.responseText);
-        // console.log("Line 210",xmlhttp.responseText);
-        var xml = xmlhttp.responseText;
-        var result = convert.xml2json(xml, {compact: true, spaces: 4});
-        var newJSON = JSON.parse(result);
-        console.log("Line 214", newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1]);
-        var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1];
-        // var xmlItems = newJSON["ZwebOutput"];
-        console.log(resultData);
-
-        if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
-          // for(var i =0;i<xmlItems.length;i++){
-            var sapTransaction = await SapTransaction.update({
-              uniqueNumber:resultData["Zbktxt"]["_text"]
-            })
-            .set({
-              documentNumber:resultData["Zmblnr"]["_text"],
-              documentYear:resultData["Zmjahr"]["_text"],
-              remarks:resultData["Zremarks"]["_text"]
-            });
-          // }
-        }
-      }
-    };
+    // console.log("In");
+    // const xmlhttp = new XMLHttpRequest();
+    // // xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
+    // xmlhttp.open('POST', 'http://fjqaqts.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
+    // xmlhttp.onreadystatechange = async function() {
+    //   if (xmlhttp.readyState == 4) {
+    //     // alert(xmlhttp.responseText);
+    //     // console.log("Line 210",xmlhttp.responseText);
+    //     var xml = xmlhttp.responseText;
+    //     var result = convert.xml2json(xml, {compact: true, spaces: 4});
+    //     var newJSON = JSON.parse(result);
+    //     console.log("Line 214", newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1]);
+    //     var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1];
+    //     // var xmlItems = newJSON["ZwebOutput"];
+    //     console.log(resultData);
+    //
+    //     if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
+    //       // for(var i =0;i<xmlItems.length;i++){
+    //         var sapTransaction = await SapTransaction.update({
+    //           uniqueNumber:resultData["Zbktxt"]["_text"]
+    //         })
+    //         .set({
+    //           documentNumber:resultData["Zmblnr"]["_text"],
+    //           documentYear:resultData["Zmjahr"]["_text"],
+    //           remarks:resultData["Zremarks"]["_text"]
+    //         });
+    //       // }
+    //     }
+    //     else{
+    //       var sapTransaction = await SapTransaction.update({
+    //         uniqueNumber:resultData["Zbktxt"]["_text"]
+    //       })
+    //       .set({
+    //         documentNumber:1,
+    //         documentYear:resultData["Zmjahr"]["_text"],
+    //         remarks:resultData["Zremarks"]["_text"]
+    //       });
+    //     }
+    //   }
+    // };
     // xmlhttp.setRequestHeader('SOAPAction', '');
-    xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
-    var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlPOSTTextFile.xml', 'utf-8');
+    // xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
+    // var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlPOSTTextFile.xml', 'utf-8');
     var getJobCardCompleted = await SapTransaction.find({
       documentNumber: 0
     });
     if(getJobCardCompleted[0] != null && getJobCardCompleted[0] != undefined){
-      if(getJobCardCompleted[0]["plant"]!= null && getJobCardCompleted[0]["plant"]!=undefined){
-        xml = xml.replace("Plant",getJobCardCompleted[0]["plant"]);
-        if(getJobCardCompleted[0]["date"]!= null && getJobCardCompleted[0]["date"]!=undefined){
-          xml = xml.replace("Date",getJobCardCompleted[0]["date"]);
-          if(getJobCardCompleted[0]["material"]!= null && getJobCardCompleted[0]["material"]!=undefined){
-            xml = xml.replace("MaterialNumber",getJobCardCompleted[0]["material"]);
-            if(getJobCardCompleted[0]["jobCard"]!= null && getJobCardCompleted[0]["jobCard"]!=undefined){
-              xml = xml.replace("JobCardNo",getJobCardCompleted[0]["jobCard"]);
-              if(getJobCardCompleted[0]["uniqueNumber"]!= null && getJobCardCompleted[0]["uniqueNumber"]!=undefined){
-                xml = xml.replace("UniqueNumber",getJobCardCompleted[0]["uniqueNumber"]);
-                if(getJobCardCompleted[0]["quantity"]!= null && getJobCardCompleted[0]["quantity"]!=undefined){
-                  xml = xml.replace("ComponentquantityComponent",getJobCardCompleted[0]["quantity"]);
-                  console.log("Line 252",xml);
-                  xmlhttp.send(xml);
-                }
-              }
-            }
-          }
+      for(var i=0; i < getJobCardCompleted.length; i++){
+        if(getJobCardCompleted[i] != null && getJobCardCompleted[i] != undefined){
+          await satTransactionEntry(getJobCardCompleted[i])
         }
       }
     }
-    res.send();
+    // if(getJobCardCompleted[0] != null && getJobCardCompleted[0] != undefined){
+    //   if(getJobCardCompleted[0]["plant"]!= null && getJobCardCompleted[0]["plant"]!=undefined){
+    //     xml = xml.replace("Plant",getJobCardCompleted[0]["plant"]);
+    //     if(getJobCardCompleted[0]["date"]!= null && getJobCardCompleted[0]["date"]!=undefined){
+    //       xml = xml.replace("Date",getJobCardCompleted[0]["date"]);
+    //       if(getJobCardCompleted[0]["material"]!= null && getJobCardCompleted[0]["material"]!=undefined){
+    //         xml = xml.replace("MaterialNumber",getJobCardCompleted[0]["material"]);
+    //         if(getJobCardCompleted[0]["jobCard"]!= null && getJobCardCompleted[0]["jobCard"]!=undefined){
+    //           xml = xml.replace("JobCardNo",getJobCardCompleted[0]["jobCard"]);
+    //           if(getJobCardCompleted[0]["uniqueNumber"]!= null && getJobCardCompleted[0]["uniqueNumber"]!=undefined){
+    //             xml = xml.replace("UniqueNumber",getJobCardCompleted[0]["uniqueNumber"]);
+    //             if(getJobCardCompleted[0]["quantity"]!= null && getJobCardCompleted[0]["quantity"]!=undefined){
+    //               xml = xml.replace("ComponentquantityComponent",getJobCardCompleted[0]["quantity"]);
+    //               console.log("Line 252",xml);
+    //               xmlhttp.send(xml);
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    // res.send();
   },
 
   parseJson:async function(req,res){
@@ -329,3 +346,72 @@ module.exports = {
 
   }
 };
+
+async function satTransactionEntry(getJobCardCompleted){
+
+  const xmlhttp = new XMLHttpRequest();
+  // xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
+  xmlhttp.open('POST', 'http://fjqaqts.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
+  xmlhttp.onreadystatechange = async function() {
+    if (xmlhttp.readyState == 4) {
+      // alert(xmlhttp.responseText);
+      // console.log("Line 210",xmlhttp.responseText);
+      var xml = xmlhttp.responseText;
+      var result = convert.xml2json(xml, {compact: true, spaces: 4});
+      var newJSON = JSON.parse(result);
+      console.log("Line 214", newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1]);
+      var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1];
+      // var xmlItems = newJSON["ZwebOutput"];
+      console.log(resultData);
+
+      if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
+        // for(var i =0;i<xmlItems.length;i++){
+          var sapTransaction = await SapTransaction.update({
+            uniqueNumber:resultData["Zbktxt"]["_text"]
+          })
+          .set({
+            documentNumber:resultData["Zmblnr"]["_text"],
+            documentYear:resultData["Zmjahr"]["_text"],
+            remarks:resultData["Zremarks"]["_text"]
+          });
+        // }
+      }
+      else{
+        var sapTransaction = await SapTransaction.update({
+          uniqueNumber:resultData["Zbktxt"]["_text"]
+        })
+        .set({
+          documentNumber:0,
+          documentYear:resultData["Zmjahr"]["_text"],
+          remarks:resultData["Zremarks"]["_text"]
+        });
+      }
+    }
+  };
+  // console.log("Line 389",getJobCardCompleted);
+  xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
+  var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlPOSTTextFile.xml', 'utf-8');
+  if(getJobCardCompleted != null && getJobCardCompleted != undefined){
+    console.log("Line 389",getJobCardCompleted);
+    if(getJobCardCompleted["plant"]!= null && getJobCardCompleted["plant"]!=undefined){
+      xml = xml.replace("Plant",getJobCardCompleted["plant"]);
+      if(getJobCardCompleted["date"]!= null && getJobCardCompleted["date"]!=undefined){
+        xml = xml.replace("Date",getJobCardCompleted["date"]);
+        if(getJobCardCompleted["material"]!= null && getJobCardCompleted["material"]!=undefined){
+          xml = xml.replace("MaterialNumber",getJobCardCompleted["material"]);
+          if(getJobCardCompleted["jobCard"]!= null && getJobCardCompleted["jobCard"]!=undefined){
+            xml = xml.replace("JobCardNo",getJobCardCompleted["jobCard"]);
+            if(getJobCardCompleted["uniqueNumber"]!= null && getJobCardCompleted["uniqueNumber"]!=undefined){
+              xml = xml.replace("UniqueNumber",getJobCardCompleted["uniqueNumber"]);
+              if(getJobCardCompleted["quantity"]!= null && getJobCardCompleted["quantity"]!=undefined){
+                xml = xml.replace("ComponentquantityComponent",getJobCardCompleted["quantity"]);
+                console.log("Line 252",xml);
+                xmlhttp.send(xml);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
