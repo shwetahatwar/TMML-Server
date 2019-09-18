@@ -44,153 +44,16 @@ module.exports = {
   },
 
   soapRequestGet:async function(req,res){
-    console.log("In");
-    const xmlhttp = new XMLHttpRequest();
-    xmlhttp.open('POST', 'http://fjqaqts.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmppp_ws_comp_dtls/570/zmppp_ws_comp_dtls/zmppp_ws_comp_dtls', true,"TMML_BRIOT","tml!06TML");
-    xmlhttp.onreadystatechange = async function() {
-      if (xmlhttp.readyState == 4) {
-        // alert(xmlhttp.responseText);
-        console.log(xmlhttp.responseText);
-        var xml = xmlhttp.responseText;
-        var result = convert.xml2json(xml, {compact: true, spaces: 4});
-        var newJSON = JSON.parse(result);
-        console.log("Line 57",newJSON["_attributes"]);
-        var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZMPPP_COMP_DTL_WEBSERVICEResponse"]["ZCOMP_DTL"]["item"];
-        // var xmlResult;
-        // parseString(xml, function (err, result) {
-        //   console.dir(JSON.stringify(result));
-        //   xmlResult = JSON.stringify(result);
-        // });
-
-        // var xmlItems = resultData["ZCOMP_DTL"];
-
-        for(var i =1;i<resultData.length;i++){
-          if(resultData[i]["ZSTATUS"]["_text"] == "N"){
-            var newPartNumber = await PartNumber.find({
-              partNumber : resultData[i]["ZIDNRK"]["_text"]
-            });
-            console.log("Line 72",newPartNumber);
-            if(newPartNumber[0] != undefined && newPartNumber[0] != null){
-            }
-            else{
-              console.log("Line 67", resultData[i]["ZMATNR"]["_text"]);
-              console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
-              var newRawMaterial = await RawMaterial.find({
-                rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
-              });
-              console.log(newRawMaterial[0]);
-              if(newRawMaterial[0] != undefined && newRawMaterial[0] !=null){
-                console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
-                var newLocationId;
-                var newLocation = await Location.find({
-                  name:resultData[i]["ZLGFSB"]["_text"]
-                });
-                if(newLocation[0] != null && newLocation[0] != undefined){
-                  console.log(newLocation);
-                  newLocationId = newLocation[0]["id"]
-                }
-                else {
-                  await Location.create({
-                    name:resultData[i]["ZLGFSB"]["_text"],
-                    barcodeSerial:Date.now(),
-                    locationType:'Kanban Location'
-                  });
-                  var newLocation1 = await Location.find({
-                    name:resultData[i]["ZLGFSB"]["_text"]
-                  });
-                  newLocationId = newLocation1[0]["id"]
-                }
-                var newPartNumber1 = await PartNumber.create({
-                  partNumber:resultData[i]["ZIDNRK"]["_text"],
-                  description:resultData[i]["ZMAKTX"]["_text"],
-                  partCreationDate:resultData[i]["ZANDAT1"]["_text"],
-                  partChangeDate:resultData[i]["ZAEDAT"]["_text"],
-                  partStatus:resultData[i]["ZSTATUS"]["_text"],
-                  uom:resultData[i]["ZMEINS"]["_text"],
-                  materialGroup:resultData[i]["ZMATKL"]["_text"],
-                  rawMaterialId : newRawMaterial[0]["id"],
-                  status : 1,
-                  kanbanLocation : newLocationId
-                })
-                .fetch();
-                console.log("newPartNumber", newPartNumber1[0]);
-                // break;
-              }
-            }
-          }
-          else if(resultData[i]["ZSTATUS"] == "C"){
-            var partNumber = PartNumber.update({
-              partNumber:resultData[i]["ZIDNRK"]["_text"]
-            })
-            .set({
-              description:resultData[i]["ZMAKTX"]["_text"],
-              partCreationDate:resultData[i]["ZANDAT1"]["_text"],
-              partChangeDate:resultData[i]["ZAEDAT"]["_text"],
-              partStatus:resultData[i]["ZSTATUS"]["_text"],
-              uom:resultData[i]["ZMEINS"]["_text"],
-              materialGroup:resultData[i]["ZMATKL"]["_text"],
-            });
-          }
-          else if(resultData[i]["ZSTATUS"] == "B"){
-            var partNumber = PartNumber.update({
-              partNumber:resultData[i]["ZIDNRK"]["_text"]
-            })
-            .set({
-              partStatus:resultData[i]["ZSTATUS"]["_text"],
-              status:0
-            });
-          }
-
-          // res.send();
-          // if(resultData[i]["ZSTATUS"] == "N"){
-          //   var partNumber = PartNumber.find({
-          //     partNumber:resultData[i]["ZIDNRK"],
-          //   });
-          //   if(partNumber[0]!=null && partNumber[0]!=undefined){
-          //
-          //   }
-          //   else{
-          //     var newPartNumber = PartNumber.create({
-          //       partNumber:resultData[i]["ZIDNRK"],
-          //       description:resultData[i]["ZMAKTX"],
-          //       partCreationDate:resultData[i]["ZANDAT1"],
-          //       partChangeDate:resultData[i]["ZAEDAT"],
-          //       partStatus:resultData[i]["ZSTATUS"],
-          //       uom:resultData[i]["ZLGFSB"],
-          //       materialGroup:resultData[i]["ZMAKTX1"]
-          //     });
-          //   }
-          // }
-          // else if(resultData[i]["ZSTATUS"] == "C"){
-          //   var partNumber = PartNumber.update({
-          //     partNumber:resultData[i]["ZIDNRK"]
-          //   })
-          //   .set({
-          //     description:resultData[i]["ZMAKTX"],
-          //     partCreationDate:resultData[i]["ZANDAT1"],
-          //     partChangeDate:resultData[i]["ZAEDAT"],
-          //     partStatus:resultData[i]["ZSTATUS"],
-          //     uom:resultData[i]["ZLGFSB"],
-          //     materialGroup:resultData[i]["ZMAKTX1"]
-          //   });
-          // }
-          // else if(resultData[i]["ZSTATUS"] == "B"){
-          //   var partNumber = PartNumber.update({
-          //     partNumber:resultData[i]["ZIDNRK"]
-          //   })
-          //   .set({
-          //     partStatus:resultData[i]["ZSTATUS"],
-          //     status:0
-          //   });
-          // }
-        }
-        res.send();
-      }
-    };
-    // xmlhttp.setRequestHeader('Authorization', );
-    xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
-    const xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlTextFile.xml', 'utf-8');
-    xmlhttp.send(xml);
+    var d = new Date();
+    var newDay = d.getDate();
+    if(newDay.toString().length == 1)
+    newDay = "0" + newDay;
+    var newMonth = d.getMonth();
+    if(newMonth.toString().length == 1)
+    newMonth = "0" + newMonth;
+    var newYear = d.getFullYear();
+    var newDateTimeNow = newDay + "." + newMonth + "." + newYear;
+    await newSapTransactionEntry(newDateTimeNow);
   },
 
   soapRequest1:async function(req,res){
@@ -351,7 +214,7 @@ async function satTransactionEntry(getJobCardCompleted){
 
   const xmlhttp = new XMLHttpRequest();
   // xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
-  xmlhttp.open('POST', 'http://fjqaqts.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
+  xmlhttp.open('POST', 'http://TDCSAPDAPPPRD.blr.telco.co.in:8001/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
   xmlhttp.onreadystatechange = async function() {
     if (xmlhttp.readyState == 4) {
       // alert(xmlhttp.responseText);
@@ -414,4 +277,149 @@ async function satTransactionEntry(getJobCardCompleted){
       }
     }
   }
+}
+
+async function newSapTransactionEntry(newDateTimeNow){
+  const xmlhttp = new XMLHttpRequest();
+  xmlhttp.open('POST', 'http://fjqaqts.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmppp_ws_comp_dtls/570/zmppp_ws_comp_dtls/zmppp_ws_comp_dtls', true,"TMML_BRIOT","tml!06TML");
+  xmlhttp.onreadystatechange = async function() {
+    if (xmlhttp.readyState == 4) {
+      // alert(xmlhttp.responseText);
+      console.log(xmlhttp.responseText);
+      var xml = xmlhttp.responseText;
+      var result = convert.xml2json(xml, {compact: true, spaces: 4});
+      var newJSON = JSON.parse(result);
+      console.log("Line 57",newJSON["_attributes"]);
+      var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZMPPP_COMP_DTL_WEBSERVICEResponse"]["ZCOMP_DTL"]["item"];
+
+      for(var i =1;i<resultData.length;i++){
+
+        if(resultData[i]["ZSTATUS"]["_text"] == "N"){
+          var newPartNumber = await PartNumber.find({
+            partNumber : resultData[i]["ZIDNRK"]["_text"]
+          });
+          console.log("Line 72",newPartNumber);
+          if(newPartNumber[0] != undefined && newPartNumber[0] != null){
+          }
+          else{
+            console.log("Line 67", resultData[i]["ZMATNR"]["_text"]);
+            console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
+            var newRawMaterial = await RawMaterial.find({
+              rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
+            });
+            console.log(newRawMaterial[0]);
+            if(newRawMaterial[0] != undefined && newRawMaterial[0] !=null){
+              console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
+              var newLocationId;
+              var newLocation = await Location.find({
+                name:resultData[i]["ZLGFSB"]["_text"]
+              });
+              if(newLocation[0] != null && newLocation[0] != undefined){
+                console.log(newLocation);
+                newLocationId = newLocation[0]["id"]
+              }
+              else {
+                await Location.create({
+                  name:resultData[i]["ZLGFSB"]["_text"],
+                  barcodeSerial:Date.now(),
+                  locationType:'Kanban Location'
+                });
+                var newLocation1 = await Location.find({
+                  name:resultData[i]["ZLGFSB"]["_text"]
+                });
+                newLocationId = newLocation1[0]["id"]
+              }
+              var newPartNumber1 = await PartNumber.create({
+                partNumber:resultData[i]["ZIDNRK"]["_text"],
+                description:resultData[i]["ZMAKTX"]["_text"],
+                partCreationDate:resultData[i]["ZANDAT1"]["_text"],
+                partChangeDate:resultData[i]["ZAEDAT"]["_text"],
+                partStatus:resultData[i]["ZSTATUS"]["_text"],
+                uom:resultData[i]["ZMEINS"]["_text"],
+                materialGroup:resultData[i]["ZMATKL"]["_text"],
+                rawMaterialId : newRawMaterial[0]["id"],
+                status : 1,
+                kanbanLocation : newLocationId
+              })
+              .fetch();
+              console.log("newPartNumber", newPartNumber1[0]);
+              // break;
+            }
+            else{
+              var newRawMaterialId = await RawMaterial.create({
+                rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
+                description: "",
+                uom: resultData[i]["ZMEINS"]["_text"],
+                remarks: "",
+                status:1
+              })
+              .fetch();
+              console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
+              var newLocationId;
+              var newLocation = await Location.find({
+                name:resultData[i]["ZLGFSB"]["_text"]
+              });
+              if(newLocation[0] != null && newLocation[0] != undefined){
+                console.log(newLocation);
+                newLocationId = newLocation[0]["id"]
+              }
+              else {
+                await Location.create({
+                  name:resultData[i]["ZLGFSB"]["_text"],
+                  barcodeSerial:Date.now(),
+                  locationType:'Kanban Location'
+                });
+                var newLocation1 = await Location.find({
+                  name:resultData[i]["ZLGFSB"]["_text"]
+                });
+                newLocationId = newLocation1[0]["id"]
+              }
+              var newPartNumber1 = await PartNumber.create({
+                partNumber:resultData[i]["ZIDNRK"]["_text"],
+                description:resultData[i]["ZMAKTX"]["_text"],
+                partCreationDate:resultData[i]["ZANDAT1"]["_text"],
+                partChangeDate:resultData[i]["ZAEDAT"]["_text"],
+                partStatus:resultData[i]["ZSTATUS"]["_text"],
+                uom:resultData[i]["ZMEINS"]["_text"],
+                materialGroup:resultData[i]["ZMATKL"]["_text"],
+                rawMaterialId : newRawMaterialId["id"],
+                status : 1,
+                kanbanLocation : newLocationId
+              })
+              .fetch();
+              console.log("newPartNumber", newPartNumber1[0]);
+            }
+          }
+        }
+        else if(resultData[i]["ZSTATUS"] == "C"){
+          var partNumber = PartNumber.update({
+            partNumber:resultData[i]["ZIDNRK"]["_text"]
+          })
+          .set({
+            description:resultData[i]["ZMAKTX"]["_text"],
+            partCreationDate:resultData[i]["ZANDAT1"]["_text"],
+            partChangeDate:resultData[i]["ZAEDAT"]["_text"],
+            partStatus:resultData[i]["ZSTATUS"]["_text"],
+            uom:resultData[i]["ZMEINS"]["_text"],
+            materialGroup:resultData[i]["ZMATKL"]["_text"],
+          });
+        }
+        else if(resultData[i]["ZSTATUS"] == "B"){
+          var partNumber = PartNumber.update({
+            partNumber:resultData[i]["ZIDNRK"]["_text"]
+          })
+          .set({
+            partStatus:resultData[i]["ZSTATUS"]["_text"],
+            status:0
+          });
+        }
+      }
+      res.send();
+    }
+  };
+  xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
+  var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlTextFile.xml', 'utf-8');
+  xml = xml.replace("newDateNowAPI", newDateTimeNow);
+  console.log(xml);
+  xmlhttp.send(xml);
 }

@@ -788,6 +788,43 @@ module.exports = {
     });
 
     return res.status(200).send("Seed Database");
+  },
+  updatePartNumberLocation:async function(req,res){
+    var filepath10 = './documents/templates/bulk-upload/14-BulkUploadPartNumberTemplate-s1.xlsx';
+    var workbook10 = XLSX.readFile(filepath10);
+    var sheet10 = workbook10.Sheets[workbook10.SheetNames[0]];
+    var num_rows10 = xls_utils.decode_range(sheet10['!ref']).e.r;
+    var json10 = [];
+    for(var i = 1, l = num_rows10; i <= l; i++){
+      var sapLocation = fetchValueFromExcel(xls_utils, sheet10, 2, i);
+      var excelPartNumber = fetchValueFromExcel(xls_utils, sheet10, 0, i);
+      var findLocation = await Location.find({
+        name: sapLocation
+      });
+      if(findLocation[0] != null && findLocation[0] != undefined){
+        var findPartNumber = await PartNumber.update({
+          partNumber: excelPartNumber
+        })
+        .set({
+          kanbanLocation: findLocation[0]["id"]
+        }).fetch();
+        console.log(findPartNumber);
+      }
+      else{
+        var newPartNumberLocation = await Location.create({
+          name: sapLocation,
+          barcodeSerial: "",
+          locationType: "Kanban Location"
+        }).fetch();
+        var findPartNumber = await PartNumber.update({
+          partNumber: excelPartNumber
+        })
+        .set({
+          kanbanLocation: newPartNumberLocation["id"]
+        }).fetch();
+        console.log(findPartNumber);
+      }
+    }
   }
 };
 

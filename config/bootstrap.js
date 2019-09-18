@@ -35,9 +35,10 @@ module.exports.bootstrap = async function() {
   // ```
 
   // console.log("Try Connect");
-  // setInterval(async function(){
-  //   await sapPartNumber.soapRequestPost();
-  // },30000);
+  setInterval(async function(){
+    await sapPartNumber.soapRequestPost();
+    await sapPartNumber.soapRequestGet();
+  },600000);
   // setInterval(function(){
   //   // SapPartNumber.soapRequestGet();
   //   // SapPartNumber.soapRequestPost();

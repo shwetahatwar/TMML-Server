@@ -50,7 +50,8 @@ module.exports = {
             //console.log(productionSchedulePartRelationId[0]);
             var processSequenceId = await ProcessSequence.find({
               partId:productionSchedulePartRelationId[0]["partNumberId"],
-              sequenceNumber:checkProcessSequence
+              sequenceNumber:checkProcessSequence,
+              status:1
             });
             var addedSequencecNumber = parseInt(newSequenceNumber) + 1;
             //console.log("Line 44",addedSequencecNumber);
@@ -151,204 +152,220 @@ module.exports = {
       endTime:0
     });
     // //console.log("Line 112",newJobProcessSequenceId[0]["id"]);
-    var machineBarcode = await Machine.find({
-      id:req.body.machineId
-    });
-    var newLocationBarcode = await Location.find({
-      barcodeSerial:machineBarcode[0]["barcodeSerial"]
-    });
-    var newJobProcess = await JobProcessSequenceRelation.update({
-      id:newJobProcessSequenceId[0]["id"]
-    })
-    .set({
-      quantity:req.body.quantity,
-      processStatus:req.body.processStatus,
-      duration:req.body.duration,
-      locationId:newLocationBarcode[0]["id"],
-      note:req.body.note,
-      endTime:Date.now()
-    })
-    .fetch();
-    // //console.log(newJobProcess);
-    await Machine.update({
-      id : req.body.machineId
-    })
-    .set({
-      maintenanceStatus:"Available"
-    });
-    //console.log("Line 138",newJobProcessSequenceId[0]["processSequenceId"]);
-    var newPartNumberId = await ProcessSequence.find({
-      id:newJobProcessSequenceId[0]["processSequenceId"]
-    });
-    var sequenceNumber = parseInt(newJobProcessSequenceId[0]["sequenceNumber"]) + 1;
-    //console.log("Line 140",sequenceNumber);
-    var processSequence = await ProcessSequence.find({
-      // id:newJobProcessSequenceId[0]["processSequenceId"],
-      sequenceNumber:sequenceNumber,
-      partId:newPartNumberId[0]["partId"]
-    });
-    //console.log("Line 145",processSequence[0]);
-    if(processSequence[0]!=null&&processSequence[0]!=undefined){
+    if(newJobProcessSequenceId[0] != null && newJobProcessSequenceId[0] != undefined){
+	    var machineBarcode = await Machine.find({
+	      id:req.body.machineId
+	    });
+	    var newLocationBarcode = await Location.find({
+	      barcodeSerial:machineBarcode[0]["barcodeSerial"]
+	    });
+	    var newJobProcess = await JobProcessSequenceRelation.update({
+	      id:newJobProcessSequenceId[0]["id"]
+	    })
+	    .set({
+	      quantity:req.body.quantity,
+	      processStatus:req.body.processStatus,
+	      duration:req.body.duration,
+	      locationId:newLocationBarcode[0]["id"],
+	      note:req.body.note,
+	      endTime:Date.now()
+	    })
+	    .fetch();
+	    // //console.log(newJobProcess);
+	    await Machine.update({
+	      id : req.body.machineId
+	    })
+	    .set({
+	      maintenanceStatus:"Available"
+	    });
+	    //console.log("Line 138",newJobProcessSequenceId[0]["processSequenceId"]);
+	    var newPartNumberId = await ProcessSequence.find({
+	      id:newJobProcessSequenceId[0]["processSequenceId"],
+        status:1
+	    });
+	    var sequenceNumber = parseInt(newJobProcessSequenceId[0]["sequenceNumber"]) + 1;
+	    //console.log("Line 140",sequenceNumber);
+	    var processSequence = await ProcessSequence.find({
+	      // id:newJobProcessSequenceId[0]["processSequenceId"],
+	      sequenceNumber:sequenceNumber,
+	      partId:newPartNumberId[0]["partId"],
+        status:1
+	    });
+	    //console.log("Line 145",processSequence[0]);
+	    if(processSequence[0]!=null&&processSequence[0]!=undefined){
 
-      var machineGroups = await MachineGroup.find({
-        id:processSequence[0]["machineGroupId"]
-      })
-      .populate("machines");
-      //console.log("Line 191",machineGroups[0]);
-      var suggestedLocations="";
-      for(var i=0;i<machineGroups[0]["machines"].length;i++){
-        suggestedLocations = suggestedLocations + "," + machineGroups[0]["machines"][i]["machineName"];
-      }
-      //console.log("Line 196",req.body.jobId);
-      await Joblocationrelation.create({
-        jobcardId:req.body.jobId,
-        jobProcessSequenceRelationId:newJobProcessSequenceId[0]["id"],
-        sourceLocation:newLocationBarcode[0]["id"],
-        suggestedDropLocations:suggestedLocations,
-        processStatus:"Pending"
-      });
-      res.send(newJobProcessSequenceId[0]);
-    }
-    else{
-      var newJobProcess = await JobProcessSequenceRelation.update({
-        id:newJobProcessSequenceId[0]["id"]
-      })
-      .set({
-        processStatus:"FinalLocation",
-      })
-      .fetch();
-      await JobProcessSequenceTransaction.create({
-        jobCardId:req.body.jobId,
-        jobProcessSequenceRelation:newJobProcessSequenceId[0]["id"],
-        quantity:req.body.quantity
-      });
-      var machineBarcode = await Machine.find({
-        id:req.body.machineId
-      });
-      var newLocationBarcode = await Location.find({
-        barcodeSerial:machineBarcode[0]["barcodeSerial"]
-      });
-      await Joblocationrelation.create({
-        jobcardId:req.body.jobId,
-        jobProcessSequenceRelationId:0,
-        sourceLocation:newLocationBarcode[0]["id"],
-        suggestedDropLocations:"Store",
-        processStatus:"Pending"
-      });
-      var jobCardBarcode = await JobCard.find({
-        id:req.body.jobId
-      });
-      var jobProcessSequenceRelation = await JobProcessSequenceRelation.find({
-        jobId:req.body.jobId
-      });
-      var processSequence = await ProcessSequence.find({
-        id:jobProcessSequenceRelation[0]["processSequenceId"]
-      });
-      var partNumber = await PartNumber.find({
-        id:processSequence[0]["partId"]
-      });
-      var updatedJobCard = await JobCard.update({
-        id:req.body.jobId
-      })
-      .set({
-        jobcardStatus:"Completed",
-        actualQuantity:req.body.quantity
-      });
-      // var dateTime = new Date();
-      var uniqueNumberSap;
-      var sapEntry = await SapTransaction.find({
-        where:{
-          plant:"7002"
-        },
-        select: ['id','uniqueNumber']
-      })
-      .sort('id DESC');
-      if(sapEntry[0] != null && sapEntry[0] != undefined){
-        uniqueNumberSap = sapEntry[0]["uniqueNumber"];
-        uniqueNumberSap = sapEntry[0]["uniqueNumber"];
-        var serialNumberSapStart = uniqueNumberSap.substring(0,2);
-        var serialNumberSapEnd = uniqueNumberSap.substring(2,8);
-        if(serialNumberSapEnd == "999999"){
-          var serialNumberSapFirstStart = serialNumberSapStart.substring(0,1);
-          var serialNumberSapLastStart = serialNumberSapStart.substring(1,2);
-          var serialNumberSapLatest;
-          if(serialNumberSapLastStart == 'Z'){
-            serialNumberSapLatest = String.fromCharCode(serialNumberSapFirstStart.charCodeAt() + 1);
-            serialNumberSapLatest = serialNumberSapLatest + 'A';
-            console.log(serialNumberSapLatest);
-          }
-          else{
-            serialNumberSapLatest = String.fromCharCode(serialNumberSapLastStart.charCodeAt() + 1);
-            serialNumberSapLatest = serialNumberSapFirstStart + serialNumberSapLatest;
-          }
-          uniqueNumberSap = serialNumberSapLatest + "000001";
-        }
-        else{
-          serialNumberSapEnd = parseInt(serialNumberSapEnd) + 1;
-          var newQuantity = pad(serialNumberSapEnd, 6);
-          uniqueNumberSap = serialNumberSapStart + newQuantity;
-        }
-      }
-      else{
-        uniqueNumberSap = "AA000001"
-      }
-      var dateTimeFormat;
-      var d = new Date();
-      var curr_date = d.getDate();
-      if(curr_date.toString().length == 1){
-        curr_date = "0" + curr_date
-      }
-      var curr_month = parseInt(d.getMonth()) + 1;
-      curr_month = ""+curr_month;
-      if(curr_month.toString().length == 1){
-        curr_month = "0" + curr_month
-      }
-      var curr_year = d.getFullYear();
-      curr_year = curr_year.substring(2,4);
-      //console.log(curr_year);
-      dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
-      //console.log(curr_year);
-      // dateTimeFormat = curr_year + "-" + curr_month + "-" + curr_date;
-      // dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
-      var newPartNumberAdded = partNumber[0]["partNumber"];
-      await SapTransaction.create({
-        plant:"7002",
-        date:dateTimeFormat,
-        material:newPartNumberAdded,
-        jobCard:jobCardBarcode[0]["barcodeSerial"],
-        uniqueNumber:uniqueNumberSap,
-        quantity:req.body.quantity,
-        documentNumber: 0
-      });
+	      var machineGroups = await MachineGroup.find({
+	        id:processSequence[0]["machineGroupId"]
+	      })
+	      .populate("machines");
+	      //console.log("Line 191",machineGroups[0]);
+	      var suggestedLocations="";
+	      for(var i=0;i<machineGroups[0]["machines"].length;i++){
+	        suggestedLocations = suggestedLocations + "," + machineGroups[0]["machines"][i]["machineName"];
+	      }
+	      //console.log("Line 196",req.body.jobId);
+	      await Joblocationrelation.create({
+	        jobcardId:req.body.jobId,
+	        jobProcessSequenceRelationId:newJobProcessSequenceId[0]["id"],
+	        sourceLocation:newLocationBarcode[0]["id"],
+	        suggestedDropLocations:suggestedLocations,
+	        processStatus:"Pending"
+	      });
+	      res.send(newJobProcessSequenceId[0]);
+	    }
+	    else{
+	      var newJobProcess = await JobProcessSequenceRelation.update({
+	        id:newJobProcessSequenceId[0]["id"]
+	      })
+	      .set({
+	        processStatus:"FinalLocation",
+	      })
+	      .fetch();
+	      await JobProcessSequenceTransaction.create({
+	        jobCardId:req.body.jobId,
+	        jobProcessSequenceRelation:newJobProcessSequenceId[0]["id"],
+	        quantity:req.body.quantity
+	      });
+	      var machineBarcode = await Machine.find({
+	        id:req.body.machineId
+	      });
+	      var newLocationBarcode = await Location.find({
+	        barcodeSerial:machineBarcode[0]["barcodeSerial"]
+	      });
+	      await Joblocationrelation.create({
+	        jobcardId:req.body.jobId,
+	        jobProcessSequenceRelationId:0,
+	        sourceLocation:newLocationBarcode[0]["id"],
+	        suggestedDropLocations:"Store",
+	        processStatus:"Pending"
+	      });
+	      var jobCardBarcode = await JobCard.find({
+	        id:req.body.jobId
+	      });
+	      var jobProcessSequenceRelation = await JobProcessSequenceRelation.find({
+	        jobId:req.body.jobId
+	      });
+	      var processSequence = await ProcessSequence.find({
+	        id:jobProcessSequenceRelation[0]["processSequenceId"],
+          status:1
+	      });
+	      var partNumber = await PartNumber.find({
+	        id:processSequence[0]["partId"]
+	      });
+	      var updatedJobCard = await JobCard.update({
+	        id:req.body.jobId
+	      })
+	      .set({
+	        jobcardStatus:"Completed",
+	        actualQuantity:req.body.quantity
+	      });
+	      // var dateTime = new Date();
+	      var uniqueNumberSap;
+	      var sapEntry = await SapTransaction.find({
+	        where:{
+	          plant:"7002"
+	        },
+	        select: ['id','uniqueNumber']
+	      })
+	      .sort('id DESC');
+	      if(sapEntry[0] != null && sapEntry[0] != undefined){
+	        uniqueNumberSap = sapEntry[0]["uniqueNumber"];
+	        uniqueNumberSap = sapEntry[0]["uniqueNumber"];
+	        var serialNumberSapStart = uniqueNumberSap.substring(0,2);
+	        var serialNumberSapEnd = uniqueNumberSap.substring(2,8);
+	        if(serialNumberSapEnd == "999999"){
+	          var serialNumberSapFirstStart = serialNumberSapStart.substring(0,1);
+	          var serialNumberSapLastStart = serialNumberSapStart.substring(1,2);
+	          var serialNumberSapLatest;
+	          if(serialNumberSapLastStart == 'Z'){
+	            serialNumberSapLatest = String.fromCharCode(serialNumberSapFirstStart.charCodeAt() + 1);
+	            serialNumberSapLatest = serialNumberSapLatest + 'A';
+	            console.log(serialNumberSapLatest);
+	          }
+	          else{
+	            serialNumberSapLatest = String.fromCharCode(serialNumberSapLastStart.charCodeAt() + 1);
+	            serialNumberSapLatest = serialNumberSapFirstStart + serialNumberSapLatest;
+	          }
+	          uniqueNumberSap = serialNumberSapLatest + "000001";
+	        }
+	        else{
+	          serialNumberSapEnd = parseInt(serialNumberSapEnd) + 1;
+	          var newQuantity = pad(serialNumberSapEnd, 6);
+	          uniqueNumberSap = serialNumberSapStart + newQuantity;
+	        }
+	      }
+	      else{
+	        uniqueNumberSap = "AA000001"
+	      }
+	      var dateTimeFormat;
+	      var d = new Date();
+	      var curr_date = d.getDate();
+	      if(curr_date.toString().length == 1){
+	        curr_date = "0" + curr_date
+	      }
+	      var curr_month = parseInt(d.getMonth()) + 1;
+	      curr_month = ""+curr_month;
+	      if(curr_month.toString().length == 1){
+	        curr_month = "0" + curr_month
+	      }
+	      var curr_year = d.getFullYear();
+	      curr_year = curr_year.toString();
+	      curr_year = curr_year.substring(2,4);
+	      //console.log(curr_year);
+	      dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
+	      //console.log(curr_year);
+	      // dateTimeFormat = curr_year + "-" + curr_month + "-" + curr_date;
+	      // dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
+	      var newPartNumberAdded = partNumber[0]["partNumber"];
+	      await SapTransaction.create({
+	        plant:"7002",
+	        date:dateTimeFormat,
+	        material:newPartNumberAdded,
+	        jobCard:jobCardBarcode[0]["barcodeSerial"],
+	        uniqueNumber:uniqueNumberSap,
+	        quantity:req.body.quantity,
+	        documentNumber: 0
+	      });
 
-      console.log("Line 285",sapEntry);
-      await manualSapTransaction("7002",dateTimeFormat,newPartNumberAdded,jobCardBarcode[0]["barcodeSerial"],uniqueNumberSap,req.body.quantity);
-      await PartNumber.update({
-        id:processSequence[0]["partId"]
-      })
-      .set({
-        remarks:req.body.note
-      });
+	      console.log("Line 285",sapEntry);
+	      await manualSapTransaction("7002",dateTimeFormat,newPartNumberAdded,jobCardBarcode[0]["barcodeSerial"],uniqueNumberSap,req.body.quantity);
+	      await PartNumber.update({
+	        id:processSequence[0]["partId"]
+	      })
+	      .set({
+	        remarks:req.body.note
+	      });
 
-      res.send("Final Location");
-    }
+	      res.send("Final Location");
+	    }
+	  }
+	  else{
+	  	res.send("Job Sequence Relation not Found");
+	  }
   },
   getData:async function(req,res){
     var newJobProcessSequenceRelationJson=[];
-    var jobProcessSequenceRelationNew = await JobProcessSequenceRelation.find()
-    .populate('jobId')
+    var skipVal = 0;
+    if (req.query['skip']) {
+    skipVal = req.query['skip'];
+    }
+
+    var jobProcessSequenceRelationNew = await JobProcessSequenceRelation.find({where:{
+     processStatus: {'!=': 'New'}
+    },limit:50, skip: skipVal}).populate('jobId')
     .populate('processSequenceId')
     .populate('machineId')
     .populate('locationId')
     .populate('operatorId');
-    for(var i=0;i<jobProcessSequenceRelationNew.length;i++){
-      //console.log(jobProcessSequenceRelationNew[i]["processStatus"]);
-      if(jobProcessSequenceRelationNew[i]["processStatus"]!="New"){
-        newJobProcessSequenceRelationJson.push(jobProcessSequenceRelationNew[i]);
-      }
-    }
+    // for(var i=0;i<jobProcessSequenceRelationNew.length;i++){
+    //   //console.log(jobProcessSequenceRelationNew[i]["processStatus"]);
+    //   if(jobProcessSequenceRelationNew[i]["processStatus"]!="New"){
+    //     newJobProcessSequenceRelationJson.push(jobProcessSequenceRelationNew[i]);
+    //   }
+    // }
     //console.log(newJobProcessSequenceRelationJson);
-    res.send(newJobProcessSequenceRelationJson);
+
+    res.send(jobProcessSequenceRelationNew);
   },
   stopProcess:async function(req,res){
     if(req.body.machineStrockId != null&& req.body.machineStrockId!=undefined){
@@ -424,7 +441,8 @@ module.exports = {
         jobId:req.body.jobId
       });
       var processSequence = await ProcessSequence.find({
-        id:jobProcessSequenceRelation[0]["processSequenceId"]
+        id:jobProcessSequenceRelation[0]["processSequenceId"],
+        status:1
       });
       var partNumber = await PartNumber.find({
         id:processSequence[0]["partId"]
@@ -518,7 +536,7 @@ async function manualSapTransaction(plantAdd,dateAdd,materialAdd,jobcardAdd,uniq
   // uniqueNumberAdd = uniqueNumberAdd.substring(1,12);
   console.log("In Manual SAP",uniqueNumberAdd);
   const xmlhttp = new XMLHttpRequest();
-  xmlhttp.open('POST', 'http://fjqaqts.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
+  xmlhttp.open('POST', 'http://TDCSAPDAPPPRD.blr.telco.co.in:8001/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
   xmlhttp.onreadystatechange = async function() {
     if (xmlhttp.readyState == 4) {
       var xml = xmlhttp.responseText;

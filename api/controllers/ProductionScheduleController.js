@@ -42,7 +42,7 @@ module.exports = {
   dailyUpload: async function(req,res){
     // console.log(req.body.dailySchedule[0].getOwnPropertyNames);
     var dailySchedule = JSON.parse(req.body.dailySchedule);
-    console.log(dailySchedule);
+    console.log("Daily Upload Data",dailySchedule);
     if(req.body.actions=="New"){
       var obj=Object.getOwnPropertyNames(dailySchedule[0]);
       var day1=obj[2];
@@ -96,7 +96,7 @@ module.exports = {
             actualCompletionDate: req.body.actualCompletionDate,
             status: 1,
             scheduleType: "Scheduled",
-            remarks: "",
+            remarks: dailySchedule[0].remarks,
             scheduleStatus: "New",
             scheduleDate:day1,
             monthlyScheduleId:getMonthlyScheduleId[0]["id"]

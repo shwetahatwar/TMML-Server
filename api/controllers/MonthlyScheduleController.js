@@ -45,7 +45,8 @@ module.exports = {
     // res.send();
     var monthlySchedule = JSON.parse(req.body.monthlySchedule);
     var scheduleName = "Machine Shop Monthly Plan";
-    console.log("Line no 48 MonthlySchedule" + req.body.monthlySchedule);
+    var missingMonthlyParts = [];
+    // console.log("Line no 48 MonthlySchedule" + req.body.monthlySchedule);
     scheduleName = scheduleName +" "+ monthlySchedule[0].Year +"-"+ monthlySchedule[0].Month;
     console.log("Line 50 MonthlySchedule", scheduleName);
     // if(req.body.monthlySchedule[0].Month.toString().length == 1){
@@ -73,7 +74,7 @@ module.exports = {
       .fetch()
       .catch(error=>{console.log(error)});
     }
-    console.log(monthlyScheduleId[0]);
+    // console.log(monthlyScheduleId[0]);
     if(monthlyScheduleId!=null&&monthlyScheduleId!=undefined){
       for(var i=0;i<monthlySchedule.length;i++){
         console.log(monthlySchedule[i]);
@@ -96,6 +97,11 @@ module.exports = {
           })
           .catch(error=>{console.log(error)});
         }
+        else{
+           missingMonthlyParts.push(monthlySchedule[i].PartNumber);
+          console.log('Part Numbers Not found: ', missingMonthlyParts.toString());
+        }
+
       }
     }
     res.send(mothlyScheduleId);

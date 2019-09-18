@@ -42,9 +42,9 @@ module.exports.log = {
   ***************************************************************************/
 
   // Pass in our custom logger, and pass all log levels through.
-  custom: customLogger,
+  // custom: customLogger,
   level: 'verbose',
   // Disable captain's log so it doesn't prefix or stringify our meta data.
-  inspect: false
+  // inspect: false
 
 };

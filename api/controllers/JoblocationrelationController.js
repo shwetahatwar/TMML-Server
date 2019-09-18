@@ -89,19 +89,29 @@ module.exports = {
     // .populate('jobcardId');
     // res.send(jobLocationRelation);
     var newJoblocationrelationJson=[];
-    var jobLocationRelationNew = await Joblocationrelation.find()
+    var limitCount = 500;
+      if (req['limit']) {
+       limitCount = req['limit'];
+      }
+      var jobLocationRelationNew = await Joblocationrelation.find({where:{
+       processStatus: { '!=' : ['Complete', 'Final Location'] }
+      },limit:limitCount
+          // {
+      //   processStatus: { '!=' : ['Complete', 'Final Location'] },
+
+      })
     .populate('sourceLocation')
     .populate('jobcardId')
     .populate('destinationLocationId');
     // console.log(jobLocationRelationNew[0]);
-    for(var i=0;i<jobLocationRelationNew.length;i++){
-      console.log(jobLocationRelationNew[i]["processStatus"]);
-      if(jobLocationRelationNew[i]["processStatus"]!="Complete" && jobLocationRelationNew[i]["processStatus"]!="Final Location"){
-        newJoblocationrelationJson.push(jobLocationRelationNew[i]);
-      }
-    }
-    console.log(newJoblocationrelationJson);
-    res.send(newJoblocationrelationJson);
+    // for(var i=0;i<jobLocationRelationNew.length;i++){
+    //   console.log(jobLocationRelationNew[i]["processStatus"]);
+    //   if(jobLocationRelationNew[i]["processStatus"]!="Complete" && jobLocationRelationNew[i]["processStatus"]!="Final Location"){
+    //     newJoblocationrelationJson.push(jobLocationRelationNew[i]);
+    //   }
+    // }
+    console.log(jobLocationRelationNew);
+    res.send(jobLocationRelationNew);
   }
 
 };
