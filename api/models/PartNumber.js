@@ -33,7 +33,6 @@ module.exports = {
     },
     partChangeDate: { // coming from SAP
       type:'string',
-      columnType: 'bigint',
     },
     partStatus: { // coming from SAP
       type:'string' //N- New, C – Changed, B- Blocked
@@ -60,7 +59,7 @@ module.exports = {
     },
     rawMaterialQuantity: {
       type: 'number',
-      columnType: 'integer',
+      columnType: 'float',
     },
     kanbanLocation:{
       model:'Location'

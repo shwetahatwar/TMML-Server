@@ -82,36 +82,59 @@ module.exports = {
   },
 
   getData:async function(req,res){
-    // console.log("Line 57 Job Location");
-    // var jobLocationRelation = await Joblocationrelation.find({
-    //   processStatus: { '!=' : 'Complete' }
-    // })
-    // .populate('jobcardId');
-    // res.send(jobLocationRelation);
-    var newJoblocationrelationJson=[];
-    var limitCount = 500;
-      if (req['limit']) {
-       limitCount = req['limit'];
-      }
-      var jobLocationRelationNew = await Joblocationrelation.find({where:{
-       processStatus: { '!=' : ['Complete', 'Final Location'] }
-      },limit:limitCount
-          // {
-      //   processStatus: { '!=' : ['Complete', 'Final Location'] },
-
+    var jobLocationRelationNew;
+    var jobCardId = await JobCard.find({
+      barcodeSerial: req.query.barcodeSerial
+    });
+    if(jobCardId[0] != null && jobCardId[0] != undefined){
+      jobLocationRelationNew = await Joblocationrelation.find({
+        jobcardId: jobCardId[0]["id"],
+        processStatus: { '!=' : ['Complete', 'Final Location'] }
       })
+      .populate('sourceLocation')
+      .populate('jobcardId')
+      .populate('destinationLocationId');
+      console.log(jobLocationRelationNew);
+    }
+    res.send(jobLocationRelationNew);
+    // var sql = `select * from joblocationrelation inner join location ON joblocationrelation.sourceLocation = location.id or joblocationrelation.destinationLocationId = location.id inner join jobcard ON joblocationrelation.jobcardId = jobcard.id where processStatus != 'Complete' and processStatus != 'Final Location'`;
+    // var jobLocationRelationNew = await sails.sendNativeQuery(sql,[]);
+    // console.log(jobLocationRelationNew);
+    // res.send(jobLocationRelationNew);
+  },
+  getDataDesktop:async function(req,res){
+    var limitCount = 500;
+    var skipCount = 0;
+    if (req.query.limit) {
+     limitCount = req.query.limit;
+    }
+    if(req.query.skip){
+      skipCount = req.query.skip;
+    }
+    var jobLocationRelationNew = await Joblocationrelation.find({
+      where:{
+        processStatus: { '!=' : ['Complete', 'Final Location'] }
+      },limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
+    })
     .populate('sourceLocation')
     .populate('jobcardId')
     .populate('destinationLocationId');
-    // console.log(jobLocationRelationNew[0]);
-    // for(var i=0;i<jobLocationRelationNew.length;i++){
-    //   console.log(jobLocationRelationNew[i]["processStatus"]);
-    //   if(jobLocationRelationNew[i]["processStatus"]!="Complete" && jobLocationRelationNew[i]["processStatus"]!="Final Location"){
-    //     newJoblocationrelationJson.push(jobLocationRelationNew[i]);
-    //   }
-    // }
     console.log(jobLocationRelationNew);
     res.send(jobLocationRelationNew);
+  },
+
+  getJobLocationRelationCount:async function(req,res){
+    var jobLocationRelationNew = await Joblocationrelation.count({
+      where:{
+        processStatus: { '!=' : ['Complete', 'Final Location'] }
+      }
+    });
+    var totalCount=[];
+    var requestedData = {
+      TotalCount:jobLocationRelationNew,
+    }
+    totalCount.push(requestedData);
+    res.send(totalCount);
   }
 
 };

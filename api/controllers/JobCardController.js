@@ -519,5 +519,18 @@ module.exports = {
       else{
         res.send("Exit");
       }
+    },
+    getJobCardCompletedToday:async function(req,res){
+      var jobCardCount = await JobCard.count({
+        jobcardStatus: 'Completed',
+        updatedAt: { '>=': req.query.updatedAt }
+      });
+      console.log(jobCardCount);
+      var totalCount=[];
+      var requestedData = {
+        TotalCount:jobCardCount,
+      }
+      totalCount.push(requestedData);
+      res.send(totalCount);
     }
   };

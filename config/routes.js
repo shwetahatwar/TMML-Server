@@ -65,7 +65,10 @@ module.exports.routes = {
    'GET /getJobcardCount':'JobCard.getJobcardCount',
    'GET /getCell':'JobCard.getCell',
    'GET /updatePartNumberLocation':'SetupDataUploadController.updatePartNumberLocation',
-  'POST /manaulProcessSequqenceUpdate':'ProcessSequence.manaulProcessSequqenceUpdate'
+  'POST /manaulProcessSequqenceUpdate':'ProcessSequence.manaulProcessSequqenceUpdate',
+  'GET /getJobCardCompletedToday':'JobCard.getJobCardCompletedToday',
+  'GET /Joblocationrelation/getDataDesktop': 'Joblocationrelation.getDataDesktop',
+  'GET /getJobLocationRelationCount': 'Joblocationrelation.getJobLocationRelationCount'
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

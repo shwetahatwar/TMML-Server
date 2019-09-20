@@ -9,8 +9,8 @@ module.exports = {
 
   attributes: {
     rawMaterialNumber:{
-      type:'number',
-      columnType: 'bigint',
+      type:'string',
+      columnType: '_stringkey',
       unique: true,
       required: true
     },

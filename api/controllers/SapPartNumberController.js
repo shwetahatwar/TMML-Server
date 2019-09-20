@@ -54,6 +54,7 @@ module.exports = {
     var newYear = d.getFullYear();
     var newDateTimeNow = newDay + "." + newMonth + "." + newYear;
     await newSapTransactionEntry(newDateTimeNow);
+    res.send();
   },
 
   soapRequest1:async function(req,res){
@@ -414,7 +415,7 @@ async function newSapTransactionEntry(newDateTimeNow){
           });
         }
       }
-      res.send();
+      // res.send();
     }
   };
   xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
