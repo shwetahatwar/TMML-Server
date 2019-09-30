@@ -14,6 +14,10 @@ module.exports = {
     accessId:{
         model:'AccessLevel'
     },
+     status:{
+      type:'number',
+      columnType: 'integer',
+    },
   },
 };
 
