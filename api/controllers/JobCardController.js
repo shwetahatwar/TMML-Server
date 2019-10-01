@@ -5,7 +5,7 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
-module.exports = {
+ module.exports = {
   create: async function(req,res){
 
     var globalDate = sails.config.myglobal.dateTimeGlobal;
@@ -73,7 +73,22 @@ module.exports = {
     shiftTime = shiftTime[0];
 
     //console.log(shiftTime);
-    var millis = new Date();
+    var scheduleDate ="";
+    var newProductionScheduleId = await ProductionSchedulePartRelation.find({
+      id:req.body.productionSchedulePartRelationId
+    }).populate('scheduleId');
+    if(newProductionScheduleId != null && newProductionScheduleId != undefined){
+      var scheduleDate1 = newProductionScheduleId[0]["scheduleId"]["productionScheduleId"].substring(24,34);
+      scheduleDate = scheduleDate1;
+      scheduleDate = scheduleDate+" " +"08:00:00";
+      var day = scheduleDate.substring(0,2);
+      var month =scheduleDate.substring(3,5);
+      var year =scheduleDate.substring(6,10);
+      scheduleDate= month + "-" + day + "-"+ year + " " +"08:00:00";
+    }
+    console.log("scheduleDate",scheduleDate);
+
+    var millis = new Date(scheduleDate);
     var hrs = millis.getHours();
     hrs = hrs * 3600;
     var min = millis.getMinutes();
@@ -98,7 +113,8 @@ module.exports = {
 
     // //console.log(estimatedDate,timestamp);
     estimatedDate = estimatedDate - timestamp;
-    var dt = new Date();
+    // console.log("estimatedDate",estimatedDate);
+    var dt = new Date(scheduleDate);
     dt.setSeconds( dt.getSeconds() + estimatedDate );
     estimatedDate = dt.toString();
     estimatedDate = estimatedDate.substr(0,24);
@@ -125,10 +141,10 @@ module.exports = {
    //    }
    //  }
 
-    var machineGroups = await MachineGroup.find({
-      id:req.body.suggestedDropLocations
-    })
-    .populate("machines");
+   var machineGroups = await MachineGroup.find({
+    id:req.body.suggestedDropLocations
+  })
+   .populate("machines");
     // //console.log("Line 200",machineGroups[0]);
     var suggestedLocations="";
     for(var i=0;i<machineGroups[0]["machines"].length;i++){
@@ -137,13 +153,13 @@ module.exports = {
     // //console.log(suggestedLocations)
     // //console.log(machineGroupNew[0]["machineGroupId"][0]["id"]);
     await Joblocationrelation.create({
-       jobcardId:newJobCard["id"],
-       jobProcessSequenceRelationId:0,
-       sourceLocation:1,
-       destinationLocationId:req.body.destinationLocationId,
-       suggestedDropLocations:suggestedLocations,
-       processStatus:"Pending"
-     })
+     jobcardId:newJobCard["id"],
+     jobProcessSequenceRelationId:0,
+     sourceLocation:1,
+     destinationLocationId:req.body.destinationLocationId,
+     suggestedDropLocations:suggestedLocations,
+     processStatus:"Pending"
+   })
     .catch((error)=>{console.log(error)});
     res.status(200).send(newJobCard);
   },
@@ -359,12 +375,12 @@ module.exports = {
       updatedBy:req.body.userId
     });
     await Joblocationrelation.create({
-        jobcardId:req.body.jobcardId,
-        jobProcessSequenceRelationId:0,
-        sourceLocation:0,
-        suggestedDropLocations:"Store",
-        processStatus:"Pending"
-      });
+      jobcardId:req.body.jobcardId,
+      jobProcessSequenceRelationId:0,
+      sourceLocation:0,
+      suggestedDropLocations:"Store",
+      processStatus:"Pending"
+    });
     await JobProcessSequenceRelation.update({
       jobId:req.body.jobcardId
     })
@@ -417,31 +433,31 @@ module.exports = {
       var newJobCardQuantity = 0;
       //console.log(newGetProductionScheduleId[0]["jobcard"].length);
       for(var j=0; j<newGetProductionScheduleId.length; j++){
-      for(var i=0; i<newGetProductionScheduleId[j]["jobcard"].length; i++){
+        for(var i=0; i<newGetProductionScheduleId[j]["jobcard"].length; i++){
         // //console.log(newGetProductionScheduleId[0]["jobcard"][i]["jobcardStatus"]);
-          if(newGetProductionScheduleId[j]["jobcard"][i]["jobcardStatus"] == "In Progress"){
-            inProgressRequestQuantity = inProgressRequestQuantity + newGetProductionScheduleId[j]["jobcard"][i]["requestedQuantity"];
-            inProgressActualQuantity = inProgressActualQuantity + newGetProductionScheduleId[j]["jobcard"][i]["actualQuantity"];
-            inProgressJobCardQuantity++;
-          }
-          else if(newGetProductionScheduleId[j]["jobcard"][i]["jobcardStatus"] == "Pending"){
-            pendingRequestQuantity = pendingRequestQuantity + newGetProductionScheduleId[j]["jobcard"][i]["requestedQuantity"];
-            pendingActualQuantity = pendingActualQuantity + newGetProductionScheduleId[j]["jobcard"][i]["actualQuantity"];
-            pendingJobCardQuantity++;
-          }
-          else if(newGetProductionScheduleId[j]["jobcard"][i]["jobcardStatus"] == "Completed"){
-            completedRequestQuantity = completedRequestQuantity + newGetProductionScheduleId[j]["jobcard"][i]["requestedQuantity"];
-            completedActualQuantity = completedActualQuantity + newGetProductionScheduleId[j]["jobcard"][i]["actualQuantity"];
-            completedJobCardQuantity++;
-          }
-          else{
-            newRequestQuantity = newRequestQuantity + newGetProductionScheduleId[j]["jobcard"][i]["requestedQuantity"];
-            newActualQuantity = newActualQuantity + newGetProductionScheduleId[j]["jobcard"][i]["actualQuantity"];
-            newJobCardQuantity++;
+        if(newGetProductionScheduleId[j]["jobcard"][i]["jobcardStatus"] == "In Progress"){
+          inProgressRequestQuantity = inProgressRequestQuantity + newGetProductionScheduleId[j]["jobcard"][i]["requestedQuantity"];
+          inProgressActualQuantity = inProgressActualQuantity + newGetProductionScheduleId[j]["jobcard"][i]["actualQuantity"];
+          inProgressJobCardQuantity++;
+        }
+        else if(newGetProductionScheduleId[j]["jobcard"][i]["jobcardStatus"] == "Pending"){
+          pendingRequestQuantity = pendingRequestQuantity + newGetProductionScheduleId[j]["jobcard"][i]["requestedQuantity"];
+          pendingActualQuantity = pendingActualQuantity + newGetProductionScheduleId[j]["jobcard"][i]["actualQuantity"];
+          pendingJobCardQuantity++;
+        }
+        else if(newGetProductionScheduleId[j]["jobcard"][i]["jobcardStatus"] == "Completed"){
+          completedRequestQuantity = completedRequestQuantity + newGetProductionScheduleId[j]["jobcard"][i]["requestedQuantity"];
+          completedActualQuantity = completedActualQuantity + newGetProductionScheduleId[j]["jobcard"][i]["actualQuantity"];
+          completedJobCardQuantity++;
+        }
+        else{
+          newRequestQuantity = newRequestQuantity + newGetProductionScheduleId[j]["jobcard"][i]["requestedQuantity"];
+          newActualQuantity = newActualQuantity + newGetProductionScheduleId[j]["jobcard"][i]["actualQuantity"];
+          newJobCardQuantity++;
 
-          }
         }
       }
+    }
       //console.log("inProgressRequestQuantity",inProgressRequestQuantity);
       //console.log("pendingRequestQuantity",pendingRequestQuantity);
       //console.log("completedRequestQuantity",completedRequestQuantity);
@@ -524,6 +540,17 @@ module.exports = {
       var jobCardCount = await JobCard.count({
         jobcardStatus: 'Completed',
         updatedAt: { '>=': req.query.updatedAt }
+      });
+      console.log(jobCardCount);
+      var totalCount=[];
+      var requestedData = {
+        TotalCount:jobCardCount,
+      }
+      totalCount.push(requestedData);
+      res.send(totalCount);
+    },
+    getAllJobCardCount:async function(req,res){
+      var jobCardCount = await JobCard.count({
       });
       console.log(jobCardCount);
       var totalCount=[];
