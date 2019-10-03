@@ -549,9 +549,20 @@
       totalCount.push(requestedData);
       res.send(totalCount);
     },
+    
     getAllJobCardCount:async function(req,res){
-      var jobCardCount = await JobCard.count({
-      });
+      if(req.query.barcodeSerial == null){
+        var jobCardCount = await JobCard.count({
+
+        });
+      }
+      else{
+        var jobCardCount = await JobCard.count({
+          barcodeSerial:{
+            'contains':req.query.barcodeSerial
+          } 
+        });
+      }
       console.log(jobCardCount);
       var totalCount=[];
       var requestedData = {

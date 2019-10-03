@@ -8,7 +8,7 @@
  * https://sailsjs.com/anatomy/config/routes-js
  */
 
-module.exports.routes = {
+ module.exports.routes = {
 
   /***************************************************************************
   *                                                                          *
@@ -61,15 +61,32 @@ module.exports.routes = {
   'POST /stopProcessSequence': 'JobProcessSequenceRelation.stopProcess',
   'POST /Trolley/create': 'Trolley.create',
   'POST /parseJson': 'SapPartNumberController.parseJson',
-   'GET /getPartSMHZero': 'PartNumberController.getPartSMHZero',
-   'GET /getJobcardCount':'JobCard.getJobcardCount',
-   'GET /getCell':'JobCard.getCell',
-   'GET /updatePartNumberLocation':'SetupDataUploadController.updatePartNumberLocation',
+  'GET /getPartSMHZero': 'PartNumberController.getPartSMHZero',
+  'GET /getJobcardCount':'JobCard.getJobcardCount',
+  'GET /getCell':'JobCard.getCell',
+  'GET /updatePartNumberLocation':'SetupDataUploadController.updatePartNumberLocation',
   'POST /manaulProcessSequqenceUpdate':'ProcessSequence.manaulProcessSequqenceUpdate',
   'GET /getJobCardCompletedToday':'JobCard.getJobCardCompletedToday',
   'GET /Joblocationrelation/getDataDesktop': 'Joblocationrelation.getDataDesktop',
   'GET /getJobLocationRelationCount': 'Joblocationrelation.getJobLocationRelationCount',
   'GET /getAllJobCardCount':'JobCard.getAllJobCardCount',
+  'GET /getAllEmployeeCount':'GetCount.getAllEmployeeCount',
+  'GET /getAllMachineCount':'GetCount.getAllMachineCount',
+  'GET /getAllLocationCount':'GetCount.getAllLocationCount',
+  'GET /getAllRawMaterialCount':'GetCount.getAllRawMaterialCount',
+  'GET /getAllPartNumbersCount':'GetCount.getAllPartNumbersCount',
+  'GET /getAllPendingPartNumbersCount':'GetCount.getAllPendingPartNumbersCount',
+  'GET /getAllProductionScheduleCount':'GetCount.getAllProductionScheduleCount',
+  'GET /getAllMonthlyScheduleCount':'GetCount.getAllMonthlyScheduleCount',
+  'GET /getAllDailyScheduleIdCount':'GetCount.getAllDailyScheduleIdCount',
+  'GET /getAllMonthlyScheduleIdCount':'GetCount.getAllMonthlyScheduleIdCount',
+  'GET /getLogisticsCount':'GetCount.getLogisticsCount',
+  'GET /getProcessDataFeedCount':'GetCount.getProcessDataFeedCount',
+  'GET /getAllRerouteCount':'GetCount.getAllRerouteCount',
+  'GET /getSapDataCount':'GetCount.getSapDataCount',
+  'GET /getUserCount':'GetCount.getUserCount',
+  'GET /getInProgressJobCount':'GetCount.getInProgressJobCount',
+  'GET /getCompletedJobCount':'GetCount.getCompletedJobCount',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 
