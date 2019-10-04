@@ -87,6 +87,9 @@
   'GET /getUserCount':'GetCount.getUserCount',
   'GET /getInProgressJobCount':'GetCount.getInProgressJobCount',
   'GET /getCompletedJobCount':'GetCount.getCompletedJobCount',
+  'GET /getJobCardCountShiftWise':'JobCard.getJobCardCountShiftWise',
+   'GET /getJobCardsShiftWise':'JobCard.getJobCardsShiftWise',
+   'GET /getPartCell':'JobCard.getPartCell',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 
