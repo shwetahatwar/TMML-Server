@@ -87,6 +87,7 @@
   'GET /getUserCount':'GetCount.getUserCount',
   'GET /getInProgressJobCount':'GetCount.getInProgressJobCount',
   'GET /getCompletedJobCount':'GetCount.getCompletedJobCount',
+  'GET /getJobCardSequence':'GetCount.getJobCardSequence',
   'GET /getJobCardCountShiftWise':'JobCard.getJobCardCountShiftWise',
    'GET /getJobCardsShiftWise':'JobCard.getJobCardsShiftWise',
    'GET /getPartCell':'JobCard.getPartCell',
