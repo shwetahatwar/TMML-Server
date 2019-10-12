@@ -11,7 +11,7 @@ module.exports = {
 			var employeeCount = await Employee.count({
 				name:{
 					'contains':req.query.name
-				} 
+				}
 			});
 		}
 
@@ -34,7 +34,7 @@ module.exports = {
 			var machineCount = await Machine.count({
 				name:{
 					'contains':req.query.name
-				} 
+				}
 			});
 		}
 		console.log(machineCount);
@@ -57,7 +57,7 @@ module.exports = {
 				name:{
 					'contains':req.query.name
 				},
-				locationType: {'!=': 'Machine'} 
+				locationType: {'!=': 'Machine'}
 			});
 		}
 		console.log(locationCount);
@@ -79,7 +79,7 @@ module.exports = {
 			var rawMaterialCount = await RawMaterial.count({
 				rawMaterialNumber:{
 					'contains':req.query.rawMaterialNumber
-				} 
+				}
 			});
 		}
 		console.log(rawMaterialCount);
@@ -94,7 +94,7 @@ module.exports = {
 	getAllPartNumbersCount:async function(req,res){
 		if(req.query.partNumber ==null){
 			var partNumberCount = await PartNumber.count({
-				SMH: {'>': '0'} 
+				SMH: {'>': '0'}
 			});
 		}
 		else{
@@ -102,7 +102,7 @@ module.exports = {
 				partNumber:{
 					'contains':req.query.partNumber
 				},
-				SMH: {'>': '0'} 
+				SMH: {'>': '0'}
 			});
 		}
 		console.log(partNumberCount);
@@ -147,7 +147,7 @@ module.exports = {
 			var productionScheduleCount = await ProductionSchedule.count({
 				productionScheduleId:{
 					'contains':req.query.productionScheduleId
-				} 
+				}
 			});
 		}
 		console.log(productionScheduleCount);
@@ -169,7 +169,7 @@ module.exports = {
 			var monthlyScheduleCount = await MonthlySchedule.count({
 				scheduleName:{
 					'contains':req.query.scheduleName
-				} 
+				}
 			});
 		}
 		console.log(monthlyScheduleCount);
@@ -220,7 +220,7 @@ module.exports = {
 				barcodeSerial:{
 					'contains':req.query.barcodeSerial
 				},
-				processStatus: { '!=' : ['Complete', 'Final Location'] } 
+				processStatus: { '!=' : ['Complete', 'Final Location'] }
 			});
 		}
 		console.log(jobCardCount);
@@ -258,7 +258,7 @@ module.exports = {
 	getAllRerouteCount:async function(req,res){
 		if(req.query.barcodeSerial == null){
 			var ReroutedJobCardCount = await JobProcessSequenceRelation.count({
-				processStatus: {'!=': 'FinalLocation'} 
+				processStatus: {'!=': 'FinalLocation'}
 			});
 		}
 		else{
@@ -266,7 +266,7 @@ module.exports = {
 				barcodeSerial:{
 					'contains':req.query.barcodeSerial
 				} ,
-				processStatus: {'!=': 'FinalLocation'} 
+				processStatus: {'!=': 'FinalLocation'}
 			});
 		}
 		console.log(ReroutedJobCardCount);
@@ -288,7 +288,7 @@ module.exports = {
 			var jobCardCount = await SapTransaction.count({
 				barcodeSerial:{
 					'contains':req.query.barcodeSerial
-				} 
+				}
 			});
 		}
 		console.log(jobCardCount);
@@ -310,7 +310,7 @@ module.exports = {
 			var userCount = await User.count({
 				userName:{
 					'contains':req.query.userName
-				} 
+				}
 			});
 		}
 		console.log(userCount);
@@ -333,7 +333,7 @@ module.exports = {
 				jobcardStatus:"In Progress",
 				estimatedDate:{
 					'contains':estimatedDate
-				} 
+				}
 			});
 		}
 		else{
@@ -344,7 +344,7 @@ module.exports = {
 				jobcardStatus:"In Progress",
 				estimatedDate:{
 					'contains':estimatedDate
-				}  
+				}
 			});
 		}
 		var jobCardTotalCount = await JobCard.count({
@@ -375,7 +375,7 @@ module.exports = {
 				jobcardStatus:"Completed",
 				estimatedDate:{
 					'contains':estimatedDate
-				} 
+				}
 			});
 		}
 		else{
@@ -386,7 +386,7 @@ module.exports = {
 				jobcardStatus:"Completed",
 				estimatedDate:{
 					'contains':estimatedDate
-				}  
+				}
 			});
 		}
 		var jobCardTotalCount = await JobCard.count({

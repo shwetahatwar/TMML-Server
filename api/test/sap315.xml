@@ -1,0 +1,31 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:sap-com:document:sap:soap:functions:mc-style">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:Zmppp315AutomationWeb>
+         <Z_315Input>
+            <!--Zero or more repetitions:-->
+            <item>
+               <Zmblnr>documentNumber</Zmblnr>
+               <Zmjahr>documentYear</Zmjahr>
+               <Zxblnr>jobCardNumber</Zxblnr>
+               <Zbktxt>uniqueNumber</Zbktxt>
+               <Zqty313>quantityEntered</Zqty313>
+            </item>
+         </Z_315Input>
+         <Z_315Output>
+            <!--Zero or more repetitions:-->
+            <item>
+               <Zmblnr></Zmblnr>
+               <Zmjahr></Zmjahr>
+               <Zxblnr></Zxblnr>
+               <Zbktxt></Zbktxt>
+               <Zqty313></Zqty313>
+               <Zmblnr1></Zmblnr1>
+               <Zmjahr1></Zmjahr1>
+               <Zqty></Zqty>
+               <Zremarks></Zremarks>
+            </item>
+         </Z_315Output>
+      </urn:Zmppp315AutomationWeb>
+   </soapenv:Body>
+</soapenv:Envelope>

@@ -20,7 +20,7 @@ module.exports = {
       if(productionSchedulePartRelation[0] != null && productionSchedulePartRelation != undefined){
         var activeJobCard = await JobCard.find({
           productionSchedulePartRelationId:productionSchedulePartRelation[0]["id"],
-          jobcardStatus : { '!=' : ['In Progress', 'New'] }
+          jobcardStatus : "In Progress"
         });
         console.log("Line 25", activeJobCard);
         if(activeJobCard[0] != null && activeJobCard[0] != null){

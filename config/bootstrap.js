@@ -38,7 +38,7 @@ module.exports.bootstrap = async function() {
   setInterval(async function(){
     await sapPartNumber.soapRequestPost();
     await sapPartNumber.soapRequestGet();
-  },600000);
+  },1800000);
   // setInterval(function(){
   //   // SapPartNumber.soapRequestGet();
   //   // SapPartNumber.soapRequestPost();

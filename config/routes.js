@@ -8,7 +8,7 @@
  * https://sailsjs.com/anatomy/config/routes-js
  */
 
- module.exports.routes = {
+module.exports.routes = {
 
   /***************************************************************************
   *                                                                          *
@@ -61,14 +61,15 @@
   'POST /stopProcessSequence': 'JobProcessSequenceRelation.stopProcess',
   'POST /Trolley/create': 'Trolley.create',
   'POST /parseJson': 'SapPartNumberController.parseJson',
-  'GET /getPartSMHZero': 'PartNumberController.getPartSMHZero',
-  'GET /getJobcardCount':'JobCard.getJobcardCount',
-  'GET /getCell':'JobCard.getCell',
-  'GET /updatePartNumberLocation':'SetupDataUploadController.updatePartNumberLocation',
+   'GET /getPartSMHZero': 'PartNumberController.getPartSMHZero',
+   'GET /getJobcardCount':'JobCard.getJobcardCount',
+   'GET /getCell':'JobCard.getCell',
+   'GET /updatePartNumberLocation':'SetupDataUploadController.updatePartNumberLocation',
   'POST /manaulProcessSequqenceUpdate':'ProcessSequence.manaulProcessSequqenceUpdate',
   'GET /getJobCardCompletedToday':'JobCard.getJobCardCompletedToday',
   'GET /Joblocationrelation/getDataDesktop': 'Joblocationrelation.getDataDesktop',
   'GET /getJobLocationRelationCount': 'Joblocationrelation.getJobLocationRelationCount',
+  'POST /sap315': 'SapTransactionStore.sap315',
   'GET /getAllJobCardCount':'JobCard.getAllJobCardCount',
   'GET /getAllEmployeeCount':'GetCount.getAllEmployeeCount',
   'GET /getAllMachineCount':'GetCount.getAllMachineCount',
@@ -89,8 +90,10 @@
   'GET /getCompletedJobCount':'GetCount.getCompletedJobCount',
   'GET /getJobCardSequence':'GetCount.getJobCardSequence',
   'GET /getJobCardCountShiftWise':'JobCard.getJobCardCountShiftWise',
-   'GET /getJobCardsShiftWise':'JobCard.getJobCardsShiftWise',
-   'GET /getPartCell':'JobCard.getPartCell',
+  'GET /getJobCardsShiftWise':'JobCard.getJobCardsShiftWise',
+  'GET /getPartCell':'JobCard.getPartCell',
+  'POST /soapRequestPost1': 'SapTransactionStore.soapRequestPost1',
+  'POST /sap315': 'SapTransactionStore.sap315',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

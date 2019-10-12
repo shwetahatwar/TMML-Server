@@ -13,34 +13,7 @@ var convert = require('xml-js');
 module.exports = {
 
   create : async function(req,res){
-    // const soapRequest = require('easy-soap-request');
-    // const url = 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_mc_comp_details/170/zmp_mc_comp_details/zmp_mc_comp_details';
-    // const headers = {
-    //   'user-agent': 'sampleTest',
-    //   'Content-Type': 'application/xml',
-    //  'auth' = "Basic " + new Buffer("TMML_BRIOT" + ":" + "tml!06TML").toString("base64");
-    //   // 'soapAction': 'https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl#LatLonListZipCode',
-    // };
-    // var auth = "Basic " + new Buffer("TMML_BRIOT" + ":" + "tml!06TML").toString("base64");
-    // const xml = fs.readFileSync('../test/xmlTextFile.xml', 'utf-8');
 
-      // // usage of module
-    // (async () => {
-    //   const { response } = await soapRequest(url, headers, xml, 1000); // Optional timeout parameter(milliseconds)
-    //   const { headers, body, statusCode } = response;
-    //   console.log(headers);
-    //   console.log(body);
-    //   console.log(statusCode);
-    // })();
-
-    // var soap = require('soap');
-    // var url = 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_mc_comp_details/170/zmp_mc_comp_details/zmp_mc_comp_details';  // Download this file and xsd files from cucm admin page
-    // var auth = "Basic " + new Buffer("TMML_BRIOT" + ":" + "tml!06TML").toString("base64");
-    // soap.createClient(url,function(err,client){
-    //   client.addHttpHeader('Authorization',auth){
-    //     console.log(result);
-    //   };
-    // });
   },
 
   soapRequestGet:async function(req,res){
@@ -65,49 +38,6 @@ module.exports = {
   },
 
   soapRequestPost:async function(req,res){
-    // console.log("In");
-    // const xmlhttp = new XMLHttpRequest();
-    // // xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
-    // xmlhttp.open('POST', 'http://fjqaqts.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
-    // xmlhttp.onreadystatechange = async function() {
-    //   if (xmlhttp.readyState == 4) {
-    //     // alert(xmlhttp.responseText);
-    //     // console.log("Line 210",xmlhttp.responseText);
-    //     var xml = xmlhttp.responseText;
-    //     var result = convert.xml2json(xml, {compact: true, spaces: 4});
-    //     var newJSON = JSON.parse(result);
-    //     console.log("Line 214", newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1]);
-    //     var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1];
-    //     // var xmlItems = newJSON["ZwebOutput"];
-    //     console.log(resultData);
-    //
-    //     if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
-    //       // for(var i =0;i<xmlItems.length;i++){
-    //         var sapTransaction = await SapTransaction.update({
-    //           uniqueNumber:resultData["Zbktxt"]["_text"]
-    //         })
-    //         .set({
-    //           documentNumber:resultData["Zmblnr"]["_text"],
-    //           documentYear:resultData["Zmjahr"]["_text"],
-    //           remarks:resultData["Zremarks"]["_text"]
-    //         });
-    //       // }
-    //     }
-    //     else{
-    //       var sapTransaction = await SapTransaction.update({
-    //         uniqueNumber:resultData["Zbktxt"]["_text"]
-    //       })
-    //       .set({
-    //         documentNumber:1,
-    //         documentYear:resultData["Zmjahr"]["_text"],
-    //         remarks:resultData["Zremarks"]["_text"]
-    //       });
-    //     }
-    //   }
-    // };
-    // xmlhttp.setRequestHeader('SOAPAction', '');
-    // xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
-    // var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlPOSTTextFile.xml', 'utf-8');
     var getJobCardCompleted = await SapTransaction.find({
       documentNumber: 0
     });
@@ -118,40 +48,11 @@ module.exports = {
         }
       }
     }
-    // if(getJobCardCompleted[0] != null && getJobCardCompleted[0] != undefined){
-    //   if(getJobCardCompleted[0]["plant"]!= null && getJobCardCompleted[0]["plant"]!=undefined){
-    //     xml = xml.replace("Plant",getJobCardCompleted[0]["plant"]);
-    //     if(getJobCardCompleted[0]["date"]!= null && getJobCardCompleted[0]["date"]!=undefined){
-    //       xml = xml.replace("Date",getJobCardCompleted[0]["date"]);
-    //       if(getJobCardCompleted[0]["material"]!= null && getJobCardCompleted[0]["material"]!=undefined){
-    //         xml = xml.replace("MaterialNumber",getJobCardCompleted[0]["material"]);
-    //         if(getJobCardCompleted[0]["jobCard"]!= null && getJobCardCompleted[0]["jobCard"]!=undefined){
-    //           xml = xml.replace("JobCardNo",getJobCardCompleted[0]["jobCard"]);
-    //           if(getJobCardCompleted[0]["uniqueNumber"]!= null && getJobCardCompleted[0]["uniqueNumber"]!=undefined){
-    //             xml = xml.replace("UniqueNumber",getJobCardCompleted[0]["uniqueNumber"]);
-    //             if(getJobCardCompleted[0]["quantity"]!= null && getJobCardCompleted[0]["quantity"]!=undefined){
-    //               xml = xml.replace("ComponentquantityComponent",getJobCardCompleted[0]["quantity"]);
-    //               console.log("Line 252",xml);
-    //               xmlhttp.send(xml);
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-    // res.send();
+
   },
 
   parseJson:async function(req,res){
     var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\test.xml', 'utf-8');
-
-    // var jsonResult = xmlParser.toJson(xml);
-    // var newJSON = JSON.parse(jsonResult);
-    // var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZMPPP_COMP_DTL_WEBSERVICEResponse"]["ZCOMP_DTL"]["item"];
-    // console.log("JSON Output", resultData.length);
-    // // console.log("JSON Output", newJSON[1]);
-    // res.send(resultData[0]);
 
     var result = convert.xml2json(xml, {compact: true, spaces: 4});
     var newJSON = JSON.parse(result);
@@ -218,8 +119,6 @@ async function satTransactionEntry(getJobCardCompleted){
   xmlhttp.open('POST', 'http://TDCSAPDAPPPRD.blr.telco.co.in:8001/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
   xmlhttp.onreadystatechange = async function() {
     if (xmlhttp.readyState == 4) {
-      // alert(xmlhttp.responseText);
-      // console.log("Line 210",xmlhttp.responseText);
       var xml = xmlhttp.responseText;
       var result = convert.xml2json(xml, {compact: true, spaces: 4});
       var newJSON = JSON.parse(result);
@@ -240,6 +139,16 @@ async function satTransactionEntry(getJobCardCompleted){
           });
         // }
       }
+      else if(resultData["Zremarks"]["_text"] == "Unique Number and Job Card already exists"){
+        var sapTransaction = await SapTransaction.update({
+          uniqueNumber:resultData["Zbktxt"]["_text"]
+        })
+        .set({
+          documentNumber:1,
+          documentYear:resultData["Zmjahr"]["_text"],
+          remarks:resultData["Zremarks"]["_text"]
+        });
+      }
       else{
         var sapTransaction = await SapTransaction.update({
           uniqueNumber:resultData["Zbktxt"]["_text"]
@@ -252,7 +161,6 @@ async function satTransactionEntry(getJobCardCompleted){
       }
     }
   };
-  // console.log("Line 389",getJobCardCompleted);
   xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
   var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlPOSTTextFile.xml', 'utf-8');
   if(getJobCardCompleted != null && getJobCardCompleted != undefined){
@@ -285,8 +193,6 @@ async function newSapTransactionEntry(newDateTimeNow){
   xmlhttp.open('POST', 'http://fjqaqts.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmppp_ws_comp_dtls/570/zmppp_ws_comp_dtls/zmppp_ws_comp_dtls', true,"TMML_BRIOT","tml!06TML");
   xmlhttp.onreadystatechange = async function() {
     if (xmlhttp.readyState == 4) {
-      // alert(xmlhttp.responseText);
-      console.log(xmlhttp.responseText);
       var xml = xmlhttp.responseText;
       var result = convert.xml2json(xml, {compact: true, spaces: 4});
       var newJSON = JSON.parse(result);
