@@ -24,14 +24,6 @@ module.exports = {
         console.log(newJSON);
 
         if(resultData["Zmblnr1"]["_text"] != null && resultData["Zmblnr1"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
-          // var sapTransaction = await SapTransaction.update({
-          //   uniqueNumber:resultData["Zbktxt"]["_text"]
-          // })
-          // .set({
-          //   documentNumber:resultData["Zmblnr"]["_text"],
-          //   documentYear:resultData["Zmjahr"]["_text"],
-          //   remarks:resultData["Zremarks"]["_text"]
-          // });                              
           var sapTransactionStoreEntry = await SapTransactionStore.create({
           	documentNumber313:resultData["Zmblnr"]["_text"],
           	documentYear313:resultData["Zmjahr"]["_text"],
@@ -50,23 +42,32 @@ module.exports = {
         }
       }
     };
+    var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\sap315.xml', 'utf-8');
+    xml = xml.replace("documentNumber",req.body.documentNumber);
+    xml = xml.replace("documentYear",req.body.documentYear);
+    xml = xml.replace("jobCardNumber",req.body.jobCard);
+    xml = xml.replace("uniqueNumber",req.body.uniqueNumber);
+    xml = xml.replace("quantityEntered",req.body.quantity);
+    console.log(xml);
+    xmlhttp.send(xml);
 
-    var getJobCardCompleted = await TestSAPTransaction.find({
-      jobCard:req.body.jobCard
-    });
-    if(getJobCardCompleted[0] != null && getJobCardCompleted[0] != undefined){
-			xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
-      var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\sap315.xml', 'utf-8');
-      if(getJobCardCompleted[0]["documentNumber"]!= null && getJobCardCompleted[0]["documentNumber"]!=undefined){
-      	xml = xml.replace("documentNumber",getJobCardCompleted[0]["documentNumber"]);
-      	xml = xml.replace("documentYear",getJobCardCompleted[0]["documentYear"]);
-      	xml = xml.replace("jobCardNumber",getJobCardCompleted[0]["jobCard"]);
-      	xml = xml.replace("uniqueNumber",getJobCardCompleted[0]["uniqueNumber"]);
-      	xml = xml.replace("quantityEntered",getJobCardCompleted[0]["quantity"]);
-        console.log(xml);
-      	xmlhttp.send(xml);
-      }
-    }
+
+   //  var getJobCardCompleted = await TestSAPTransaction.find({
+   //    jobCard:req.body.jobCard
+   //  });
+   //  if(getJobCardCompleted[0] != null && getJobCardCompleted[0] != undefined){
+			// xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
+   //    var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\sap315.xml', 'utf-8');
+   //    if(getJobCardCompleted[0]["documentNumber"]!= null && getJobCardCompleted[0]["documentNumber"]!=undefined){
+   //    	xml = xml.replace("documentNumber",getJobCardCompleted[0]["documentNumber"]);
+   //    	xml = xml.replace("documentYear",getJobCardCompleted[0]["documentYear"]);
+   //    	xml = xml.replace("jobCardNumber",getJobCardCompleted[0]["jobCard"]);
+   //    	xml = xml.replace("uniqueNumber",getJobCardCompleted[0]["uniqueNumber"]);
+   //    	xml = xml.replace("quantityEntered",getJobCardCompleted[0]["quantity"]);
+   //      console.log(xml);
+   //    	xmlhttp.send(xml);
+   //    }
+   //  }
   },
 
   soapRequestPost1:async function(req,res){

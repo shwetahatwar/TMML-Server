@@ -434,7 +434,6 @@
       //console.log(newGetProductionScheduleId[0]["jobcard"].length);
       for(var j=0; j<newGetProductionScheduleId.length; j++){
         for(var i=0; i<newGetProductionScheduleId[j]["jobcard"].length; i++){
-        // //console.log(newGetProductionScheduleId[0]["jobcard"][i]["jobcardStatus"]);
         if(newGetProductionScheduleId[j]["jobcard"][i]["jobcardStatus"] == "In Progress"){
           inProgressRequestQuantity = inProgressRequestQuantity + newGetProductionScheduleId[j]["jobcard"][i]["requestedQuantity"];
           inProgressActualQuantity = inProgressActualQuantity + newGetProductionScheduleId[j]["jobcard"][i]["actualQuantity"];
@@ -450,7 +449,7 @@
           completedActualQuantity = completedActualQuantity + newGetProductionScheduleId[j]["jobcard"][i]["actualQuantity"];
           completedJobCardQuantity++;
         }
-        else{
+        else if(newGetProductionScheduleId[j]["jobcard"][i]["jobcardStatus"] == "New"){
           newRequestQuantity = newRequestQuantity + newGetProductionScheduleId[j]["jobcard"][i]["requestedQuantity"];
           newActualQuantity = newActualQuantity + newGetProductionScheduleId[j]["jobcard"][i]["actualQuantity"];
           newJobCardQuantity++;
@@ -506,151 +505,361 @@
     res.send(newGetProductionScheduleId);
   },
   getCell:async function(req,res){
-      //console.log(req.query["parNumbertId"]);
-      var getProcessSequence = await ProcessSequence.find({
-        sequenceNumber:1,
-        partId:req.query["parNumbertId"],
-        status:1
-      });
-      if(getProcessSequence[0] != null && getProcessSequence[0] != undefined){
-        var getMachineGroupId = await MachineGroup.find({
-          id:getProcessSequence[0]["machineGroupId"]
-        })
-        .populate("machines");
-        //console.log(getMachineGroupId[0]["machines"][0]["cellId"]);
-        if(getMachineGroupId[0] != null && getMachineGroupId[0] != undefined && getMachineGroupId[0]["machines"][0] != null && getMachineGroupId[0]["machines"][0] != undefined){
-          var getCellName = await Cell.find({
-            id:getMachineGroupId[0]["machines"][0]["cellId"]
-          });
-          //console.log(getCellName[0]["name"]);
-          var sendCell = {
-            cellName: getCellName[0]["name"]
-          }
-          res.send(sendCell);
+    //console.log(req.query["parNumbertId"]);
+    var getProcessSequence = await ProcessSequence.find({
+      sequenceNumber:1,
+      partId:req.query["parNumbertId"],
+      status:1
+    });
+    if(getProcessSequence[0] != null && getProcessSequence[0] != undefined){
+      var getMachineGroupId = await MachineGroup.find({
+        id:getProcessSequence[0]["machineGroupId"]
+      })
+      .populate("machines");
+      //console.log(getMachineGroupId[0]["machines"][0]["cellId"]);
+      if(getMachineGroupId[0] != null && getMachineGroupId[0] != undefined && getMachineGroupId[0]["machines"][0] != null && getMachineGroupId[0]["machines"][0] != undefined){
+        var getCellName = await Cell.find({
+          id:getMachineGroupId[0]["machines"][0]["cellId"]
+        });
+        //console.log(getCellName[0]["name"]);
+        var sendCell = {
+          cellName: getCellName[0]["name"]
         }
-        else{
-          res.send("Exit");
-        }
+        res.send(sendCell);
       }
       else{
         res.send("Exit");
       }
-    },
-    getJobCardCompletedToday:async function(req,res){
+    }
+    else{
+      res.send("Exit");
+    }
+  },
+  getJobCardCompletedToday:async function(req,res){
+    var jobCardCount = await JobCard.count({
+      jobcardStatus: 'Completed',
+      updatedAt: { '>=': req.query.updatedAt }
+    });
+    console.log(jobCardCount);
+    var totalCount=[];
+    var requestedData = {
+      TotalCount:jobCardCount,
+    }
+    totalCount.push(requestedData);
+    res.send(totalCount);
+  },
+
+  getAllJobCardCount:async function(req,res){
+    if(req.query.barcodeSerial == null){
       var jobCardCount = await JobCard.count({
-        jobcardStatus: 'Completed',
-        updatedAt: { '>=': req.query.updatedAt }
+
       });
-      console.log(jobCardCount);
-      var totalCount=[];
-      var requestedData = {
-        TotalCount:jobCardCount,
+    }
+    else{
+      var jobCardCount = await JobCard.count({
+        barcodeSerial:{
+          'contains':req.query.barcodeSerial
+        }
+      });
+    }
+    console.log(jobCardCount);
+    var totalCount=[];
+    var requestedData = {
+      TotalCount:jobCardCount,
+    }
+    totalCount.push(requestedData);
+    res.send(totalCount);
+  },
+  
+  getJobCardCountShiftWise:async function(req,res){
+    if(req.query.updatedAtStart != null && req.query.updatedAtEnd != null ){
+      var jobCardCount = await JobCard.count({
+        updatedAt :{ '>=':req.query.updatedAtStart,'<=':req.query.updatedAtEnd}
+
+      });
+    }
+
+    console.log(jobCardCount);
+    var totalCount=[];
+    var requestedData = {
+      TotalCount:jobCardCount,
+    }
+    totalCount.push(requestedData);
+    res.send(totalCount);
+  },
+
+  getJobCardsShiftWise:async function(req,res){
+    var limitCount = 100;
+    var skipCount = 0;
+    if (req.query.limit) {
+     limitCount = req.query.limit;
+    }
+    if(req.query.skip){
+      skipCount = req.query.skip;
+    }
+    if(req.query.barcodeSerial==null ){
+      if(req.query.updatedAtStart != null && req.query.updatedAtEnd != null ){
+        var jobCards = await JobCard.find({
+          where:{ updatedAt :{ '>=':req.query.updatedAtStart,'<=':req.query.updatedAtEnd}
+            },limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
+        }).populate('productionSchedulePartRelationId');
       }
-      totalCount.push(requestedData);
-      res.send(totalCount);
-    },
+    }
+    else
+    {
+      if(req.query.updatedAtStart != null && req.query.updatedAtEnd != null ){
+        var jobCards = await JobCard.find({
+          where:{ updatedAt :{ '>=':req.query.updatedAtStart,'<=':req.query.updatedAtEnd,
+            barcodeSerial:req.query.barcodeSerial}
+            },limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
+        }).populate('productionSchedulePartRelationId');
+      }
+    }
+    res.send(jobCards);
+  },
+getPartCell:async function(req,res){
+  //console.log(req.query["parNumbertId"]);
+  var getProcessSequence = await ProcessSequence.find({
+    sequenceNumber:1,
+    partId:req.query["parNumbertId"],
+    status:1
+  });
+  if(getProcessSequence[0] != null && getProcessSequence[0] != undefined){
+    var getMachineGroupId = await MachineGroup.find({
+      id:getProcessSequence[0]["machineGroupId"]
+    })
+    .populate("machines");
+    //console.log(getMachineGroupId[0]["machines"][0]["cellId"]);
+    if(getMachineGroupId[0] != null && getMachineGroupId[0] != undefined && getMachineGroupId[0]["machines"][0] != null && getMachineGroupId[0]["machines"][0] != undefined){
+      var getCellName = await Cell.find({
+        id:getMachineGroupId[0]["machines"][0]["cellId"]
+      });
+      //console.log(getCellName[0]["name"]);
+      var sendCell = {
+        cellName: getCellName[0]["name"]
+      }
+      var partCell=[];
+      partCell.push(sendCell);
+      res.send(partCell);
+    }
+    else{
+      res.send("Exit");
+    }
+  }
+  else{
+    res.send("Exit");
+  }
+},
 
-    getAllJobCardCount:async function(req,res){
-      if(req.query.barcodeSerial == null){
-        var jobCardCount = await JobCard.count({
-
+  getAllProcessJobCard:async function(req,res){
+    var processSequence1;
+    var processSequence2;
+    var processSequence3;
+    var processSequence4;
+    var processSequence5;
+    var getCurrentProcess;
+    var jobcard = await JobCard.find({
+      barcodeSerial : req.body.barcodeSerial
+    });
+    if(jobcard!=null&&jobcard!=undefined){
+      var productionSchedulePartRelation = await ProductionSchedulePartRelation.find({
+        id:jobcard[0]["productionSchedulePartRelationId"]
+      });
+      if(productionSchedulePartRelation!=null&&productionSchedulePartRelation!=undefined){
+        var processSequence = await ProcessSequence.find({
+          partId:productionSchedulePartRelation[0]["partNumberId"],
+          status :1
         });
-      }
-      else{
-        var jobCardCount = await JobCard.count({
-          barcodeSerial:{
-            'contains':req.query.barcodeSerial
+        for(var i=0;i<processSequence.length;i++){
+          var currentProcess = await JobProcessSequenceRelation.find({
+            sequenceNumber: processSequence[i]["sequenceNumber"],
+            jobId:jobcard[0]["id"]
+          }).populate('machineId');
+          if(currentProcess[0] && currentProcess[0]["processStatus"] == "Start"){
+            getCurrentProcess = currentProcess[0]["machineId"]["machineName"]
+            break;
           }
-        });
-      }
-      console.log(jobCardCount);
-      var totalCount=[];
-      var requestedData = {
-        TotalCount:jobCardCount,
-      }
-      totalCount.push(requestedData);
-      res.send(totalCount);
-    },
-    
-    getJobCardCountShiftWise:async function(req,res){
-        if(req.query.updatedAtStart != null && req.query.updatedAtEnd != null ){
-          var jobCardCount = await JobCard.count({
-            updatedAt :{ '>=':req.query.updatedAtStart,'<=':req.query.updatedAtEnd}
-
-          });
         }
-
-        console.log(jobCardCount);
-        var totalCount=[];
-        var requestedData = {
-          TotalCount:jobCardCount,
-        }
-        totalCount.push(requestedData);
-        res.send(totalCount);
-      },
-
-      getJobCardsShiftWise:async function(req,res){
-        var limitCount = 100;
-        var skipCount = 0;
-        if (req.query.limit) {
-         limitCount = req.query.limit;
-       }
-       if(req.query.skip){
-        skipCount = req.query.skip;
-      }
-      if(req.query.barcodeSerial==null ){
-        if(req.query.updatedAtStart != null && req.query.updatedAtEnd != null ){
-          var jobCards = await JobCard.find({
-           where:{ updatedAt :{ '>=':req.query.updatedAtStart,'<=':req.query.updatedAtEnd}
-         },limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
-
-       }).populate('productionSchedulePartRelationId');
-        }
-      }
-      else
-      {
-        if(req.query.updatedAtStart != null && req.query.updatedAtEnd != null ){
-          var jobCards = await JobCard.find({
-           where:{ updatedAt :{ '>=':req.query.updatedAtStart,'<=':req.query.updatedAtEnd,
-           barcodeSerial:req.query.barcodeSerial}
-         },limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
-
-       }).populate('productionSchedulePartRelationId');
-        }
-      }
-      res.send(jobCards);
-    },
-    getPartCell:async function(req,res){
-        //console.log(req.query["parNumbertId"]);
-        var getProcessSequence = await ProcessSequence.find({
-          sequenceNumber:1,
-          partId:req.query["parNumbertId"],
-          status:1
-        });
-        if(getProcessSequence[0] != null && getProcessSequence[0] != undefined){
-          var getMachineGroupId = await MachineGroup.find({
-            id:getProcessSequence[0]["machineGroupId"]
-          })
-          .populate("machines");
-          //console.log(getMachineGroupId[0]["machines"][0]["cellId"]);
-          if(getMachineGroupId[0] != null && getMachineGroupId[0] != undefined && getMachineGroupId[0]["machines"][0] != null && getMachineGroupId[0]["machines"][0] != undefined){
-            var getCellName = await Cell.find({
-              id:getMachineGroupId[0]["machines"][0]["cellId"]
+        if(processSequence[0] != null && processSequence[0] != undefined){
+          console.log("Line 674",processSequence);
+          if(processSequence.length == 1){
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[0]["machineGroupId"]
             });
-            //console.log(getCellName[0]["name"]);
-            var sendCell = {
-              cellName: getCellName[0]["name"]
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence1 = machineType[0]["name"];
             }
-            var partCell=[];
-            partCell.push(sendCell);
-            res.send(partCell);
           }
-          else{
-            res.send("Exit");
+          else if(processSequence.length == 2){
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[0]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence1 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[1]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence2 = machineType[0]["name"];
+            }
           }
-        }
-        else{
-          res.send("Exit");
+          else if(processSequence.length == 3){
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[0]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence1 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[1]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence2 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[2]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence3 = machineType[0]["name"];
+            }
+          }
+          else if(processSequence.length == 4){
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[0]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence1 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[1]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence2 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[2]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence3 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[3]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence4 = machineType[0]["name"];
+            }
+          }
+          else if(processSequence.length == 5){
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[0]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence1 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[1]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence2 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[2]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence3 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[3]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence4 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[4]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence5 = machineType[0]["name"];
+            }
+          }
         }
       }
-    };
+    }
+    var processes = {
+      processSequence1:processSequence1,
+      processSequence2:processSequence2,
+      processSequence3:processSequence3,
+      processSequence4:processSequence4,
+      processSequence5:processSequence5,
+      getCurrentProcess:getCurrentProcess,
+    }
+    res.send(processes);
+  },
+
+  getJobCardByMachine:async function(req,res){
+    var getJobCard = [];
+    var machineId = await Machine.find({
+      barcodeSerial: req.body.machineBarcodeSerial
+    });
+    console.log(machineId);
+    if(machineId[0] != null && machineId[0] != undefined){
+      var jobProcessSequenceRelation = await JobProcessSequenceRelation.find({
+        "processStatus": "Start",
+        "machineId": machineId[0]["id"]
+      }).populate('jobId');
+      for(var i=0;i< jobProcessSequenceRelation.length;i++){
+        getJobCard.push(jobProcessSequenceRelation[i]["jobId"]["barcodeSerial"]);
+      }
+    }
+    console.log(getJobCard);
+    var newJobCardDetails = [];
+    newJobCardDetails = {"jobcards":getJobCard}
+    res.send(newJobCardDetails);
+  }
+};
+ 

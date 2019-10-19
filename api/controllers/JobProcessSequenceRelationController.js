@@ -527,7 +527,52 @@ module.exports = {
       remarks:req.body.note
     });
     res.send("Final Location");
-  }
+  },
+
+  getMachineWiseData:async function(req,res){
+    var limitCount = 100;
+        var skipCount = 0;
+        if (req.query.limit) {
+         limitCount = req.query.limit;
+       }
+       if(req.query.skip){
+        skipCount = req.query.skip;
+      }
+      if(req.query.Machine !=null && req.query.Machine != undefined){ 
+       console.log("In getMachineWiseData");     
+          var jobCards = await JobProcessSequenceRelation.find({
+           where:{ machineId : req.query.Machine},limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
+       }).populate('jobId')
+          .populate('processSequenceId')
+          .populate('machineId')
+           .populate('locationId')
+          .populate('operatorId');
+      }
+      res.send(jobCards);
+  },
+
+   getJobProcessSequenceRelation:async function(req,res){
+    var limitCount = 100;
+    var skipCount = 0;
+    if (req.query.limit) {
+     limitCount = req.query.limit;
+    }
+    if(req.query.skip){
+      skipCount = req.query.skip;
+    }
+      if(req.query.updatedAtStart != null && req.query.updatedAtEnd != null ){
+        var jobCards = await JobProcessSequenceRelation.find({
+          where:{ updatedAt :{ '>=':req.query.updatedAtStart,'<=':req.query.updatedAtEnd},
+                  processStatus:"Completed",processStatus:"FinalLocation"
+            },limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
+        }).populate('jobId')
+          .populate('processSequenceId')
+          .populate('machineId')
+           .populate('locationId')
+          .populate('operatorId');
+    }
+    res.send(jobCards);
+  },
 };
 
 

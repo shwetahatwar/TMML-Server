@@ -108,7 +108,13 @@ module.exports = {
       }
     }
     res.send();
+  },
 
+  get313Data:async function(req,res){
+    var sap315 = await SapTransaction.find({
+      jobCard: req.body.jobCard
+    });
+    res.send(sap315);
   }
 };
 

@@ -8,7 +8,7 @@
  * https://sailsjs.com/anatomy/config/routes-js
  */
 
-module.exports.routes = {
+ module.exports.routes = {
 
   /***************************************************************************
   *                                                                          *
@@ -61,10 +61,10 @@ module.exports.routes = {
   'POST /stopProcessSequence': 'JobProcessSequenceRelation.stopProcess',
   'POST /Trolley/create': 'Trolley.create',
   'POST /parseJson': 'SapPartNumberController.parseJson',
-   'GET /getPartSMHZero': 'PartNumberController.getPartSMHZero',
-   'GET /getJobcardCount':'JobCard.getJobcardCount',
-   'GET /getCell':'JobCard.getCell',
-   'GET /updatePartNumberLocation':'SetupDataUploadController.updatePartNumberLocation',
+  'GET /getPartSMHZero': 'PartNumberController.getPartSMHZero',
+  'GET /getJobcardCount':'JobCard.getJobcardCount',
+  'GET /getCell':'JobCard.getCell',
+  'GET /updatePartNumberLocation':'SetupDataUploadController.updatePartNumberLocation',
   'POST /manaulProcessSequqenceUpdate':'ProcessSequence.manaulProcessSequqenceUpdate',
   'GET /getJobCardCompletedToday':'JobCard.getJobCardCompletedToday',
   'GET /Joblocationrelation/getDataDesktop': 'Joblocationrelation.getDataDesktop',
@@ -94,6 +94,12 @@ module.exports.routes = {
   'GET /getPartCell':'JobCard.getPartCell',
   'POST /soapRequestPost1': 'SapTransactionStore.soapRequestPost1',
   'POST /sap315': 'SapTransactionStore.sap315',
+  'GET /getMachineWiseData':'JobProcessSequenceRelation.getMachineWiseData',
+  'POST /get313Data':'SapPartNumberController.get313Data',
+  'POST /getAllProcessJobCard': 'JobCard.getAllProcessJobCard',
+  'POST /getJobCardByMachine': 'JobCard.getJobCardByMachine',
+  'GET /getAllCompletedCount':'GetCount.getAllCompletedCount',
+  'GET /getJobProcessSequenceRelation':'JobProcessSequenceRelation.getJobProcessSequenceRelation',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

@@ -46,7 +46,7 @@ module.exports = {
       columnType: 'bigint',
     },
     operatorId:{
-      model:'User'
+      model:'Employee'
     },
     sequenceNumber:{
       type:'number',
