@@ -100,6 +100,8 @@
   'POST /getJobCardByMachine': 'JobCard.getJobCardByMachine',
   'GET /getAllCompletedCount':'GetCount.getAllCompletedCount',
   'GET /getJobProcessSequenceRelation':'JobProcessSequenceRelation.getJobProcessSequenceRelation',
+  'GET /getAllErrorPartCount':'GetCount.getAllErrorPartCount',
+  'GET /getErrorReport':'GetCount.getErrorReport',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

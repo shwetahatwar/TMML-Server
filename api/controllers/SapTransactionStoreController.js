@@ -12,44 +12,67 @@ var convert = require('xml-js');
 module.exports = {
   sap315:async function(req,res){
 
-  	const xmlhttp = new XMLHttpRequest();
-    xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmppp_315_automation_web/170/zmppp_315_automation_web1/zmppp_315_automation_web1', true,"TMML_BRIOT","tml!07TML");
-    xmlhttp.onreadystatechange = async function() {
-      if (xmlhttp.readyState == 4) {
-        var xml = xmlhttp.responseText;
-        var result = convert.xml2json(xml, {compact: true, spaces: 4});
-        var newJSON = JSON.parse(result);
-        console.log("Line 214", newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:Zmppp315AutomationWebResponse"]["Z_315Output"]["item"][1]);
-        var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:Zmppp315AutomationWebResponse"]["Z_315Output"]["item"][1];
-        console.log(newJSON);
+  	// const xmlhttp = new XMLHttpRequest();
+   //  xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmppp_315_automation_web/170/zmppp_315_automation_web1/zmppp_315_automation_web1', true,"TMML_BRIOT","tml!06TML");
+   //  xmlhttp.onreadystatechange = async function() {
+   //    if (xmlhttp.readyState == 4) {
+   //      var xml = xmlhttp.responseText;
+   //      var result = convert.xml2json(xml, {compact: true, spaces: 4});
+   //      var newJSON = JSON.parse(result);
+   //      console.log("Line 214", newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:Zmppp315AutomationWebResponse"]["Z_315Output"]["item"][1]);
+   //      var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:Zmppp315AutomationWebResponse"]["Z_315Output"]["item"][1];
+   //      console.log(newJSON);
 
-        if(resultData["Zmblnr1"]["_text"] != null && resultData["Zmblnr1"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
-          var sapTransactionStoreEntry = await SapTransactionStore.create({
-          	documentNumber313:resultData["Zmblnr"]["_text"],
-          	documentYear313:resultData["Zmjahr"]["_text"],
-          	jobCard:resultData["Zxblnr"]["_text"],
-          	uniqueNumber:resultData["Zbktxt"]["_text"],
-          	quantity313:resultData["Zqty313"]["_text"],
-          	documentNumber315:resultData["Zmblnr1"]["_text"],
-          	documentYear315:resultData["Zmjahr1"]["_text"],
-          	quantity315:resultData["Zqty"]["_text"],
-          	remarks:resultData["Zremarks"]["_text"]
-          });
-          res.send(sapTransactionStoreEntry);
-        }
-        else{
-          res.send("Not updated");
-        }
-      }
-    };
-    var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\sap315.xml', 'utf-8');
+   //      if(resultData["Zmblnr1"]["_text"] != null && resultData["Zmblnr1"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
+   //        var sapTransactionStoreEntry = await SapTransactionStore.create({
+   //        	documentNumber313:resultData["Zmblnr"]["_text"],
+   //        	documentYear313:resultData["Zmjahr"]["_text"],
+   //        	jobCard:resultData["Zxblnr"]["_text"],
+   //        	uniqueNumber:resultData["Zbktxt"]["_text"],
+   //        	quantity313:resultData["Zqty313"]["_text"],
+   //        	documentNumber315:resultData["Zmblnr1"]["_text"],
+   //        	documentYear315:resultData["Zmjahr1"]["_text"],
+   //        	quantity315:resultData["Zqty"]["_text"],
+   //        	remarks:resultData["Zremarks"]["_text"]
+   //        });
+   //        res.send(sapTransactionStoreEntry);
+   //      }
+   //      else{
+   //        res.send("Not updated");
+   //      }
+   //    }
+   //  };
+    var xml = fs.readFileSync('D:\\TMML\\server\\api\\test\\sap315.xml', 'utf-8');
     xml = xml.replace("documentNumber",req.body.documentNumber);
     xml = xml.replace("documentYear",req.body.documentYear);
     xml = xml.replace("jobCardNumber",req.body.jobCard);
     xml = xml.replace("uniqueNumber",req.body.uniqueNumber);
     xml = xml.replace("quantityEntered",req.body.quantity);
-    console.log(xml);
-    xmlhttp.send(xml);
+    console.log("XML: ",xml);
+    var xml1 = fs.readFileSync('D:\\TMML\\server\\api\\test\\result.xml', 'utf-8');;
+    var result = convert.xml2json(xml1, {compact: true, spaces: 4});
+    var newJSON = JSON.parse(result);
+    var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:Zmppp315AutomationWebResponse"]["Z_315Output"]["item"][1];
+    console.log("resultData: ",resultData);
+    if(resultData["Zmblnr1"]["_text"] != null && resultData["Zmblnr1"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
+      var sapTransactionStoreEntry = await SapTransactionStore.create({
+       documentNumber313:resultData["Zmblnr"]["_text"],
+       documentYear313:resultData["Zmjahr"]["_text"],
+       jobCard:resultData["Zxblnr"]["_text"],
+       uniqueNumber:resultData["Zbktxt"]["_text"],
+       quantity313:resultData["Zqty313"]["_text"],
+       documentNumber315:resultData["Zmblnr1"]["_text"],
+       documentYear315:resultData["Zmjahr1"]["_text"],
+       quantity315:resultData["Zqty"]["_text"],
+       remarks:resultData["Zremarks"]["_text"]
+      }).fetch();
+       console.log("Response" ,sapTransactionStoreEntry);
+      res.send(sapTransactionStoreEntry);
+    }
+    else{
+      res.send("Not updated");
+    }
+    // xmlhttp.send(xml);
 
 
    //  var getJobCardCompleted = await TestSAPTransaction.find({

@@ -434,6 +434,7 @@
       //console.log(newGetProductionScheduleId[0]["jobcard"].length);
       for(var j=0; j<newGetProductionScheduleId.length; j++){
         for(var i=0; i<newGetProductionScheduleId[j]["jobcard"].length; i++){
+        // //console.log(newGetProductionScheduleId[0]["jobcard"][i]["jobcardStatus"]);
         if(newGetProductionScheduleId[j]["jobcard"][i]["jobcardStatus"] == "In Progress"){
           inProgressRequestQuantity = inProgressRequestQuantity + newGetProductionScheduleId[j]["jobcard"][i]["requestedQuantity"];
           inProgressActualQuantity = inProgressActualQuantity + newGetProductionScheduleId[j]["jobcard"][i]["actualQuantity"];
@@ -657,6 +658,11 @@ getPartCell:async function(req,res){
     var processSequence3;
     var processSequence4;
     var processSequence5;
+    var processSequence6;
+    var processSequence7;
+    var processSequence8;
+    var processSequence9;
+    var processSequence10;
     var getCurrentProcess;
     var jobcard = await JobCard.find({
       barcodeSerial : req.body.barcodeSerial
@@ -675,9 +681,11 @@ getPartCell:async function(req,res){
             sequenceNumber: processSequence[i]["sequenceNumber"],
             jobId:jobcard[0]["id"]
           }).populate('machineId');
-          if(currentProcess[0] && currentProcess[0]["processStatus"] == "Start"){
-            getCurrentProcess = currentProcess[0]["machineId"]["machineName"]
-            break;
+          if(currentProcess[0] != null && currentProcess[0] != undefined){
+            if(currentProcess[0]["processStatus"] == "Start"){
+              getCurrentProcess = currentProcess[0]["machineId"]["machineName"]
+              break;
+            }
           }
         }
         if(processSequence[0] != null && processSequence[0] != undefined){
@@ -827,6 +835,376 @@ getPartCell:async function(req,res){
               processSequence5 = machineType[0]["name"];
             }
           }
+          else if(processSequence.length == 6){
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[0]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence1 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[1]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence2 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[2]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence3 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[3]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence4 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[4]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence5 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[5]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence6 = machineType[0]["name"];
+            }
+          }
+          else if(processSequence.length == 7){
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[0]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence1 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[1]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence2 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[2]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence3 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[3]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence4 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[4]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence5 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[5]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence6 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[6]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence7 = machineType[0]["name"];
+            }
+          }
+          else if(processSequence.length == 8){
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[0]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence1 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[1]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence2 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[2]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence3 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[3]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence4 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[4]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence5 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[5]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence6 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[6]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence7 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[7]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence8 = machineType[0]["name"];
+            }
+          }
+          else if(processSequence.length == 9){
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[0]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence1 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[1]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence2 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[2]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence3 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[3]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence4 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[4]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence5 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[5]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence6 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[6]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence7 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[7]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence8 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[8]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence9 = machineType[0]["name"];
+            }
+          }
+          else if(processSequence.length == 10){
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[0]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence1 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[1]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence2 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[2]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence3 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[3]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence4 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[4]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence5 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[5]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence6 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[6]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence7 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[7]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence8 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[8]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence9 = machineType[0]["name"];
+            }
+            var machineGroup = await MachineGroup.find({
+              id:processSequence[9]["machineGroupId"]
+            });
+            if(machineGroup!=null&&machineGroup!=undefined){
+              var machineType = await MachineType.find({
+                id:machineGroup[0]["machineTypeId"]
+              });
+              processSequence10 = machineType[0]["name"];
+            }
+          }
         }
       }
     }
@@ -836,6 +1214,11 @@ getPartCell:async function(req,res){
       processSequence3:processSequence3,
       processSequence4:processSequence4,
       processSequence5:processSequence5,
+      processSequence6:processSequence6,
+      processSequence7:processSequence7,
+      processSequence8:processSequence8,
+      processSequence9:processSequence9,
+      processSequence10:processSequence10,
       getCurrentProcess:getCurrentProcess,
     }
     res.send(processes);
@@ -852,14 +1235,17 @@ getPartCell:async function(req,res){
         "processStatus": "Start",
         "machineId": machineId[0]["id"]
       }).populate('jobId');
-      for(var i=0;i< jobProcessSequenceRelation.length;i++){
-        getJobCard.push(jobProcessSequenceRelation[i]["jobId"]["barcodeSerial"]);
+      for(var i=0; i < jobProcessSequenceRelation.length; i++){
+        var newDate = jobProcessSequenceRelation[i]["jobId"]["estimatedDate"];
+        newDate = newDate.substring(4,24);
+        var sendJobCard = jobProcessSequenceRelation[i]["jobId"]["barcodeSerial"] + " - " + newDate;
+        getJobCard.push(sendJobCard);
       }
     }
     console.log(getJobCard);
     var newJobCardDetails = [];
     newJobCardDetails = {"jobcards":getJobCard}
-    res.send(newJobCardDetails);
+    res.send(getJobCard);
   }
 };
  

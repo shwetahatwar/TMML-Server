@@ -82,19 +82,26 @@ module.exports = {
   },
 
   getData:async function(req,res){
-    var jobLocationRelationNew;
+    var jobLocationRelationNew=[];
+    var resultJobLocationRelationNew;
     var jobCardId = await JobCard.find({
       barcodeSerial: req.query.barcodeSerial
     });
+    console.log("jobCardId: ",jobCardId);
     if(jobCardId[0] != null && jobCardId[0] != undefined){
-      jobLocationRelationNew = await Joblocationrelation.find({
-        jobcardId: jobCardId[0]["id"],
-        processStatus: { '!=' : ['Complete', 'Final Location'] }
+      resultJobLocationRelationNew = await Joblocationrelation.find({
+        jobcardId: jobCardId[0]["id"]
       })
       .populate('sourceLocation')
       .populate('jobcardId')
       .populate('destinationLocationId');
-      console.log(jobLocationRelationNew);
+      for(var i=0;i<resultJobLocationRelationNew.length;i++){
+        if(resultJobLocationRelationNew[i]["processStatus"] != "Complete" && resultJobLocationRelationNew[i]["processStatus"] != "Final Location"){
+          jobLocationRelationNew.push(resultJobLocationRelationNew[i]);
+        }
+      }
+      console.log(resultJobLocationRelationNew);
+
     }
     res.send(jobLocationRelationNew);
     // var sql = `select * from joblocationrelation inner join location ON joblocationrelation.sourceLocation = location.id or joblocationrelation.destinationLocationId = location.id inner join jobcard ON joblocationrelation.jobcardId = jobcard.id where processStatus != 'Complete' and processStatus != 'Final Location'`;

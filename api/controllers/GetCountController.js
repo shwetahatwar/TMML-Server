@@ -609,17 +609,46 @@ var processes = {
     res.send(totalProcesses);
 },
 
-	getAllCompletedCount:async function(req,res){
-		var dataCount = await JobProcessSequenceRelation.count({
-			or:[{processStatus:"Completed"},{processStatus:"FinalLocation"}]
-		});
-		console.log(dataCount);
-		var totalCount=[];
-		var requestedData = {
-			TotalCount:dataCount,
-		}
-		totalCount.push(requestedData);
-		res.send(totalCount);
+getAllCompletedCount:async function(req,res){
+	var dataCount = await JobProcessSequenceRelation.count({
+		or:[{processStatus:"Completed"}]
+	});
+	console.log(dataCount);
+	var totalCount=[];
+	var requestedData = {
+		TotalCount:dataCount,
 	}
+	totalCount.push(requestedData);
+	res.send(totalCount);
+},
 
+getAllErrorPartCount:async function(req,res){
+	var dataCount = await PartNumber.count({
+		remarks: { '!=' : ['NA', ''] }
+	});
+	console.log(dataCount);
+	var totalCount=[];
+	var requestedData = {
+		TotalCount:dataCount,
+	}
+	totalCount.push(requestedData);
+	res.send(totalCount);
+},
+
+getErrorReport:async function(req,res){
+	var limitCount = 100;
+	var skipCount = 0;
+	if (req.query.limit) {
+		limitCount = req.query.limit;
+	}
+	if(req.query.skip){
+		skipCount = req.query.skip;
+	}
+	var parts = await PartNumber.find({
+		where: {remarks: { '!=' : ['NA', ''] }}
+		,limit:limitCount,skip:skipCount,sort:[{ id: 'DESC'}]
+    });
+	console.log(parts.length)
+	res.send(parts);
+}
 };

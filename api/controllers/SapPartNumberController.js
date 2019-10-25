@@ -111,6 +111,7 @@ module.exports = {
   },
 
   get313Data:async function(req,res){
+    console.log("req.body: ",req.body);
     var sap315 = await SapTransaction.find({
       jobCard: req.body.jobCard
     });
