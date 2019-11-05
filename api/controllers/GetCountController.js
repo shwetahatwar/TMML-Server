@@ -651,4 +651,74 @@ getErrorReport:async function(req,res){
 	console.log(parts.length)
 	res.send(parts);
 },
+
+dailyMonthlyPartReport: async function(req,res){
+
+    var monthlySchedule = await MonthlySchedule.find({
+      year:req.query.year,
+      month:req.query.month
+    });
+
+    console.log('monthlySchedule: ', monthlySchedule);
+
+    var partNumberIdToBeSearched = await PartNumber.find({
+      partNumber:req.query.partNumber
+    });
+
+    console.log('partNumber id: ', partNumberIdToBeSearched);
+
+    if(monthlySchedule[0] != undefined && monthlySchedule.length > 0 && monthlySchedule[0] != null){
+      if(partNumberIdToBeSearched[0] != undefined && partNumberIdToBeSearched.length > 0 && partNumberIdToBeSearched[0] != null){
+      console.log('monthlySchedulePartNumbers: ', monthlySchedule[0]["id"]);
+      var monthlySchedulePartNumbers = await MonthlySchedulePartRelation.find({
+        monthlyScheduleId:monthlySchedule[0]["id"],
+        partNumber:partNumberIdToBeSearched[0]["id"]
+      }).populate('partNumber');
+    }
+   }
+
+    console.log("MonthlySchedulePartRelation: ", monthlySchedulePartNumbers);
+
+    // console.log(monthlySchedulePartNumbers.length);
+    if(monthlySchedulePartNumbers[0] != null && monthlySchedulePartNumbers[0] != undefined){
+      console.log('monthly schedule id: ', monthlySchedule[0]["id"]);
+      var dailySchedule = await ProductionSchedule.find({
+        monthlyScheduleId:monthlySchedule[0]["id"],
+        remarks:{ '!=' :''}
+      });
+    }
+    // console.log(dailySchedule.length);
+    var resTable = [];
+    if(monthlySchedulePartNumbers != null && monthlySchedulePartNumbers != undefined){
+      for(var i=0; i < monthlySchedulePartNumbers.length; i++){
+        var partNumberQuantity = 0;
+        if(dailySchedule[0] != null && dailySchedule[0] != undefined){
+          for(var j=0;j<dailySchedule.length;j++){
+            // console.log(dailySchedule[j]["id"]);
+            // console.log(monthlySchedulePartNumbers[i]["partNumber"]);
+            var dailySchedulePartNumbers = await ProductionSchedulePartRelation.find({
+              scheduleId:dailySchedule[j]["id"],
+              partNumberId:monthlySchedulePartNumbers[i]["partNumber"]['id']
+            });
+            // console.log(dailySchedulePartNumbers);
+            if(dailySchedulePartNumbers[0]!=null && dailySchedulePartNumbers[0] != undefined){
+              partNumberQuantity = partNumberQuantity + dailySchedulePartNumbers[0]["requestedQuantity"];
+            }
+          }
+          console.log('Part Number: ', monthlySchedulePartNumbers[i]);
+          var pushPartDetails={
+            partNumberId: monthlySchedulePartNumbers[i]["partNumber"]['id'],
+            monthlyQuantity:monthlySchedulePartNumbers[i]["requiredInMonth"],
+            quantitiesInProduction:partNumberQuantity,
+            partNumber:monthlySchedulePartNumbers[i]["partNumber"]['partNumber'],
+          }
+          // var pushPartDetails=[monthlySchedulePartNumbers[i]["partNumber"],monthlySchedulePartNumbers[i]["requiredInMonth"],partNumberQuantity];
+          resTable.push(pushPartDetails);
+          // resTable.push("Part Number: " + monthlySchedulePartNumbers[i]["partNumber"],"Monthly Quantity: "+monthlySchedulePartNumbers[i]["requiredInMonth"],"Completed Quantity: "+partNumberQuantity);
+        }
+      }
+    }
+    console.log(resTable);
+    res.send(resTable);
+  }
 };

@@ -102,6 +102,7 @@
   'GET /getJobProcessSequenceRelation':'JobProcessSequenceRelation.getJobProcessSequenceRelation',
   'GET /getAllErrorPartCount':'GetCount.getAllErrorPartCount',
   'GET /getErrorReport':'GetCount.getErrorReport',
+  'GET /dailyMonthlyPartReport':'GetCount.dailyMonthlyPartReport',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 
