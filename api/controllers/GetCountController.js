@@ -650,5 +650,5 @@ getErrorReport:async function(req,res){
     });
 	console.log(parts.length)
 	res.send(parts);
-}
+},
 };
