@@ -21,9 +21,11 @@ module.exports = {
     console.log(newproductionScheduleId["id"]);
     for (var i = 0; i < req.body.partMaster.length; i++) {
       console.log(req.body.partMaster[i].partNumberId);
+       console.log(req.body.partMaster[i].requestedQuantity);
       var newPartNumber = await PartNumber.findOne({ partNumber: req.body.partMaster[i].partNumberId });
       console.log(newPartNumber);
-      if (newPartNumber[0] != null && newPartNumber[0] != undefined) {
+      if (newPartNumber != null && newPartNumber != undefined) {
+        console.log("IN ProductionSchedulePartRelation");
         await ProductionSchedulePartRelation.create({
           scheduleId: newproductionScheduleId["id"],
           partNumberId: newPartNumber["id"],

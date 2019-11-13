@@ -123,6 +123,7 @@ async function satTransactionEntry(getJobCardCompleted){
 
   const xmlhttp = new XMLHttpRequest();
   // xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
+  // xmlhttp.open('POST', 'http://TDCSAPDAPPPRD.blr.telco.co.in:8001/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
   xmlhttp.open('POST', 'http://TDCSAPDAPPPRD.blr.telco.co.in:8001/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
   xmlhttp.onreadystatechange = async function() {
     if (xmlhttp.readyState == 4) {
@@ -146,7 +147,7 @@ async function satTransactionEntry(getJobCardCompleted){
           });
         // }
       }
-      else if(resultData["Zremarks"]["_text"] == "Unique Number and Job Card already exists"){
+      else if(resultData["Zremarks"]["_text"] == "Unique Number and Job Card already exists" || resultData["Zremarks"]["_text"] == "315 already done against this JC/ unique no combination"){
         var sapTransaction = await SapTransaction.update({
           uniqueNumber:resultData["Zbktxt"]["_text"]
         })
