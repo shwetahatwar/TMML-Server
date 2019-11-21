@@ -17,6 +17,110 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  // '*': true,
+  // '*': 'isLoggedIn',
+  // 'login':true,
+  // 'login': true,
 
+  // '*':{
+  //   create:true,
+  //   find:true,
+  //   findOne:true,
+  //   update:true,
+  //   set:true
+  // },
+
+  AccessLevelController:{
+  	'*':'isLoggedIn'
+  },
+  // AppUserController:{
+  //   '*':'isLoggedIn'
+  // },
+  CellController:{
+    '*':'isLoggedIn'
+  },
+  CostCenterController:{
+    '*':'isLoggedIn'
+  },
+  JobCardController:{
+    '*':'isLoggedIn'
+  },
+  JobProcessSequenceRelationController:{
+    '*':'isLoggedIn'
+  },
+  JobToJobReroutingController:{
+    '*':'isLoggedIn'
+  },
+  LocationController:{
+    '*':'isLoggedIn'
+  },
+  MachineController:{
+    '*':'isLoggedIn'
+  },
+  MachineGroupController:{
+    '*':'isLoggedIn'
+  },
+  MachineTypeController:{
+    '*':'isLoggedIn'
+  },
+  MaintenanceTransactionController:{
+    '*':'isLoggedIn'
+  },
+  MaterialTypeController:{
+    '*':'isLoggedIn'
+  },
+  PartNumberController:{
+    '*':'isLoggedIn'
+  },
+  ProcessSequenceController:{
+    '*':'isLoggedIn'
+  },
+  ProcessSequenceMachineRelationController:{
+    '*':'isLoggedIn'
+  },
+  ProductionScheduleController:{
+    '*':'isLoggedIn'
+  },
+  ProductionSchedulePartRelationController:{
+    '*':'isLoggedIn'
+  },
+  RawMaterialController:{
+    '*':'isLoggedIn'
+  },
+  RoleAccessRelationController:{
+    '*':'isLoggedIn'
+  },
+  TrolleyController:{
+    '*':'isLoggedIn'
+  },
+  TrolleyTypeController:{
+    '*':'isLoggedIn'
+  },
+  UserMasterController:{
+    '*':'isLoggedIn'
+  },
+  UserController:{
+    '*':'isLoggedIn'
+  },
+  DepartmentController:{
+    '*':'isLoggedIn'
+  },
+  EmployeeController:{
+    '*':'isLoggedIn'
+  },
+  MachineStrokesController: {
+    '*': 'isLoggedIn',
+    'jobstrokes': true,
+  },
+  ShiftController: {
+    '*': 'isLoggedIn',
+  },
+  MonthlyScheduleController: {
+    '*': 'isLoggedIn',
+  },
+  MonthlySchedulePartRelationController: {
+    '*': 'isLoggedIn',
+  },
+  MessageController: {
+    '*': 'isLoggedIn',
+  }
 };

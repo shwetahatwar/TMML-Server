@@ -21,18 +21,38 @@ module.exports = {
       model:'Location'
     },
     quantity:{
-      type:'number'
+      type:'number',
+      columnType: 'integer',
     },
     note:{
       type:'string'
     },
-    status:{
+    processStatus:{ //Complete, Pending, FinalComplete
       type:'string'
     },
     createdBy:{
-      model:'AppUser'
+      model:'User'
     },
+    startTime:{
+      type:'number',
+      columnType: 'bigint',
+    },
+    endTime:{
+      type:'number',
+      columnType: 'bigint',
+    },
+    duration:{
+      type:'number',
+      columnType: 'bigint',
+    },
+    operatorId:{
+      model:'Employee'
+    },
+    sequenceNumber:{
+      type:'number',
+      columnType: 'integer',
+      allowNull: true
+    }
   },
 
 };
-

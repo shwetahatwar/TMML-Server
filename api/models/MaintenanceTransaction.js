@@ -12,15 +12,24 @@ module.exports = {
       model:'Machine'
     },
     maintenanceOn:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     maintenanceBy:{
-      model:'AppUser'
+      model:'Employee'
     },
     remarks:{
+      type:'string'
+    },
+    partReplaced:{
+      type:'string'
+    },
+    costOfPartReplaced: {
+      type: 'string'
+    },
+    machineStatus:{
       type:'string'
     }
   },
 
 };
-

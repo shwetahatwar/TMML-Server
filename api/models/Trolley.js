@@ -14,17 +14,18 @@ module.exports = {
     typeId:{
       model:'TrolleyType'
     },
-    machineTypeId:{
-      model:'MachineType'
+    materialTypeId:{
+      model:'MaterialType'
     },
     barcodeSerial:{
       type:'string'
     },
     status:{
-      type:'string'
+      type:'number',
+      columnType: 'integer',
     },
     createdBy:{
-      model:'AppUser'
+      model:'User'
     }
   },
 

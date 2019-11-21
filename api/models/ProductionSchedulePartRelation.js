@@ -15,18 +15,29 @@ module.exports = {
       model:'PartNumber'
     },
     requestedQuantity:{
-      type:'number'
+      type:'number',
+      columnType: 'integer',
     },
-    status:{
+    scheduleStatus:{
       type:'string'
     },
     createdBy:{
-      model:'AppUser'
+      model:'User'
     },
     estimatedCompletionDate:{
-      type:'number'
-    }
+      type:'number',
+      columnType: 'bigint',
+    },
+    isJobCardCreated:{ // this should be bool right?
+      type:'number',
+      columnType: 'integer',
+    },
+    jobcard: {
+      collection: 'JobCard',
+      via: 'productionSchedulePartRelationId',
+    },
+    partRemark: {
+      type: 'string'
+    },
   },
-
 };
-

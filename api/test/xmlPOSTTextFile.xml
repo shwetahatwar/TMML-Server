@@ -1,0 +1,32 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:urn="urn:sap-com:document:sap:soap:functions:mc-style">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <urn:ZmpppProdBookingWeb>
+         <ZwebInput>
+            <!--Zero or more repetitions:-->
+            <item>
+               <Zwerks>Plant</Zwerks>
+               <Zdate>Date</Zdate>
+               <Zmatnr>MaterialNumber</Zmatnr>
+               <Zxblnr>JobCardNo</Zxblnr>
+               <Zbktxt>UniqueNumber</Zbktxt>
+               <Zmenge>ComponentquantityComponent</Zmenge>
+            </item>
+         </ZwebInput>
+         <ZwebOutput>
+            <!--Zero or more repetitions:-->
+            <item>
+               <Zwerks></Zwerks>
+               <Zdate></Zdate>
+               <Zmatnr></Zmatnr>
+               <Zxblnr></Zxblnr>
+               <Zbktxt></Zbktxt>
+               <Zmenge></Zmenge>
+               <Zmblnr></Zmblnr>
+               <Zmjahr></Zmjahr>
+               <Zremarks></Zremarks>
+            </item>
+         </ZwebOutput>
+      </urn:ZmpppProdBookingWeb>
+   </soapenv:Body>
+</soapenv:Envelope>

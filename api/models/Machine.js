@@ -8,46 +8,73 @@
 module.exports = {
 
   attributes: {
-    machineTypeId:{
-      model:'MachineType'
+    machineName:{
+      type:'string',
+      columnType: '_stringkey',
+      unique: true,
+      required: true
+    },
+    operationType:{
+      type:'string'
     },
     machineGroupId:{
-      model:'MachineGroup'
+      // model:'MachineGroup'
+      collection:'MachineGroup',
+      via: 'machines',
     },
     costCenterId:{
       model:'CostCenter'
     },
     capacity:{
-      type:'number'
+      type:'number',
+      columnType: 'integer',
     },
     cellId:{
       model:'Cell'
     },
     machineWeight:{
-      type:'number'
+      type:'number',
+      columnType: 'integer',
     },
     status:{
-      type:'string'
+      type:'number',
+      columnType: 'integer',
+    },
+    maintenanceStatus: {
+      type: 'string'
     },
     barcodeSerial:{
       type:'string'
     },
     createdBy: {
-      model:'AppUser'
+      model:'User'
     },
     updatedBy: {
-      model:'AppUser'
+      model:'User'
     },
-    frequenceyInDays:{
-      type:'number'
+    frequencyInDays:{
+      type:'number',
+      columnType: 'integer',
+    },
+    nextMaintenanceOn:{
+      type:'number',
+      columnType: 'bigint',
     },
     lastMaintenanceOn:{
-      type:'number'
+      type:'number',
+      columnType: 'bigint',
     },
     lastMaintenanceBy:{
-      model:'AppUser'
+      model:'Employee'
+    },
+    isAutomacticCount:{
+      type:'number',
+      columnType: 'integer',
+    },
+    maintenanceDetails: {
+      collection: 'MaintenanceTransaction',
+      via: 'machineId',
     }
   },
 
 };
-

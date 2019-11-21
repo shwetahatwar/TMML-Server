@@ -9,13 +9,19 @@ module.exports = {
 
   attributes: {
     name:{
-      type:'string'
+      type:'string',
+      columnType: '_stringkey',
+      unique: true,
+      required: true
     },
     barcodeSerial:{
       type:'string'
     },
+    locationType:{
+      type:'string'
+    },
     createdBy: {
-      model:'AppUser'
+      model:'User'
     }
   },
 

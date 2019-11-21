@@ -48,12 +48,42 @@ module.exports.datastores = {
     *    (See https://sailsjs.com/config/datastores for help.)                 *
     *                                                                          *
     ***************************************************************************/
-    // adapter: 'sails-mysql',
-    // url: 'mysql://user:password@host:port/database',
-    adapter: 'sails-postgresql',
-    url: 'postgres://bnsliopfagjtkt:a27131100bed84cdf09b216d3ff6fa2afecf2936ac5359cbe1da866a835011f1@ec2-23-21-147-71.compute-1.amazonaws.com:5432/d6n877b1qc3e8o',
-    ssl: true,
+    adapter: 'sails-mssql', //Working
+    url: 'mssql://root:briot123@192.168.0.11:1433/TestDatabase', //Working
+    // connectionTimeout: 300000,
+    // requestTimeout: 0,
+
+    // adapter: 'sails-postgresql', postgres
+    // url: 'postgres://bnsliopfagjtkt:a27131100bed84cdf09b216d3ff6fa2afecf2936ac5359cbe1da866a835011f1@ec2-23-21-147-71.compute-1.amazonaws.com:5432/d6n877b1qc3e8o', postgres
+    // ssl: true,
+    // adapter : 'sails-sqlserver',
+    // user    : 'sa',
+    // password: 'briot123',
+    // host    : '192.168.0.6:1433\\SQLEXPRESS',
+    // database: 'TestDatabase1'
+
+    // sqlserver: {
+    //   adapter: 'sails-mssqlserver',
+    //   user: 'sa',
+    //   password: 'briot123',
+    //   host: 'localhost:1433', // azure database
+    //   database: 'TestDatabase1',
+    //   options: {
+    //     // encrypt: true   // use this for Azure databases
+    //   }
+    // }
   },
+
+  // sqlserver: {
+  //   adapter: 'sails-mssqlserver',
+  //   user: 'sa',
+  //   password: 'briot123',
+  //   host: 'DESKTOP-FMUJ546\\SQLEXPRESS', // azure database
+  //   database: 'TestDatabase1',
+  //   options: {
+  //     // encrypt: true   // use this for Azure databases
+  //   }
+  // }
 
 
 };

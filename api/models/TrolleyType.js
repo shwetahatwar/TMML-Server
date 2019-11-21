@@ -9,10 +9,13 @@ module.exports = {
 
   attributes: {
     name:{
-      type:'string'
+      type:'string',
+      columnType: '_stringkey',
+      unique: true,
+      required: true
     },
     createdBy:{
-      model:'AppUser'
+      model:'User'
     }
   },
 

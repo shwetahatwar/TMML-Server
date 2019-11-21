@@ -1,0 +1,44 @@
+---------------------------------------------------------------
+GET API Call for completed Part number
+
+Following JSON is expected as response
+---------------------------------------------------------------
+
+[
+    {
+        "partnumber": 922101700022,
+        "description": "part number description",
+        "manpower": 1,
+        "smh": 0.01,
+        "processes: [
+            {
+                "machineGroupName": "SMC_Group_1",
+                "loadingTime": 4,
+                "processTime": 4,
+                "unloadingTime": 4,
+            },
+            {
+                "loadingTime": 3,
+                "processTime": 18,
+                "unloadingTime": 3,
+		"machines": "machine1, machine2, machine3"
+            }
+        ],
+        "rawMaterial": {
+            "type": "Sheet",
+            "description": "0.65X1250x2540_GI D Grade SHT SP 120 GSM",
+            "number": 914005058181
+        },
+	"location": "kanban location name"
+    }
+]
+
+
+------------------------------------------------------------
+Explanation
+
+1. There can be one or more processes associated with part number, hence it is in square bracket.
+2. If a part number can be processed in all machines on given machine group, in that case "machineGroupName" will be the key.
+3. If a part number can processed on one or more machines but not all machines on given machine group, in that case "machines" key will be there and array of machine names should be passed.
+4. A part number will be stored in one location only (as proposed and discussed), hence location id or name should be the value for the key "location".
+5. As there are more than 100K data, API should support paging and sorting.

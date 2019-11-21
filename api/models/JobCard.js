@@ -15,27 +15,39 @@ module.exports = {
       model:'Trolley'
     },
     requestedQuantity:{
-      type:'number'
+      type:'number',
+      columnType: 'integer',
     },
     actualQuantity:{
-      type:'number'
+      type:'number',
+      columnType: 'integer',
     },
     status:{
-      type:'string'
+      type:'number',
+      columnType: 'integer',
+    },
+    jobcardStatus:{
+      type:'string' // New, Pending for Raw Material, Under Processing, Completed
     },
     estimatedDate:{
-      type:'number'
+      type:'string'
     },
     barcodeSerial:{
       type:'string'
     },
+    kanbanLocation:{ // this can be Kanban location instead of current location.
+      model:'Location'
+    },
     createdBy:{
-      model:'AppUser'
+      model:'User'
     },
     updatedBy:{
-      model:'AppUser'
+      model:'User'
+    },
+    processes: {
+      collection: 'JobProcessSequenceRelation',
+      via: 'jobId'
     }
   },
 
 };
-

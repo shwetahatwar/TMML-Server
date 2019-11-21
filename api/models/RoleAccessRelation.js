@@ -8,14 +8,12 @@
 module.exports = {
 
   attributes: {
-
-    userId: {
-      model:'AppUser'
+    roleId: {
+      model:'Role'
     },
     accessId:{
         model:'AccessLevel'
     },
   },
-
 };
 

@@ -21,7 +21,8 @@ module.exports = {
       model:'ProcessSequence'
     },
     quantity:{
-      type:'number'
+      type:'number',
+      columnType: 'integer',
     }
   },
 
