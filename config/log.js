@@ -11,20 +11,20 @@
  */
 
 
-// var winston = require('winston');
-// const customLogger = winston.createLogger({
-//   format: winston.format.json(),
-//   transports: [
-//     new winston.transports.File({
-//       filename: 'combined.log',
-//       level: 'verbose'
-//     }),
-//     new winston.transports.File({
-//       filename: 'errors.log',
-//       level: 'error'
-//     })
-//   ]
-// });
+var winston = require('winston');
+const customLogger = winston.createLogger({
+  format: winston.format.json(),
+  transports: [
+    new winston.transports.File({
+      filename: 'combined.log',
+      level: 'verbose'
+    }),
+    new winston.transports.File({
+      filename: 'errors.log',
+      level: 'error'
+    })
+  ]
+});
 
 
 module.exports.log = {
