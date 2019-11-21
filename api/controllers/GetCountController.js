@@ -687,7 +687,7 @@ dailyMonthlyPartReport: async function(req,res){
         remarks:{ '!=' :''}
       });
     }
-    // console.log(dailySchedule.length);
+    console.log(dailySchedule);
     var resTable = [];
     if(monthlySchedulePartNumbers != null && monthlySchedulePartNumbers != undefined){
       for(var i=0; i < monthlySchedulePartNumbers.length; i++){
@@ -720,5 +720,15 @@ dailyMonthlyPartReport: async function(req,res){
     }
     console.log(resTable);
     res.send(resTable);
-  }
+  },
+
+  getPPartRelation: async function(req, res) {
+	var result = await ProductionSchedulePartRelation.find({
+		'isJobCardCreated': req.query['isJobCardCreated'],
+		'scheduleId':req.query['scheduleId'],
+	}).populate('jobcard')
+	 .populate('scheduleId')
+	 .populate('partNumberId').limit(2000);
+	res.send(result);
+}
 };

@@ -12,6 +12,7 @@
 // var client = new ModbusRTU();
 // var machineStrokes = require('../api/controllers/MachineStrokesController');
 var sapPartNumber = require('../api/controllers/SapPartNumberController');
+var sapTransaction = require('../api/controllers/SapTransactionController');
 //
 // var activeStrockOne = true;
 // var activeStrockTwo = true;
@@ -39,6 +40,17 @@ module.exports.bootstrap = async function() {
     await sapPartNumber.soapRequestPost();
     await sapPartNumber.soapRequestGet();
   },1800000);
+
+
+
+  setInterval(async function(){
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes();
+    // console.log("time",time);
+    if(time == "0:15"){
+      await sapTransaction.dailyReport();
+    }
+  },60000);
   // setInterval(function(){
   //   // SapPartNumber.soapRequestGet();
   //   // SapPartNumber.soapRequestPost();

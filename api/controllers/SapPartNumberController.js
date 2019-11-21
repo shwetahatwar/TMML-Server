@@ -5,8 +5,10 @@
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
 
-var fs  = require('fs');
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+ var fs  = require('fs');
+ var nodemailer = require ('nodemailer');
+ var json2xls = require('json2xls');
+ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 // var xmlParser = require("xml2json");
 var convert = require('xml-js');
 
@@ -15,15 +17,14 @@ module.exports = {
   create : async function(req,res){
 
   },
-
   soapRequestGet:async function(req,res){
     var d = new Date();
     var newDay = d.getDate();
     if(newDay.toString().length == 1)
-    newDay = "0" + newDay;
+      newDay = "0" + newDay;
     var newMonth = d.getMonth();
     if(newMonth.toString().length == 1)
-    newMonth = "0" + newMonth;
+      newMonth = "0" + newMonth;
     var newYear = d.getFullYear();
     var newDateTimeNow = newDay + "." + newMonth + "." + newYear;
     await newSapTransactionEntry(newDateTimeNow);
@@ -78,6 +79,18 @@ module.exports = {
             uniqueNumber:resultData["Zbktxt"]["_text"]
           })
           .set({
+            documentNumber:resultData["Zmblnr"]["_text"],
+            documentYear:resultData["Zmjahr"]["_text"],
+            remarks:resultData["Zremarks"]["_text"]
+          });
+
+          await SapTransactionLog.create({
+            plant:"7002",
+            date:dateAdd,
+            material:materialAdd,
+            jobCard:jobcardAdd,
+            uniqueNumber:resultData["Zbktxt"]["_text"],
+            quantity:quantityAdd,
             documentNumber:resultData["Zmblnr"]["_text"],
             documentYear:resultData["Zmjahr"]["_text"],
             remarks:resultData["Zremarks"]["_text"]
