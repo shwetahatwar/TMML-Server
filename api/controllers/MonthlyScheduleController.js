@@ -4,7 +4,7 @@
 * @description :: Server-side actions for handling incoming requests.
 * @help        :: See https://sailsjs.com/docs/concepts/actions
 */
-
+var nodemailer = require ('nodemailer');
 module.exports = {
   create: async function(req,res){
     // var mothlySchdeuleId;
@@ -43,6 +43,12 @@ module.exports = {
     //   console.log(mothlySchdeuleId);
     // }
     // res.send();
+    var selfSignedConfig = {
+      host: '128.9.24.24',
+      port: 25
+    };
+    var transporter = nodemailer.createTransport(selfSignedConfig);
+
     var monthlySchedule = JSON.parse(req.body.monthlySchedule);
     var scheduleName = "Machine Shop Monthly Plan";
     var missingMonthlyParts = [];
@@ -98,10 +104,36 @@ module.exports = {
           .catch(error=>{console.log(error)});
         }
         else{
-           missingMonthlyParts.push(monthlySchedule[i].PartNumber);
-          console.log('Part Numbers Not found: ', missingMonthlyParts.toString());
-        }
+         missingMonthlyParts.push(monthlySchedule[i].PartNumber);
+         console.log('Part Numbers Not found: ', missingMonthlyParts.toString());
+       }
 
+     }
+   }
+
+   var newEmployeeList = await Employee.find({
+    notifyForMachineMaintenance:1
+  });
+   if(newEmployeeList[0]!=null&&newEmployeeList[0]!=undefined){
+    var mailText = "Monthly Schedule Uploaded. \n  Count of Parts Not Added:- " + missingMonthlyParts.length + "\n Part Numbers Data Not Updated Due to Part Number Does not exist are as below:- ";
+    for(var i=0;i<missingMonthlyParts.length;i++){
+      mailText = mailText + "\n" + missingMonthlyParts[i];
+    }
+    console.log(mailText);
+    for(var i=0;i<newEmployeeList.length;i++){
+      var mailOptions = {
+          from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
+          to: newEmployeeList[i].email, // list of receivers (who receives)
+          subject: "Monthly Schedule Upload Status", // Subject line
+          text: mailText
+        };
+        transporter.sendMail(mailOptions, function(error, info) {
+          if(error){
+            sails.log.error(error);
+          } else {
+            sails.log.info('Message sent: ' + info.response);
+          }
+        });
       }
     }
     res.send(mothlyScheduleId);

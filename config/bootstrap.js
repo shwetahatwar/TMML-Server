@@ -47,7 +47,7 @@ module.exports.bootstrap = async function() {
     var today = new Date();
     var time = today.getHours() + ":" + today.getMinutes();
     // console.log("time",time);
-    if(time == "0:15"){
+    if(time == "15:29"){
       await sapTransaction.dailyReport();
     }
   },60000);
