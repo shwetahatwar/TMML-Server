@@ -103,6 +103,7 @@
   'GET /getAllErrorPartCount':'GetCount.getAllErrorPartCount',
   'GET /getErrorReport':'GetCount.getErrorReport',
   'GET /dailyMonthlyPartReport':'GetCount.dailyMonthlyPartReport',
+  'GET /getPPartRelation':'GetCount.getPPartRelation',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

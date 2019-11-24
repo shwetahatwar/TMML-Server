@@ -151,6 +151,8 @@ module.exports = {
       machineId:req.body.machineId,
       endTime:0
     });
+
+    console.log(newJobProcessSequenceId);
     // //console.log("Line 112",newJobProcessSequenceId[0]["id"]);
     if(newJobProcessSequenceId[0] != null && newJobProcessSequenceId[0] != undefined){
      var machineBarcode = await Machine.find({
@@ -239,6 +241,7 @@ module.exports = {
          suggestedDropLocations:"Store",
          processStatus:"Pending"
        });
+       console.log("Line 242: ",req.body.jobId);
        var jobCardBarcode = await JobCard.find({
          id:req.body.jobId
        });
@@ -256,6 +259,7 @@ module.exports = {
        });
 
        var totalQty = pendingQty + req.body.quantity;
+       console.log("Line 260: ",req.body.jobId);
        // if( totalQty <= requestedQty) {
         console.log("totalQty in :",totalQty);
         var updatedJobCard = await JobCard.update({
