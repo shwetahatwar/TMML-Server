@@ -1,14 +1,12 @@
 /**
- * SapPartNumberControllerController
- *
- * @description :: Server-side actions for handling incoming requests.
- * @help        :: See https://sailsjs.com/docs/concepts/actions
- */
+* SapPartNumberControllerController
+*
+* @description :: Server-side actions for handling incoming requests.
+* @help        :: See https://sailsjs.com/docs/concepts/actions
+*/
 
- var fs  = require('fs');
- var nodemailer = require ('nodemailer');
- var json2xls = require('json2xls');
- var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var fs  = require('fs');
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 // var xmlParser = require("xml2json");
 var convert = require('xml-js');
 
@@ -17,14 +15,15 @@ module.exports = {
   create : async function(req,res){
 
   },
+
   soapRequestGet:async function(req,res){
     var d = new Date();
     var newDay = d.getDate();
     if(newDay.toString().length == 1)
-      newDay = "0" + newDay;
+    newDay = "0" + newDay;
     var newMonth = d.getMonth();
     if(newMonth.toString().length == 1)
-      newMonth = "0" + newMonth;
+    newMonth = "0" + newMonth;
     var newYear = d.getFullYear();
     var newDateTimeNow = newDay + "." + newMonth + "." + newYear;
     await newSapTransactionEntry(newDateTimeNow);
@@ -76,7 +75,8 @@ module.exports = {
 
         if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
           var sapTransaction = await SapTransaction.update({
-            uniqueNumber:resultData["Zbktxt"]["_text"]
+            uniqueNumber:resultData["Zbktxt"]["_text"],
+            jobCard:getJobCardCompleted["jobCard"]
           })
           .set({
             documentNumber:resultData["Zmblnr"]["_text"],
@@ -150,32 +150,68 @@ async function satTransactionEntry(getJobCardCompleted){
 
       if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
         // for(var i =0;i<xmlItems.length;i++){
-          var sapTransaction = await SapTransaction.update({
-            uniqueNumber:resultData["Zbktxt"]["_text"]
-          })
-          .set({
-            documentNumber:resultData["Zmblnr"]["_text"],
-            documentYear:resultData["Zmjahr"]["_text"],
-            remarks:resultData["Zremarks"]["_text"]
-          });
+        var sapTransaction = await SapTransaction.update({
+          uniqueNumber:resultData["Zbktxt"]["_text"],
+          jobCard:getJobCardCompleted["jobCard"]
+        })
+        .set({
+          documentNumber:resultData["Zmblnr"]["_text"],
+          documentYear:resultData["Zmjahr"]["_text"],
+          remarks:resultData["Zremarks"]["_text"]
+        });
+        await SapTransactionLog.create({
+          plant:"7002",
+          date:getJobCardCompleted["date"],
+          material:getJobCardCompleted["material"],
+          jobCard:getJobCardCompleted["jobCard"],
+          uniqueNumber:resultData["Zbktxt"]["_text"],
+          quantity:getJobCardCompleted["quantity"],
+          documentNumber:resultData["Zmblnr"]["_text"],
+          documentYear:resultData["Zmjahr"]["_text"],
+          remarks:resultData["Zremarks"]["_text"]
+        });
         // }
       }
       else if(resultData["Zremarks"]["_text"] == "Unique Number and Job Card already exists" || resultData["Zremarks"]["_text"] == "315 already done against this JC/ unique no combination"){
         var sapTransaction = await SapTransaction.update({
-          uniqueNumber:resultData["Zbktxt"]["_text"]
+          uniqueNumber:resultData["Zbktxt"]["_text"],
+          jobCard:getJobCardCompleted["jobCard"]
         })
         .set({
           documentNumber:1,
           documentYear:resultData["Zmjahr"]["_text"],
           remarks:resultData["Zremarks"]["_text"]
         });
+        await SapTransactionLog.create({
+          plant:"7002",
+          date:getJobCardCompleted["date"],
+          material:getJobCardCompleted["material"],
+          jobCard:getJobCardCompleted["jobCard"],
+          uniqueNumber:resultData["Zbktxt"]["_text"],
+          quantity:getJobCardCompleted["quantity"],
+          documentNumber:resultData["Zmblnr"]["_text"],
+          documentYear:resultData["Zmjahr"]["_text"],
+          remarks:resultData["Zremarks"]["_text"]
+        });
       }
       else{
         var sapTransaction = await SapTransaction.update({
-          uniqueNumber:resultData["Zbktxt"]["_text"]
+          uniqueNumber:resultData["Zbktxt"]["_text"],
+          jobCard:getJobCardCompleted["jobCard"]
         })
         .set({
           documentNumber:0,
+          documentYear:resultData["Zmjahr"]["_text"],
+          remarks:resultData["Zremarks"]["_text"]
+        });
+        await SapTransactionLog.create({
+          plant:"7002",
+          date:getJobCardCompleted["date"],
+          material:getJobCardCompleted["material"],
+          jobCard:getJobCardCompleted["jobCard"],
+          uniqueNumber:resultData["Zbktxt"]["_text"],
+          quantity:getJobCardCompleted["quantity"],
+          documentNumber:resultData["Zmblnr"]["_text"],
           documentYear:resultData["Zmjahr"]["_text"],
           remarks:resultData["Zremarks"]["_text"]
         });

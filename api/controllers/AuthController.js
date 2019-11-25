@@ -5,6 +5,7 @@ module.exports = {
     console.log("In");
     // console.log("At authenticate: ", req.body);
     passport.authenticate('local', function(err, user, info){
+      sails.log.info("Logged in User",user);
       // console.log("inside authenticate " , user, "\n", err, "\n", info);
       if((err) || (!user)) {
         return res.send({
@@ -13,7 +14,7 @@ module.exports = {
         });
       }
 			req.logIn(user, function(err) {
-        if(err) res.send(err);
+      if(err){sails.log.error(err);res.send(err);}
         return res.send({
           message: info.message,
           user
