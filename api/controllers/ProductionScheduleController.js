@@ -17,15 +17,14 @@ module.exports = {
       scheduleStatus: req.body.scheduleStatus
     })
     .fetch()
-    .catch(error => console.log(error));
+    .catch(error =>
+    console.log(error));
     console.log(newproductionScheduleId["id"]);
     for (var i = 0; i < req.body.partMaster.length; i++) {
       console.log(req.body.partMaster[i].partNumberId);
-       console.log(req.body.partMaster[i].requestedQuantity);
       var newPartNumber = await PartNumber.findOne({ partNumber: req.body.partMaster[i].partNumberId });
       console.log(newPartNumber);
       if (newPartNumber != null && newPartNumber != undefined) {
-        console.log("IN ProductionSchedulePartRelation");
         await ProductionSchedulePartRelation.create({
           scheduleId: newproductionScheduleId["id"],
           partNumberId: newPartNumber["id"],

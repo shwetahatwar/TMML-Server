@@ -44,6 +44,7 @@ module.exports = {
   	})
   	.fetch()
   	.catch((error)=>{
+      sails.log.error("Error while adding Machine",error);
   		console.log(error);
   	});
   	await MachineFile.create({
@@ -52,6 +53,7 @@ module.exports = {
   		fileType:req.body.fileType
   	})
   	.catch((error)=>{
+      sails.log.error("Error while adding Machine File",error);
   		console.log(error)
   	});
     await Location.create({
@@ -60,5 +62,6 @@ module.exports = {
       barcodeSerial:machine["barcodeSerial"]
     });
   	res.send(machine);
+    sails.log.info("Machine Created",machine);
   }
 };

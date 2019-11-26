@@ -49,6 +49,7 @@ module.exports = {
         else{
           res.status(424);
           res.send(resultData["Zremarks"]["_text"]);
+          sails.log.error("315 not updated",resultData["Zremarks"]["_text"]);
           // res.send("Not updated");
         }
       }

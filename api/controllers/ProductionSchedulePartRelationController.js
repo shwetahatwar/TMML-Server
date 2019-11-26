@@ -7,12 +7,6 @@
 
 module.exports = {
   
-// find: async function(req, res) {
-// 	console.log("find overriden");
-// 	var result = await ProductionSchedulePartRelation.find({
-// 		'isJobCardCreated': req.query['isJobCardCreated']
-// 	}).populate('jobcard').limit(2000);
-// 	res.send(result);
-// }
+
 };
 

@@ -130,7 +130,9 @@
       jobcardStatus:req.body.jobcardStatus
     })
     .fetch()
-    .catch((error)=>{console.log(error)});
+    .catch((error)=>{
+      sails.log.error(error);
+      console.log(error)});
     // var machineGroupNew = await Machine.find()
    //  .populate('machineGroupId');
    //  var suggestedLocations = "";
@@ -160,7 +162,9 @@
      suggestedDropLocations:suggestedLocations,
      processStatus:"Pending"
    })
-    .catch((error)=>{console.log(error)});
+    .catch((error)=>{
+      sails.log.error(error);
+      console.log(error)});
     res.status(200).send(newJobCard);
   },
 
@@ -571,7 +575,7 @@
     totalCount.push(requestedData);
     res.send(totalCount);
   },
-  
+
   getJobCardCountShiftWise:async function(req,res){
     if(req.query.updatedAtStart != null && req.query.updatedAtEnd != null ){
       var jobCardCount = await JobCard.count({
@@ -1235,11 +1239,8 @@ getPartCell:async function(req,res){
         "processStatus": "Start",
         "machineId": machineId[0]["id"]
       }).populate('jobId');
-      for(var i=0; i < jobProcessSequenceRelation.length; i++){
-        var newDate = jobProcessSequenceRelation[i]["jobId"]["estimatedDate"];
-        newDate = newDate.substring(4,24);
-        var sendJobCard = jobProcessSequenceRelation[i]["jobId"]["barcodeSerial"] + " - " + newDate;
-        getJobCard.push(sendJobCard);
+      for(var i=0;i< jobProcessSequenceRelation.length;i++){
+        getJobCard.push(jobProcessSequenceRelation[i]["jobId"]["barcodeSerial"]);
       }
     }
     console.log(getJobCard);
@@ -1248,4 +1249,3 @@ getPartCell:async function(req,res){
     res.send(getJobCard);
   }
 };
- 

@@ -66,7 +66,7 @@ module.exports.http = {
 
     extendTimeout:(function (){
       return function(req,res,next){
-        sails.log.info('Extended to 1h');
+        //sails.log.info('Extended to 1h');
         req.setTimeout(3600000);
         return next();
       };

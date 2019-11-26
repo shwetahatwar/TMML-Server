@@ -83,7 +83,7 @@ module.exports = {
       barcodeSerial:barcodeSerial
     });
     res.send(location);
+    sails.log.info("Location Created:",Location);
   }
 
 };
-

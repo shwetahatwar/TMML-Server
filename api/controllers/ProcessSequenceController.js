@@ -20,11 +20,12 @@ module.exports = {
       if(productionSchedulePartRelation[0] != null && productionSchedulePartRelation != undefined){
         var activeJobCard = await JobCard.find({
           productionSchedulePartRelationId:productionSchedulePartRelation[0]["id"],
-          jobcardStatus : "In Progress"
+          jobcardStatus : { '!=' : ['In Progress', 'New'] }
         });
         console.log("Line 25", activeJobCard);
         if(activeJobCard[0] != null && activeJobCard[0] != null){
           res.send("Active Job Card");
+          sails.log.error("Job Card in progress for part number:",req.body.partNumber);
         }
         else{
           console.log("Line 30 else part");
@@ -292,6 +293,7 @@ module.exports = {
     }
     else{
       res.send("Part Not Found");
+      sails.log.error("Part Number not Available",req.body.partNumber);
     }
   },
   bulkUpload: async function(req,res){
@@ -329,7 +331,7 @@ module.exports = {
             });
             if(activeJobCard[0] != null && activeJobCard[0] != null){
               actionJobCardPartNumbers.push(partNumberProcessSequenceBulkUpload[i].partNumber);
-
+              sails.log.info("Active Job cards below for Partnumbers",actionJobCardPartNumbers);
             }
             else{
               var manPower = partNumberProcessSequenceBulkUpload[i].manPower;
@@ -341,7 +343,7 @@ module.exports = {
                 manPower:partNumberProcessSequenceBulkUpload[i].manPower,
                 SMH:partNumberProcessSequenceBulkUpload[i].SMH
               });
-
+              sails.log.info("SMH & ManPower for part number"+partNumberProcessSequenceBulkUpload[i].partNumber+":"+partNumberProcessSequenceBulkUpload[i].manPower+"",partNumberProcessSequenceBulkUpload[i].SMH);
               await ProcessSequence.update({
                 partId:partNumberBulkUpload[0]["id"]
               })
@@ -599,7 +601,7 @@ module.exports = {
         }
       }
     }
-
+    sails.log.info("Process Sequence Bulkupload Report : Total Parts Uploaded:- " + totalCountPartNumber + "\n Count of Parts Added Successfully:- " + totalAddedPartNumber + "\n Count of Parts Not Added:- " + counttotalNotAddedPartNumber + "\n Process Sequence Not Updated Due to Part Number Does not exist are as below:- ");
     var newEmployeeList = await Employee.find({
       notifyForMachineMaintenance:1
     });
@@ -622,7 +624,8 @@ module.exports = {
         };
         transporter.sendMail(mailOptions, function(error, info) {
           if(error){
-            sails.log.error(error);
+            sails.log.error("Error while sending mail of Process sequence update",error);
+
           } else {
             sails.log.info('Message sent: ' + info.response);
           }

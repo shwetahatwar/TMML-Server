@@ -143,10 +143,10 @@ async function satTransactionEntry(getJobCardCompleted){
       var xml = xmlhttp.responseText;
       var result = convert.xml2json(xml, {compact: true, spaces: 4});
       var newJSON = JSON.parse(result);
-      console.log("Line 214", newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1]);
+      //console.log("Line 214", newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1]);
       var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1];
       // var xmlItems = newJSON["ZwebOutput"];
-      console.log(resultData);
+      //console.log(resultData);
 
       if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
         // for(var i =0;i<xmlItems.length;i++){
@@ -216,6 +216,17 @@ async function satTransactionEntry(getJobCardCompleted){
           remarks:resultData["Zremarks"]["_text"]
         });
       }
+      await SapTransactionLog.create({
+        plant:"7002",
+        date:getJobCardCompleted["date"],
+        material:getJobCardCompleted["material"],
+        jobCard:getJobCardCompleted["jobCard"],
+        uniqueNumber:getJobCardCompleted["uniqueNumber"],
+        quantity:getJobCardCompleted["quantity"],
+        documentNumber:"",
+        documentYear:"",
+        remarks:"Not updated"
+      });
     }
   };
   xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
@@ -257,7 +268,7 @@ async function newSapTransactionEntry(newDateTimeNow){
       var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZMPPP_COMP_DTL_WEBSERVICEResponse"]["ZCOMP_DTL"]["item"];
 
       for(var i =1;i<resultData.length;i++){
-
+        sails.log.info("NEW part DATA received from SAP: ",resultData.length);
         if(resultData[i]["ZSTATUS"]["_text"] == "N"){
           var newPartNumber = await PartNumber.find({
             partNumber : resultData[i]["ZIDNRK"]["_text"]
@@ -307,6 +318,7 @@ async function newSapTransactionEntry(newDateTimeNow){
               })
               .fetch();
               console.log("newPartNumber", newPartNumber1[0]);
+              sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
               // break;
             }
             else{
@@ -352,6 +364,7 @@ async function newSapTransactionEntry(newDateTimeNow){
               })
               .fetch();
               console.log("newPartNumber", newPartNumber1[0]);
+              sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
             }
           }
         }
@@ -385,5 +398,6 @@ async function newSapTransactionEntry(newDateTimeNow){
   var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlTextFile.xml', 'utf-8');
   xml = xml.replace("newDateNowAPI", newDateTimeNow);
   console.log(xml);
+  sails.log.info("NEW part",xml);
   xmlhttp.send(xml);
 }
