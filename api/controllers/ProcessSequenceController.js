@@ -1,9 +1,9 @@
 /**
  * ProcesssequenceController
- *
+ * 
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
- */
+ */ 
 var nodemailer = require ('nodemailer');
 module.exports = {
   manaulProcessSequqenceUpdate: async function(req,res){

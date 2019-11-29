@@ -734,5 +734,22 @@ module.exports = {
 		.populate('scheduleId')
 		.populate('partNumberId').limit(2000);
 		res.send(result);
+	},
+
+	getSrNo: async function(req, res) {
+	var sql = `SELECT createdAt,ROW_NUMBER() OVER(ORDER BY id ASC) AS Row# FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like `+`'`+ req.query.estimatedDate+`%'`;
+    console.log(sql);
+    var jobcardData = await sails.sendNativeQuery(sql,[]);
+    console.log(jobcardData);
+    var srNo = 1;
+    
+    for(var i =0;i<jobcardData["recordset"].length;i++){
+    	if(jobcardData["recordset"][i]["createdAt"] == req.query.createdAt){
+    		console.log(req.query.createdAt);
+    		srNo = jobcardData["recordset"][i]["Row#"];
+    		break;
+    	}
+    } 
+    res.send(srNo);
 	}
 };
