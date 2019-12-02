@@ -737,19 +737,20 @@ module.exports = {
 	},
 
 	getSrNo: async function(req, res) {
-	var sql = `SELECT createdAt,ROW_NUMBER() OVER(ORDER BY id ASC) AS Row# FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like `+`'`+ req.query.estimatedDate+`%'`;
-    console.log(sql);
-    var jobcardData = await sails.sendNativeQuery(sql,[]);
-    console.log(jobcardData);
-    var srNo = 1;
-    
-    for(var i =0;i<jobcardData["recordset"].length;i++){
-    	if(jobcardData["recordset"][i]["createdAt"] == req.query.createdAt){
-    		console.log(req.query.createdAt);
-    		srNo = jobcardData["recordset"][i]["Row#"];
-    		break;
-    	}
-    } 
-    res.send(srNo);
+		// var sql = `SELECT createdAt,ROW_NUMBER() OVER(ORDER BY id ASC) AS Row# FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like `+`'`+ req.query.estimatedDate+`%'`;
+		var sql = ` WITH mytable as 
+		(select createdAt,ROW_NUMBER() over (order by createdAt) as 'row'
+		from  [TestDatabase26112019].[dbo].[jobcard] where estimateddate like `+`'`+ req.query.estimatedDate+`%') 
+		select row,createdAt from mytable where createdAt=`+`'`+req.query.createdAt+`'`;
+
+		console.log("sql",sql);
+		var jobcardData = await sails.sendNativeQuery(sql,[]);
+		console.log("jobcardData :",jobcardData);
+		var srNo = 1;
+		if(jobcardData["recordset"]!=null ||jobcardData["recordset"]!=undefined){
+			srNo = jobcardData["recordset"][0]["row"]
+		}
+		res.send(srNo);
+		
 	}
 };
