@@ -560,9 +560,9 @@ module.exports = {
         notifyForMachineMaintenance:1
       });
       if(newEmployeeList[0]!=null&&newEmployeeList[0]!=undefined){
-        var mailText = "Daily Schedule Uploaded. \n  MachineGroup wise load for a day is as below (in minutes):- ";
+        var mailText = "Daily Schedule Uploaded. \n  MachineGroup wise load for a Date: "+ day1 +" is as below :- ";
         for(var i=0;i<finalResult.length;i++){
-          mailText = mailText + "\n" + "MachineGroup :"+ finalResult[i]["machineGroup"] +", & Load :"+finalResult[i]["load"]+ "\n" ;
+          mailText = mailText + "\n" + "MachineGroup :"+ finalResult[i]["machineGroup"] +", & Load :"+finalResult[i]["load"]+ "minutes \n" ;
         }
         console.log(mailText);
         for(var i=0;i<newEmployeeList.length;i++){

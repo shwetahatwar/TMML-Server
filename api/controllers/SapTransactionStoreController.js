@@ -4,8 +4,8 @@
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-var fs  = require('fs');
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+ var fs  = require('fs');
+ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 // var xmlParser = require("xml2json");
 var convert = require('xml-js');
 
@@ -33,6 +33,8 @@ module.exports = {
           //   documentYear:resultData["Zmjahr"]["_text"],
           //   remarks:resultData["Zremarks"]["_text"]
           // });
+
+          
           var sapTransactionStoreEntry = await SapTransactionStore.create({
             documentNumber313:resultData["Zmblnr"]["_text"],
             documentYear313:resultData["Zmjahr"]["_text"],
@@ -45,6 +47,15 @@ module.exports = {
             remarks:resultData["Zremarks"]["_text"]
           }).fetch();
           res.send(sapTransactionStoreEntry);
+          
+          if(getJobCard[0]!=null && getJobCard[0]!=undefined){
+            var jobLocationRelationId = await Joblocationrelation.update({
+              jobcardId:getJobCard[0]["id"]
+            })
+            .set({
+              processStatus:"Final Location"
+            });
+          }
         }
         else{
           res.status(424);
@@ -59,17 +70,26 @@ module.exports = {
       jobCard:req.body.jobCard
     });
     console.log(getJobCardCompleted);
-    if(getJobCardCompleted[0] != null && getJobCardCompleted[0] != undefined){
-      xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
-      var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\sap315.xml', 'utf-8');
-      if(getJobCardCompleted[0]["documentNumber"]!= null && getJobCardCompleted[0]["documentNumber"]!=undefined){
-        xml = xml.replace("documentNumber",getJobCardCompleted[0]["documentNumber"]);
-        xml = xml.replace("documentYear",getJobCardCompleted[0]["documentYear"]);
-        xml = xml.replace("jobCardNumber",getJobCardCompleted[0]["jobCard"]);
-        xml = xml.replace("uniqueNumber",getJobCardCompleted[0]["uniqueNumber"]);
-        xml = xml.replace("quantityEntered",getJobCardCompleted[0]["quantity"]);
-        console.log(xml);
-        xmlhttp.send(xml);
+    var getJobCard = await JobCard.find({
+      barcodeSerial:req.body.jobCard
+    });
+    if(getJobCard[0]["jobcardStatus"] !="Completed"){
+      res.status(424);
+      res.send("Job Card is not completed");
+    }
+    else{
+      if(getJobCardCompleted[0] != null && getJobCardCompleted[0] != undefined){
+        xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
+        var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\sap315.xml', 'utf-8');
+        if(getJobCardCompleted[0]["documentNumber"]!= null && getJobCardCompleted[0]["documentNumber"]!=undefined){
+          xml = xml.replace("documentNumber",getJobCardCompleted[0]["documentNumber"]);
+          xml = xml.replace("documentYear",getJobCardCompleted[0]["documentYear"]);
+          xml = xml.replace("jobCardNumber",getJobCardCompleted[0]["jobCard"]);
+          xml = xml.replace("uniqueNumber",getJobCardCompleted[0]["uniqueNumber"]);
+          xml = xml.replace("quantityEntered",getJobCardCompleted[0]["quantity"]);
+          console.log(xml);
+          xmlhttp.send(xml);
+        }
       }
     }
   },
