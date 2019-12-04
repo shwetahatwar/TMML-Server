@@ -665,43 +665,43 @@ module.exports = {
 			year:req.query.year,
 			month:req.query.month
 		});
-         var month="";
-         if(req.query.year =="01"){
-         	month = "Jan"
-         }
-         if(req.query.year =="02"){
-         	month = "Feb"
-         }
-         if(req.query.year =="03"){
-         	month = "Mar"
-         }
-         if(req.query.year =="04"){
-         	month = "Apr"
-         }
-         if(req.query.year =="05"){
-         	month = "May"
-         }
-         if(req.query.year =="06"){
-         	month = "Jun"
-         }
-         if(req.query.year =="07"){
-         	month = "Jul"
-         }
-         if(req.query.year =="08"){
-         	month = "Aug"
-         }
-         if(req.query.year =="09"){
-         	month = "Sep"
-         }
-         if(req.query.year =="10"){
-         	month = "Oct"
-         }
-         if(req.query.year =="11"){
-         	month = "Nov"
-         }
-         if(req.query.year =="12"){
-         	month = "Dec"
-         }
+		var month="";
+		if(req.query.month =="01"){
+			month = "Jan"
+		}
+		if(req.query.month =="02"){
+			month = "Feb"
+		}
+		if(req.query.month =="03"){
+			month = "Mar"
+		}
+		if(req.query.month =="04"){
+			month = "Apr"
+		}
+		if(req.query.month =="05"){
+			month = "May"
+		}
+		if(req.query.month =="06"){
+			month = "Jun"
+		}
+		if(req.query.month =="07"){
+			month = "Jul"
+		}
+		if(req.query.month =="08"){
+			month = "Aug"
+		}
+		if(req.query.month =="09"){
+			month = "Sep"
+		}
+		if(req.query.month =="10"){
+			month = "Oct"
+		}
+		if(req.query.month =="11"){
+			month = "Nov"
+		}
+		if(req.query.month =="12"){
+			month = "Dec"
+		}
 		var createdAt = "01-" +month+"-"+req.query.year+"-12:00:00";
 		var createdAt1 = "30-"+month+"-"+req.query.year+"-23:59:00";
 		console.log(createdAt,createdAt1);
@@ -714,10 +714,11 @@ module.exports = {
 		console.log('monthlySchedule: ', monthlySchedule);
 		var sql = ` WITH mytable as ( select * from monthlyschedulepartrelation where monthlyScheduleId = `+monthlySchedule[0]["id"]+`)
 		SELECT distinct partNumberId  ,SUM([requestedQuantity]) as sumValue,
-		(select top 1 mytable.partNumber from mytable with (nolock) where ( mytable.monthlyScheduleId=`+monthlySchedule[0]["id"]+` AND [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId= mytable.partNumber  ) )
-		as partNumber,(select top 1  mytable.requiredInMonth from mytable with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId = mytable.partNumber))
-		as requiredInMonth,(select top 1  partNumber from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))
-		as PartNumber FROM [TestDatabase].[dbo].[productionschedulepartrelation] inner join mytable as parts on parts.partNumber = [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId where [TestDatabase].[dbo].[productionschedulepartrelation].updatedAt Between `+createdAtStart+` AND `+createdAtEnd+` And isJobCardCreated=1 group by [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId  order by sumValue desc
+		(select top 1 mytable.partNumber from mytable with (nolock) where ( mytable.monthlyScheduleId=`+monthlySchedule[0]["id"]+` AND [TestDatabase26112019].[dbo].[productionschedulepartrelation].partNumberId= mytable.partNumber  ) )
+		as partNumber,(select top 1  mytable.requiredInMonth from mytable with (nolock) where ( [TestDatabase26112019].[dbo].[productionschedulepartrelation].partNumberId = mytable.partNumber))
+		as requiredInMonth,(select top 1  partNumber from [TestDatabase26112019].[dbo].partnumber with (nolock) where ( [TestDatabase26112019].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase26112019].[dbo].partnumber.id))
+		as PartNumber,(select top 1  description from [TestDatabase26112019].[dbo].partnumber with (nolock) where ( [TestDatabase26112019].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase26112019].[dbo].partnumber.id))
+		as PartDesc FROM [TestDatabase26112019].[dbo].[productionschedulepartrelation] inner join mytable as parts on parts.partNumber = [TestDatabase26112019].[dbo].[productionschedulepartrelation].partNumberId where [TestDatabase26112019].[dbo].[productionschedulepartrelation].updatedAt Between `+createdAtStart+` AND `+createdAtEnd+` And isJobCardCreated=1 group by [TestDatabase26112019].[dbo].[productionschedulepartrelation].partNumberId  order by sumValue desc
 		`;
 
 		console.log("sql",sql);
@@ -731,13 +732,23 @@ module.exports = {
 						partNumberId: monthlyData["recordset"][i]["partNumber"],
 						monthlyQuantity: monthlyData["recordset"][i]["requiredInMonth"],
 						quantitiesInProduction: monthlyData["recordset"][i]["sumValue"],
-						PartNumber:monthlyData["recordset"][i]["PartNumber"]
+						PartNumber:monthlyData["recordset"][i]["PartNumber"],
+						PartDesc:monthlyData["recordset"][i]["PartDesc"]
 					}
 					resTable.push(pushPartDetails);
 				}
 			}
 		}
-		res.send(resTable);
+		if(req.query.partNumber!=null){
+          var searchedPart = resTable.find(p=>p.PartNumber == req.query.partNumber);
+          console.log("searchedPart",searchedPart);
+          var resTable1 = [];
+          resTable1.push(searchedPart);
+          res.send(resTable1);
+		}
+		else{
+			res.send(resTable);
+		}
 	},
 
 	getPPartRelation: async function(req, res) {
