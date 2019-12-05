@@ -3,6 +3,9 @@
 
 // var BrowserPrint = require('D:\\TMML\\server\\assets\\js\\BrowserPrint-2.0.0.75.min.js');
 // var BrowserPrint = require('.../assets/js/BrowserPrint-2.0.0.75.min.js');
+var nodemailer = require ('nodemailer');
+var json2xls = require('json2xls');
+var fs = require('fs');
 module.exports = {
 
 	getAllEmployeeCount:async function(req,res){
@@ -714,11 +717,11 @@ module.exports = {
 		console.log('monthlySchedule: ', monthlySchedule);
 		var sql = ` WITH mytable as ( select * from monthlyschedulepartrelation where monthlyScheduleId = `+monthlySchedule[0]["id"]+`)
 		SELECT distinct partNumberId  ,SUM([requestedQuantity]) as sumValue,
-		(select top 1 mytable.partNumber from mytable with (nolock) where ( mytable.monthlyScheduleId=`+monthlySchedule[0]["id"]+` AND [TestDatabase26112019].[dbo].[productionschedulepartrelation].partNumberId= mytable.partNumber  ) )
-		as partNumber,(select top 1  mytable.requiredInMonth from mytable with (nolock) where ( [TestDatabase26112019].[dbo].[productionschedulepartrelation].partNumberId = mytable.partNumber))
-		as requiredInMonth,(select top 1  partNumber from [TestDatabase26112019].[dbo].partnumber with (nolock) where ( [TestDatabase26112019].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase26112019].[dbo].partnumber.id))
-		as PartNumber,(select top 1  description from [TestDatabase26112019].[dbo].partnumber with (nolock) where ( [TestDatabase26112019].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase26112019].[dbo].partnumber.id))
-		as PartDesc FROM [TestDatabase26112019].[dbo].[productionschedulepartrelation] inner join mytable as parts on parts.partNumber = [TestDatabase26112019].[dbo].[productionschedulepartrelation].partNumberId where [TestDatabase26112019].[dbo].[productionschedulepartrelation].updatedAt Between `+createdAtStart+` AND `+createdAtEnd+` And isJobCardCreated=1 group by [TestDatabase26112019].[dbo].[productionschedulepartrelation].partNumberId  order by sumValue desc
+		(select top 1 mytable.partNumber from mytable with (nolock) where ( mytable.monthlyScheduleId=`+monthlySchedule[0]["id"]+` AND [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId= mytable.partNumber  ) )
+		as partNumber,(select top 1  mytable.requiredInMonth from mytable with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId = mytable.partNumber))
+		as requiredInMonth,(select top 1  partNumber from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))
+		as PartNumber,(select top 1  description from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))
+		as PartDesc FROM [TestDatabase].[dbo].[productionschedulepartrelation] inner join mytable as parts on parts.partNumber = [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId where [TestDatabase].[dbo].[productionschedulepartrelation].updatedAt Between `+createdAtStart+` AND `+createdAtEnd+` And isJobCardCreated=1 group by [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId  order by sumValue desc
 		`;
 
 		console.log("sql",sql);
@@ -740,11 +743,11 @@ module.exports = {
 			}
 		}
 		if(req.query.partNumber!=null){
-          var searchedPart = resTable.find(p=>p.PartNumber == req.query.partNumber);
-          console.log("searchedPart",searchedPart);
-          var resTable1 = [];
-          resTable1.push(searchedPart);
-          res.send(resTable1);
+			var searchedPart = resTable.find(p=>p.PartNumber == req.query.partNumber);
+			console.log("searchedPart",searchedPart);
+			var resTable1 = [];
+			resTable1.push(searchedPart);
+			res.send(resTable1);
 		}
 		else{
 			res.send(resTable);
@@ -827,5 +830,146 @@ module.exports = {
   //       "You may not have Zebra Browser Print installed, or it may not be running. " +
   //       "Install Zebra Browser Print, or start the Zebra Browser Print Service, and try again.");
   //   });
+},
+
+netMonthlyReportMail: async function(req, res) {
+	var selfSignedConfig = {
+		host: '128.9.24.24',
+		port: 25
+		
+	};
+	var transporter = nodemailer.createTransport(selfSignedConfig);
+	var d = new Date();
+	var month = parseInt(d.getMonth()) + 1;
+	var year = d.getFullYear();
+	var dateTimeFormat;
+	var curr_date = d.getDate();
+	if(curr_date.toString().length == 1){
+		curr_date = "0" + curr_date
+	}
+	var curr_month = parseInt(d.getMonth()) + 1;
+	curr_month = ""+curr_month;
+	if(curr_month.toString().length == 1){
+		curr_month = "0" + curr_month
+	}
+	var curr_year = d.getFullYear();
+	curr_year = curr_year.toString();
+	curr_year = curr_year.substring(2,4);
+	dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
+	console.log(year,month);
+	var monthlySchedule = await MonthlySchedule.find({
+		year:year,
+		month:month
+	});
+	if(month =="01"){
+		month = "Jan"
+	}
+	if(month =="02"){
+		month = "Feb"
+	}
+	if(month =="03"){
+		month = "Mar"
+	}
+	if(month =="04"){
+		month = "Apr"
+	}
+	if(month =="05"){
+		month = "May"
+	}
+	if(month =="06"){
+		month = "Jun"
+	}
+	if(month =="07"){
+		month = "Jul"
+	}
+	if(month =="08"){
+		month = "Aug"
+	}
+	if(month =="09"){
+		month = "Sep"
+	}
+	if(month =="10"){
+		month = "Oct"
+	}
+	if(month =="11"){
+		month = "Nov"
+	}
+	if(month =="12"){
+		month = "Dec"
+	}
+	var createdAt = "01-" +month+"-"+year+"-12:00:00";
+	var createdAt1 = "30-"+month+"-"+year+"-23:59:00";
+	var dt = new Date(createdAt);
+	var createdAtStart=dt.setSeconds( dt.getSeconds());
+	console.log(createdAtStart);
+	dt = new Date(createdAt1);
+	var createdAtEnd=dt.setSeconds(dt.getSeconds());
+
+	console.log('monthlySchedule: ', monthlySchedule);
+	var sql = ` WITH mytable as ( select * from monthlyschedulepartrelation where monthlyScheduleId = `+monthlySchedule[0]["id"]+`)
+	SELECT distinct partNumberId  ,SUM([requestedQuantity]) as sumValue,
+	(select top 1 mytable.partNumber from mytable with (nolock) where ( mytable.monthlyScheduleId=`+monthlySchedule[0]["id"]+` AND [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId= mytable.partNumber  ) )
+	as partNumber,(select top 1  mytable.requiredInMonth from mytable with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId = mytable.partNumber))
+	as requiredInMonth,(select top 1  partNumber from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))
+	as PartNumber,(select top 1  description from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))
+	as PartDesc FROM [TestDatabase].[dbo].[productionschedulepartrelation] inner join mytable as parts on parts.partNumber = [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId where [TestDatabase].[dbo].[productionschedulepartrelation].updatedAt Between `+createdAtStart+` AND `+createdAtEnd+` And isJobCardCreated=1 group by [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId  order by sumValue desc
+	`;
+
+	console.log("sql",sql);
+	var monthlyData = await sails.sendNativeQuery(sql,[]);
+	console.log(monthlyData);
+	var resTable = [];
+	if(monthlyData["recordset"] != null && monthlyData["recordset"] != undefined){
+		for(var i=0; i < monthlyData["recordset"].length; i++){
+			if(monthlyData["recordset"][i]["partNumber"] != null && monthlyData["recordset"][i]["partNumber"] != undefined){
+				var pushPartDetails = {
+					'Part Number':monthlyData["recordset"][i]["PartNumber"],
+					'Part No Description':monthlyData["recordset"][i]["PartDesc"],
+					'Monthly Quantity': monthlyData["recordset"][i]["requiredInMonth"],
+					'Quantities In Production': monthlyData["recordset"][i]["sumValue"],
+					'Net Monthly Requirement' :parseInt(monthlyData["recordset"][i]["requiredInMonth"]) - parseInt( monthlyData["recordset"][i]["sumValue"])
+				}
+				resTable.push(pushPartDetails);
+			}
+		}
+	}
+	console.log(resTable);
+	var xls1 = json2xls(resTable);
+	var filename1 = 'D:/TMML/Reports/NetMonthlyReport/Net-Monthly-Report'+ dateTimeFormat +'.xlsx';
+	fs.writeFileSync(filename1, xls1, 'binary',function(err) {
+		if (err) {
+			console.log('Some error occured - file either not saved or corrupted file saved.');
+			sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+		} else {
+			console.log('It\'s saved!');
+		}
+	});
+	var receiversList = await ReportList.find({
+		name : "Plan vs Actual for the shift"
+	});
+	receiversList = receiversList[0]["email"];
+	var mailText = "PFA for Net Monthly Requirement details";
+	console.log(mailText);
+	var mailOptions = {
+    from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
+    // from:"Sagar@briot.in",
+    //to: receiversList,
+    to:"santosh.adaki@tatamarcopolo.com",
+    subject: "Net Monthly requirement Report", // Subject line
+    text: mailText,
+    attachments :[
+    {
+    	'filename':'Net-Monthly-Report '+dateTimeFormat+'.xlsx',
+    	'path': filename1
+    }
+    ],
+};
+transporter.sendMail(mailOptions, function(error, info) {
+	if(error){
+		sails.log.error("Net Monthly Requirement report mail not sent",error);
+	} else {
+		sails.log.info('Message sent: ' + info.response);
+	}
+});
 }
 };

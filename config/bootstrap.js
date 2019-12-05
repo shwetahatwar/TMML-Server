@@ -13,6 +13,8 @@
 // var machineStrokes = require('../api/controllers/MachineStrokesController');
 var sapPartNumber = require('../api/controllers/SapPartNumberController');
 var sapTransaction = require('../api/controllers/SapTransactionController');
+var getNetMonthlyReport = require('../api/controllers/GetCountController');
+var shiftWiseReport = require('../api/controllers/ReportsController');
 //
 // var activeStrockOne = true;
 // var activeStrockTwo = true;
@@ -47,10 +49,31 @@ module.exports.bootstrap = async function() {
     var today = new Date();
     var time = today.getHours() + ":" + today.getMinutes();
     // console.log("time",time);
-    if(time == "15:29"){
+    if(time == "0:13"){
       await sapTransaction.dailyReport();
+      await getNetMonthlyReport.netMonthlyReportMail();
     }
   },60000);
+
+  setInterval(async function(){
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes();
+    // console.log("time",time);
+    if(time == "14:35"){
+      await shiftWiseReport.shiftWiseReport();
+    }
+    else if(time == "23:10"){
+      await shiftWiseReport.shiftWiseReport();
+    }
+    else if(time == "7:10"){
+      await shiftWiseReport.shiftWiseReport();
+    }
+    else if(time == "0:20"){
+      await shiftWiseReport.shiftWiseReport();
+    }
+  },60000);
+
+
   // setInterval(function(){
   //   // SapPartNumber.soapRequestGet();
   //   // SapPartNumber.soapRequestPost();
