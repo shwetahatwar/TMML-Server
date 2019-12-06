@@ -5,6 +5,9 @@
 * @help        :: See https://sailsjs.com/docs/concepts/actions
 */
 var nodemailer = require ('nodemailer'); 
+var json2xls = require('json2xls');
+var fs = require('fs');
+
 module.exports = {
   create: async function (req, res) {
     var newproductionScheduleId = await ProductionSchedule.create({
@@ -19,33 +22,33 @@ module.exports = {
     .fetch()
     .catch(error =>
       console.log(error));
-      console.log(newproductionScheduleId["id"]);
-      for (var i = 0; i < req.body.partMaster.length; i++) {
-        console.log(req.body.partMaster[i].partNumberId);
-        var newPartNumber = await PartNumber.findOne({ partNumber: req.body.partMaster[i].partNumberId });
-        console.log(newPartNumber);
-        if (newPartNumber != null && newPartNumber != undefined) {
-          await ProductionSchedulePartRelation.create({
-            scheduleId: newproductionScheduleId["id"],
-            partNumberId: newPartNumber["id"],
-            requestedQuantity: req.body.partMaster[i].requestedQuantity,
-            estimatedCompletionDate: req.body.partMaster[i].estimatedCompletionDate,
-            isJobCardCreated: req.body.partMaster[i].isJobCardCreated,
-            partRemark: req.body.partMaster[i].partRemark
-          })
-          .then()
-          .catch(error => console.log(error));
-        }
+    console.log(newproductionScheduleId["id"]);
+    for (var i = 0; i < req.body.partMaster.length; i++) {
+      console.log(req.body.partMaster[i].partNumberId);
+      var newPartNumber = await PartNumber.findOne({ partNumber: req.body.partMaster[i].partNumberId });
+      console.log(newPartNumber);
+      if (newPartNumber != null && newPartNumber != undefined) {
+        await ProductionSchedulePartRelation.create({
+          scheduleId: newproductionScheduleId["id"],
+          partNumberId: newPartNumber["id"],
+          requestedQuantity: req.body.partMaster[i].requestedQuantity,
+          estimatedCompletionDate: req.body.partMaster[i].estimatedCompletionDate,
+          isJobCardCreated: req.body.partMaster[i].isJobCardCreated,
+          partRemark: req.body.partMaster[i].partRemark
+        })
+        .then()
+        .catch(error => console.log(error));
       }
-      res.status(200).send(newproductionScheduleId);
-    },
-    
-    dailyUpload: async function(req,res){
-      var selfSignedConfig = {
-        host: '128.9.24.24',
-        port: 25
-      };
-      var transporter = nodemailer.createTransport(selfSignedConfig);
+    }
+    res.status(200).send(newproductionScheduleId);
+  },
+
+  dailyUpload: async function(req,res){
+    var selfSignedConfig = {
+      host: '128.9.24.24',
+      port: 25
+    };
+    var transporter = nodemailer.createTransport(selfSignedConfig);
       // console.log(req.body.dailySchedule[0].getOwnPropertyNames);
       var dailySchedule = JSON.parse(req.body.dailySchedule);
       console.log("Daily Upload Data",dailySchedule);
@@ -60,77 +63,77 @@ module.exports = {
         console.log(dailySchedule[0][day1]);
         var day;
         for(var counter=0;counter<5;counter++)
-        if(counter==0){
-          day = day1;
-          var checkProductionSchedule = "Machine Shop Daily Plan " +day;
-          var getProductionScheduleId = await ProductionSchedule.find({
-            where: { productionScheduleId: { contains: checkProductionSchedule } },
-            sort: [{ id: 'DESC'}]
-          });
-          var postProductionScheduleId;
-          if(getProductionScheduleId[0]!=null&&getProductionScheduleId[0]!=undefined){
-            console.log(getProductionScheduleId[0]);
-            var latestProductionScheduleId = getProductionScheduleId[0]["productionScheduleId"];
-            latestProductionScheduleId = latestProductionScheduleId.substr(35,3);
-            latestProductionScheduleId = parseInt(latestProductionScheduleId, 10) +1;
-            if(latestProductionScheduleId.toString().length == 1){
-              latestProductionScheduleId = "00" + latestProductionScheduleId;
+          if(counter==0){
+            day = day1;
+            var checkProductionSchedule = "Machine Shop Daily Plan " +day;
+            var getProductionScheduleId = await ProductionSchedule.find({
+              where: { productionScheduleId: { contains: checkProductionSchedule } },
+              sort: [{ id: 'DESC'}]
+            });
+            var postProductionScheduleId;
+            if(getProductionScheduleId[0]!=null&&getProductionScheduleId[0]!=undefined){
+              console.log(getProductionScheduleId[0]);
+              var latestProductionScheduleId = getProductionScheduleId[0]["productionScheduleId"];
+              latestProductionScheduleId = latestProductionScheduleId.substr(35,3);
+              latestProductionScheduleId = parseInt(latestProductionScheduleId, 10) +1;
+              if(latestProductionScheduleId.toString().length == 1){
+                latestProductionScheduleId = "00" + latestProductionScheduleId;
+              }
+              else if(latestProductionScheduleId.toString().length == 2){
+                latestProductionScheduleId = "0" + latestProductionScheduleId;
+              }
+              postProductionScheduleId = "Machine Shop Daily Plan " +day+"-"+latestProductionScheduleId;
+              console.log(latestProductionScheduleId);
             }
-            else if(latestProductionScheduleId.toString().length == 2){
-              latestProductionScheduleId = "0" + latestProductionScheduleId;
+            else{
+              postProductionScheduleId = "Machine Shop Daily Plan " +day+"-001"
             }
-            postProductionScheduleId = "Machine Shop Daily Plan " +day+"-"+latestProductionScheduleId;
-            console.log(latestProductionScheduleId);
-          }
-          else{
-            postProductionScheduleId = "Machine Shop Daily Plan " +day+"-001"
-          }
-          var currentMonth = day;
-          var currentYear = day;
-          currentMonth = currentMonth.substr(3,2);
-          currentYear = currentYear.substr(6,4);
-          console.log(currentYear,currentMonth);
-          var getMonthlyScheduleId = await MonthlySchedule.find({
-            year:currentYear,
-            month:currentMonth
-          });
-          console.log(getMonthlyScheduleId);
-          if(getMonthlyScheduleId[0]!=null&&getMonthlyScheduleId[0]!=undefined){
-            var newproductionScheduleId = await ProductionSchedule.create({
-              productionScheduleId: postProductionScheduleId,
-              estimatedCompletionDate: req.body.estimatedCompletionDate,
-              actualCompletionDate: req.body.actualCompletionDate,
-              status: 1,
-              scheduleType: "Scheduled",
-              remarks: dailySchedule[0].remarks,
-              scheduleStatus: "New",
-              scheduleDate:day1,
-              monthlyScheduleId:getMonthlyScheduleId[0]["id"]
-            })
-            .fetch()
-            .catch(error => console.log(error));
-            for(var i=0;i<dailySchedule.length;i++){
-              console.log(dailySchedule[i]["partnumber"]);
-              var newPartNumberId = await PartNumber.find({
-                partNumber:dailySchedule[i]["partnumber"]
-              });
-              console.log("Line 110", newPartNumberId);
-              if(newPartNumberId[0]!=null && newPartNumberId[0]!=undefined){
-                await ProductionSchedulePartRelation.create({
-                  scheduleId: newproductionScheduleId["id"],
-                  partNumberId: newPartNumberId[0]["id"],
-                  requestedQuantity: dailySchedule[i][day1],
-                  estimatedCompletionDate: 0,
-                  isJobCardCreated: false,
-                  partRemark: dailySchedule[i].remarks,
-                  scheduleStatus:"New"
-                })
-                .then()
-                .catch(error => console.log(error));
+            var currentMonth = day;
+            var currentYear = day;
+            currentMonth = currentMonth.substr(3,2);
+            currentYear = currentYear.substr(6,4);
+            console.log(currentYear,currentMonth);
+            var getMonthlyScheduleId = await MonthlySchedule.find({
+              year:currentYear,
+              month:currentMonth
+            });
+            console.log(getMonthlyScheduleId);
+            if(getMonthlyScheduleId[0]!=null&&getMonthlyScheduleId[0]!=undefined){
+              var newproductionScheduleId = await ProductionSchedule.create({
+                productionScheduleId: postProductionScheduleId,
+                estimatedCompletionDate: req.body.estimatedCompletionDate,
+                actualCompletionDate: req.body.actualCompletionDate,
+                status: 1,
+                scheduleType: "Scheduled",
+                remarks: dailySchedule[0].remarks,
+                scheduleStatus: "New",
+                scheduleDate:day1,
+                monthlyScheduleId:getMonthlyScheduleId[0]["id"]
+              })
+              .fetch()
+              .catch(error => console.log(error));
+              for(var i=0;i<dailySchedule.length;i++){
+                console.log(dailySchedule[i]["partnumber"]);
+                var newPartNumberId = await PartNumber.find({
+                  partNumber:dailySchedule[i]["partnumber"]
+                });
+                console.log("Line 110", newPartNumberId);
+                if(newPartNumberId[0]!=null && newPartNumberId[0]!=undefined){
+                  await ProductionSchedulePartRelation.create({
+                    scheduleId: newproductionScheduleId["id"],
+                    partNumberId: newPartNumberId[0]["id"],
+                    requestedQuantity: dailySchedule[i][day1],
+                    estimatedCompletionDate: 0,
+                    isJobCardCreated: false,
+                    partRemark: dailySchedule[i].remarks,
+                    scheduleStatus:"New"
+                  })
+                  .then()
+                  .catch(error => console.log(error));
+                }
               }
             }
-          }
-          else{
+            else{
             // res.send("Monthly Schedule Not Found");
           }
         }
@@ -489,6 +492,7 @@ module.exports = {
       var cycleTimeList = [];
       var finalResult = [];
       var machineGroup ={};
+      var partList = [];
       console.log("currentYear & month",currentYear,currentMonth);
       var getMonthlyScheduleId = await MonthlySchedule.find({
         year:currentYear,
@@ -521,18 +525,26 @@ module.exports = {
           var processSequenceList = await ProcessSequence.find({
             partId:productionSchedulePartRelationList[a]["partNumberId"],
             status:1
-          }).populate('machineGroupId');
+          }).populate('machineGroupId')
+          .populate('partId');
           if(productionSchedulePartRelationList[a]["requestedQuantity"]!=0){
             for(var b=0;b<processSequenceList.length;b++){
-              cycletime=processSequenceList[b]["cycleTime"] * productionSchedulePartRelationList[a]["requestedQuantity"];
+              cycletime = processSequenceList[b]["cycleTime"] * productionSchedulePartRelationList[a]["requestedQuantity"];
               machineGroup = processSequenceList[b]["machineGroupId"]["name"];
-              
+
               var sequenceData = {
                 CycleTime:cycletime,
                 MachineGroup:machineGroup
               }
               cycleTimeList.push(sequenceData);
             }
+            
+            var partCycleTime = {
+              'PartNumber': processSequenceList[0]["partId"]["partNumber"],
+              'Part Description': processSequenceList[0]["partId"]["description"],
+              'Load Time (In minutes)' :cycletime
+            }
+            partList.push(partCycleTime);
           }
         }
       }
@@ -547,7 +559,6 @@ module.exports = {
             s = s + cycleTimeList[c]["CycleTime"];
           }
         }
-        
         machineGroup = {
           machineGroup : machineGroupsList[i],
           load : Math.round(s/60)
@@ -559,10 +570,51 @@ module.exports = {
       var newEmployeeList = await Employee.find({
         notifyForMachineMaintenance:1
       });
+      var dups = [];
+      var arr = partList.filter(function(el) {
+  // If it is not a duplicate, return true
+    if (dups.indexOf(el.PartNumber) == -1) {
+    dups.push(el.PartNumber);
+    return true;
+    }
+
+  return false;
+  
+}); 
+      console.log("dups",arr);
+      var xls1 = json2xls(arr);
+      var dateTimeFormat;
+      var updatedAtStart=0;
+      var updatedAtEnd=0;
+      var d = new Date();
+      var curr_date = d.getDate();
+      if(curr_date.toString().length == 1){
+        curr_date = "0" + curr_date
+      }
+      var curr_month = parseInt(d.getMonth()) + 1;
+      curr_month = ""+curr_month;
+      if(curr_month.toString().length == 1){
+        curr_month = "0" + curr_month
+      }
+      var curr_year = d.getFullYear();
+      curr_year = curr_year.toString();
+      var curr_time = d.getTime();
+      dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year+ "-" + curr_time;
+      var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/ProductionSchedule/Daily-ProductionSchedule-Report '+ dateTimeFormat +'.xlsx';
+      // var filename1 = 'D:/TMML/Reports/ProductionSchedule/Daily-ProductionSchedule-Report '+ dateTimeFormat +'.xlsx';
+      fs.writeFileSync(filename1, xls1, 'binary',function(err) {
+        if (err) {
+          console.log('Some error occured - file either not saved or corrupted file saved.');
+          sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+        } else {
+          console.log('It\'s saved!');
+        }
+      });
+
       if(newEmployeeList[0]!=null&&newEmployeeList[0]!=undefined){
         var mailText = "Daily Schedule Uploaded. \n  MachineGroup wise load for a Date: "+ day1 +" is as below :- ";
         for(var i=0;i<finalResult.length;i++){
-          mailText = mailText + "\n" + "MachineGroup :"+ finalResult[i]["machineGroup"] +", & Load :"+finalResult[i]["load"]+ "minutes \n" ;
+          mailText = mailText + "\n" + "MachineGroup :"+ finalResult[i]["machineGroup"] +", & Load :"+finalResult[i]["load"]+ " minutes \n" ;
         }
         console.log(mailText);
         for(var i=0;i<newEmployeeList.length;i++){
@@ -572,7 +624,13 @@ module.exports = {
               to: newEmployeeList[i].email, // list of receivers (who receives)
               // to:"santosh.adaki@tatamarcopolo.com",
               subject: "Daily Schedule Upload Status", // Subject line
-              text: mailText
+              text: mailText,
+              attachments :[
+              {
+                'filename':'Daily-ProductionSchedule-Report '+dateTimeFormat+'.xlsx',
+                'path': filename1
+              }
+              ],
             };
             transporter.sendMail(mailOptions, function(error, info) {
               if(error){
@@ -588,7 +646,7 @@ module.exports = {
     },
     
     dailyMonthlyReport: async function(req,res){
-      
+
       var monthlySchedule = await MonthlySchedule.find({
         year:req.body.year,
         month:req.body.month

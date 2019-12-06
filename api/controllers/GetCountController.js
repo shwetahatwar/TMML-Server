@@ -653,7 +653,7 @@ module.exports = {
 			skipCount = req.query.skip;
 		}
 		var parts = await PartNumber.find({
-			where: {remarks: { '!=' : ['NA', ''] }}
+			where: {remarks: { '!=' : ['NA', '','OK','okay'] }}
 			,limit:limitCount,skip:skipCount,sort:[{ id: 'DESC'}]
 		});
 		console.log(parts.length)
@@ -935,7 +935,7 @@ netMonthlyReportMail: async function(req, res) {
 	}
 	console.log(resTable);
 	var xls1 = json2xls(resTable);
-	var filename1 = 'D:/TMML/Reports/NetMonthlyReport/Net-Monthly-Report'+ dateTimeFormat +'.xlsx';
+	var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/NetMonthlyReport/Net-Monthly-Report'+ dateTimeFormat +'.xlsx';
 	fs.writeFileSync(filename1, xls1, 'binary',function(err) {
 		if (err) {
 			console.log('Some error occured - file either not saved or corrupted file saved.');
@@ -971,5 +971,6 @@ transporter.sendMail(mailOptions, function(error, info) {
 		sails.log.info('Message sent: ' + info.response);
 	}
 });
-}
+},
+
 };

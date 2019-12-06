@@ -13,8 +13,8 @@
 // var machineStrokes = require('../api/controllers/MachineStrokesController');
 var sapPartNumber = require('../api/controllers/SapPartNumberController');
 var sapTransaction = require('../api/controllers/SapTransactionController');
-var getNetMonthlyReport = require('../api/controllers/GetCountController');
-var shiftWiseReport = require('../api/controllers/ReportsController');
+var getCountReport = require('../api/controllers/GetCountController');
+var dailyReports = require('../api/controllers/ReportsController');
 //
 // var activeStrockOne = true;
 // var activeStrockTwo = true;
@@ -51,7 +51,12 @@ module.exports.bootstrap = async function() {
     // console.log("time",time);
     if(time == "0:13"){
       await sapTransaction.dailyReport();
-      await getNetMonthlyReport.netMonthlyReportMail();
+      await getCountReport.netMonthlyReportMail();
+      await dailyReports.dailyErrorReport();
+    }
+    else if(time== "0:17"){
+      await dailyReports.dailyVsPlanVsReceivedReport();
+      await dailyReports.dailyCreatedJobCardReport();
     }
   },60000);
 
@@ -60,16 +65,16 @@ module.exports.bootstrap = async function() {
     var time = today.getHours() + ":" + today.getMinutes();
     // console.log("time",time);
     if(time == "14:35"){
-      await shiftWiseReport.shiftWiseReport();
+      await dailyReports.shiftWiseReport();
     }
     else if(time == "23:10"){
-      await shiftWiseReport.shiftWiseReport();
+      await dailyReports.shiftWiseReport();
     }
     else if(time == "7:10"){
-      await shiftWiseReport.shiftWiseReport();
+      await dailyReports.shiftWiseReport();
     }
     else if(time == "0:20"){
-      await shiftWiseReport.shiftWiseReport();
+      await dailyReports.shiftWiseReport();
     }
   },60000);
 

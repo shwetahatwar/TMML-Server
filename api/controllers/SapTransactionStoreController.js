@@ -33,8 +33,6 @@ module.exports = {
           //   documentYear:resultData["Zmjahr"]["_text"],
           //   remarks:resultData["Zremarks"]["_text"]
           // });
-
-          
           var sapTransactionStoreEntry = await SapTransactionStore.create({
             documentNumber313:resultData["Zmblnr"]["_text"],
             documentYear313:resultData["Zmjahr"]["_text"],
@@ -47,7 +45,9 @@ module.exports = {
             remarks:resultData["Zremarks"]["_text"]
           }).fetch();
           res.send(sapTransactionStoreEntry);
-          
+          var getJobCard = await JobCard.find({
+            barcodeSerial:resultData["Zxblnr"]["_text"]
+          });
           if(getJobCard[0]!=null && getJobCard[0]!=undefined){
             var jobLocationRelationId = await Joblocationrelation.update({
               jobcardId:getJobCard[0]["id"]
