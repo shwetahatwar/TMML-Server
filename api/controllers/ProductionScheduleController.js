@@ -114,6 +114,7 @@ module.exports = {
               .catch(error => console.log(error));
               for(var i=0;i<dailySchedule.length;i++){
                 console.log(dailySchedule[i]["partnumber"]);
+                console.log(dailySchedule[i]["inductionDate1"]);
                 var newPartNumberId = await PartNumber.find({
                   partNumber:dailySchedule[i]["partnumber"]
                 });
@@ -126,7 +127,9 @@ module.exports = {
                     estimatedCompletionDate: 0,
                     isJobCardCreated: false,
                     partRemark: dailySchedule[i].remarks,
-                    scheduleStatus:"New"
+                    scheduleStatus:"New",
+                    inductionDate:dailySchedule[i]["inductionDate1"],
+                    planFor:dailySchedule[i]["planFor1"]
                   })
                   .then()
                   .catch(error => console.log(error));
@@ -197,7 +200,9 @@ module.exports = {
                   estimatedCompletionDate: 0,
                   isJobCardCreated: false,
                   partRemark: "",
-                  scheduleStatus: "New"
+                  scheduleStatus: "New",
+                  inductionDate:dailySchedule[i]["inductionDate2"],
+                  planFor:dailySchedule[i]["planFor2"]
                 })
                 .then()
                 .catch(error => console.log(error));
@@ -265,7 +270,9 @@ module.exports = {
                   estimatedCompletionDate: 0,
                   isJobCardCreated: false,
                   partRemark: "",
-                  scheduleStatus: "New"
+                  scheduleStatus: "New",
+                  inductionDate:dailySchedule[i]["inductionDate3"],
+                  planFor:dailySchedule[i]["planFor3"]
                 })
                 .then()
                 .catch(error => console.log(error));
@@ -333,7 +340,9 @@ module.exports = {
                   estimatedCompletionDate: 0,
                   isJobCardCreated: false,
                   partRemark: "",
-                  scheduleStatus: "New"
+                  scheduleStatus: "New",
+                  inductionDate:dailySchedule[i]["inductionDate4"],
+                  planFor:dailySchedule[i]["planFor4"]
                 })
                 .then()
                 .catch(error => console.log(error));
@@ -401,7 +410,9 @@ module.exports = {
                   estimatedCompletionDate: 0,
                   isJobCardCreated: false,
                   partRemark: "",
-                  scheduleStatus: "New"
+                  scheduleStatus: "New",
+                  inductionDate:dailySchedule[i]["inductionDate5"],
+                  planFor:dailySchedule[i]["planFor5"]
                 })
                 .then()
                 .catch(error => console.log(error));
@@ -464,7 +475,9 @@ module.exports = {
                     estimatedCompletionDate: 0,
                     isJobCardCreated: false,
                     partRemark: remarks,
-                    scheduleStatus:"New"
+                    scheduleStatus:"New",
+                    inductionDate:dailySchedule[i]["inductionDate1"],
+                    planFor:dailySchedule[i]["planFor1"]
                   })
                   .then()
                   .catch(error => console.log(error));
@@ -542,7 +555,7 @@ module.exports = {
             var partCycleTime = {
               'PartNumber': processSequenceList[0]["partId"]["partNumber"],
               'Part Description': processSequenceList[0]["partId"]["description"],
-              'Load Time (In minutes)' :cycletime
+              'Load Time (In minutes)' :Math.round(cycletime/60)
             }
             partList.push(partCycleTime);
           }

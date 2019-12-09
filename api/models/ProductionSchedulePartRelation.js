@@ -21,6 +21,12 @@ module.exports = {
     scheduleStatus:{
       type:'string'
     },
+    inductionDate:{
+      type:'string'
+    },
+    planFor:{
+      type:'string'
+    },
     createdBy:{
       model:'User'
     },

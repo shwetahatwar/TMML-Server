@@ -37,7 +37,7 @@ module.exports = {
 		else if(checkShift == "11:10"){
 			Shift = "B";
 		}
-		else if(checkShift == "7:10"){
+		else if(checkShift == "5:50"){
 			Shift = "C";
 		}
 		else if(checkShift == "12:20"){
@@ -169,7 +169,7 @@ module.exports = {
 							partId: productionSchedulePartRelation[0]["partNumberId"],
 							status :1
 						});
-				if(processSequence[0] != null && processSequence[0] != undefined){
+						if(processSequence[0] != null && processSequence[0] != undefined){
 					//console.log(processSequence[0]["machineGroupId"]);
 					if(processSequence.length == 1){
 						var machineGroup = await MachineGroup.find({
@@ -725,14 +725,14 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 },
 
 dailyCreatedJobCardReport:async function(req,res){
-	jobCardsList = [];
+	machineWiseJobCardsList = [];
 	var selfSignedConfig = {
 		host: '128.9.24.24',
 		port: 25
 		
 	};
 	var transporter = nodemailer.createTransport(selfSignedConfig);
-  var processSequenceList="";
+	var processSequenceList="";
 	var dateTimeFormat;
 	var updatedAtStart=0;
 	var updatedAtEnd=0;
@@ -912,51 +912,51 @@ dailyCreatedJobCardReport:async function(req,res){
 							var machineGroup = await MachineGroup.find({
 								id:processSequence[1]["machineGroupId"]
 							});
-						if(machineGroup!=null&&machineGroup!=undefined){
-							var machineType = await MachineType.find({
-								id:machineGroup[0]["machineTypeId"]
+							if(machineGroup!=null&&machineGroup!=undefined){
+								var machineType = await MachineType.find({
+									id:machineGroup[0]["machineTypeId"]
+								});
+								processSequence2 = machineType[0]["name"];
+							}
+							var machineGroup = await MachineGroup.find({
+								id:processSequence[2]["machineGroupId"]
 							});
-							processSequence2 = machineType[0]["name"];
-						}
-						var machineGroup = await MachineGroup.find({
-							id:processSequence[2]["machineGroupId"]
-						});
-						if(machineGroup!=null&&machineGroup!=undefined){
-							var machineType = await MachineType.find({
-								id:machineGroup[0]["machineTypeId"]
+							if(machineGroup!=null&&machineGroup!=undefined){
+								var machineType = await MachineType.find({
+									id:machineGroup[0]["machineTypeId"]
+								});
+								processSequence3 = machineType[0]["name"];
+							}
+							var machineGroup = await MachineGroup.find({
+								id:processSequence[3]["machineGroupId"]
 							});
-							processSequence3 = machineType[0]["name"];
-						}
-						var machineGroup = await MachineGroup.find({
-							id:processSequence[3]["machineGroupId"]
-						});
-						if(machineGroup!=null&&machineGroup!=undefined){
-							var machineType = await MachineType.find({
-								id:machineGroup[0]["machineTypeId"]
+							if(machineGroup!=null&&machineGroup!=undefined){
+								var machineType = await MachineType.find({
+									id:machineGroup[0]["machineTypeId"]
+								});
+								processSequence4 = machineType[0]["name"];
+							}
+							var machineGroup = await MachineGroup.find({
+								id:processSequence[4]["machineGroupId"]
 							});
-							processSequence4 = machineType[0]["name"];
-						}
-						var machineGroup = await MachineGroup.find({
-							id:processSequence[4]["machineGroupId"]
-						});
-						if(machineGroup!=null&&machineGroup!=undefined){
-							var machineType = await MachineType.find({
-								id:machineGroup[0]["machineTypeId"]
-							});
-							processSequence5 = machineType[0]["name"];
+							if(machineGroup!=null&&machineGroup!=undefined){
+								var machineType = await MachineType.find({
+									id:machineGroup[0]["machineTypeId"]
+								});
+								processSequence5 = machineType[0]["name"];
+							}
 						}
 					}
 				}
 			}
-		}
-		var totalProcesses=[];
-		var processes = {
-			processSequence1:processSequence1,
-			processSequence2:processSequence2,
-			processSequence3:processSequence3,
-			processSequence4:processSequence4,
-			processSequence5:processSequence5,
-		}
+			var totalProcesses=[];
+			var processes = {
+				processSequence1:processSequence1,
+				processSequence2:processSequence2,
+				processSequence3:processSequence3,
+				processSequence4:processSequence4,
+				processSequence5:processSequence5,
+			}
 		//console.log(processes);
 		if(jobCards["recordset"][i]["jobcardStatus"] == "Completed"){
 			updatedAt = "NA";
@@ -1014,6 +1014,375 @@ dailyCreatedJobCardReport:async function(req,res){
   	}
   });
 }
+},
+
+machineWiseReport:async function(req,res){
+	machineWiseJobCardsList = [];
+	var selfSignedConfig = {
+		host: '128.9.24.24',
+		port: 25
+		
+	};
+	var transporter = nodemailer.createTransport(selfSignedConfig);
+	var processSequenceList="";
+	var dateTimeFormat;
+	var updatedAtStart=0;
+	var updatedAtEnd=0;
+	var d = new Date();
+	var curr_date = d.getDate()-1;
+	if(curr_date.toString().length == 1){
+		curr_date = "0" + curr_date
+	}
+	var curr_month = parseInt(d.getMonth()) + 1;
+	curr_month = ""+curr_month;
+	if(curr_month.toString().length == 1){
+		curr_month = "0" + curr_month
+	}
+	var curr_year = d.getFullYear();
+	curr_year = curr_year.toString();
+	curr_year = curr_year.substring(2,4);
+	dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
+
+	var startTime =  (parseInt(d.getMonth()) + 1) +"-"+ (parseInt(d.getDate()) - 1) +"-"+ d.getFullYear()+ " " +"00:00:01";
+	var dt = new Date(startTime);
+	updatedAtStart=dt.setSeconds( dt.getSeconds());
+	var EndTime =  (parseInt(d.getMonth()) + 1) +"-"+ (parseInt(d.getDate()) - 1)+"-"+ d.getFullYear()+ " " +"23:59:00";
+	dt = new Date(EndTime);
+	updatedAtEnd=dt.setSeconds( dt.getSeconds());
+	console.log(updatedAtStart,updatedAtEnd);
+	// updatedAtStart = 1574726449000;
+	// updatedAtEnd = 1574812789000;
+	var sql = `SELECT distinct machineId
+	FROM [TestDatabase26112019].[dbo].[jobprocesssequencerelation] where updatedAt between `+updatedAtStart+` AND `+updatedAtEnd+` order by machineId asc`;
+	console.log("sql",sql);
+	var machineIdsList = await sails.sendNativeQuery(sql,[]);
+  console.log("length",machineIdsList["recordset"].length);
+	for(var a=0;a<machineIdsList["recordset"].length;a++){
+		if(machineIdsList["recordset"][a]["machineId"] !=null && machineIdsList["recordset"][a]["machineId"] != undefined){
+			var jobCards = await JobProcessSequenceRelation.find({
+				where:{updatedAt :{ '>=':updatedAtStart,'<=':updatedAtEnd}, machineId : machineIdsList["recordset"][a]["machineId"]},sort: [{ id: 'DESC'}]
+			}).populate('jobId')
+			.populate('processSequenceId')
+			.populate('machineId')
+			.populate('locationId')
+			.populate('operatorId');
+		}
+		for(var b=0;b<jobCards.length;b++){
+			var partNumber = "";
+			var partDesc = "";
+			var processSequence = "";
+			var parts = await PartNumber.find({
+				id: jobCards[b]["processSequenceId"]["partId"]
+			});
+			if(parts[0] != null && parts[0] != undefined){
+				partNumber = parts[0]["partNumber"];
+				partDesc = parts[0]["description"];
+			}
+			var processSequence1;
+			var processSequence2;
+			var processSequence3;
+			var processSequence4;
+			var processSequence5;
+			var jobcard = await JobCard.find({
+				barcodeSerial : jobCards[b]["jobId"]["barcodeSerial"]
+			});
+		//console.log(jobcard);
+		if(jobcard != null && jobcard != undefined){
+			var productionSchedulePartRelation = await ProductionSchedulePartRelation.find({
+				id:jobcard[0]["productionSchedulePartRelationId"]
+			});
+			if(productionSchedulePartRelation !=null && productionSchedulePartRelation !=undefined){
+				var processSequence = await ProcessSequence.find({
+					partId:productionSchedulePartRelation[0]["partNumberId"],
+					status :1
+				});
+				if(processSequence[0] != null && processSequence[0] != undefined){
+					if(processSequence.length == 1){
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[0]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence1 = machineType[0]["name"];
+						}
+					}
+					else if(processSequence.length == 2){
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[0]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence1 = machineType[0]["name"];
+						}
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[1]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence2 = machineType[0]["name"];
+						}
+					}
+					else if(processSequence.length == 3){
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[0]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence1 = machineType[0]["name"];
+						}
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[1]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence2 = machineType[0]["name"];
+						}
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[2]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence3 = machineType[0]["name"];
+						}
+					}
+					else if(processSequence.length == 4){
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[0]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence1 = machineType[0]["name"];
+						}
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[1]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence2 = machineType[0]["name"];
+						}
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[2]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence3 = machineType[0]["name"];
+						}
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[3]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence4 = machineType[0]["name"];
+						}
+					}
+					else if(processSequence.length == 5){
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[0]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence1 = machineType[0]["name"];
+						}
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[1]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence2 = machineType[0]["name"];
+						}
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[2]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence3 = machineType[0]["name"];
+						}
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[3]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence4 = machineType[0]["name"];
+						}
+						var machineGroup = await MachineGroup.find({
+							id:processSequence[4]["machineGroupId"]
+						});
+						if(machineGroup!=null&&machineGroup!=undefined){
+							var machineType = await MachineType.find({
+								id:machineGroup[0]["machineTypeId"]
+							});
+							processSequence5 = machineType[0]["name"];
+						}
+					}
+				}
+			}
+		}
+		var totalProcesses=[];
+		var processes = {
+			processSequence1:processSequence1,
+			processSequence2:processSequence2,
+			processSequence3:processSequence3,
+			processSequence4:processSequence4,
+			processSequence5:processSequence5,
+		}
+		totalProcesses.push(processes);
+
+		if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 1){
+			processSequence = totalProcesses[0]["processSequence1"];
+		}
+		else if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 2){
+			processSequence = totalProcesses[0]["processSequence2"];
+		}
+		else if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 3){
+			processSequence = totalProcesses[0]["processSequence3"];
+		}
+		else if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 4){
+			processSequence = totalProcesses[0]["processSequence4"];
+		}
+		else if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 5){
+			processSequence = totalProcesses[0]["processSequence5"];
+		}
+		var TimeStamp = parseInt(jobCards[b]["jobId"]["createdAt"]);
+		var createdDate = new Date(TimeStamp);
+		createdDate = createdDate.toDateString();
+		TimeStamp = parseInt(jobCards[b]["jobId"]["updatedAt"]);
+		var updatedAt = new Date(TimeStamp);
+		updatedAt = updatedAt.toDateString();
+		var shiftDate = jobCards[b]["jobId"]["updatedAt"];
+		var dateString = new Date(TimeStamp);
+		var CheckShift = (parseInt(dateString.getMonth()) + 1) +"-"+ dateString.getDate() +"-"+ dateString.getFullYear();
+    
+		var shiftANameStarTime = "06:00:00";
+		var shiftANameEndTime = "14:30:00";
+		var shiftANameStarTime1 = CheckShift + " " + shiftANameStarTime;
+		var shiftANameEndTime1 = CheckShift + " " + shiftANameEndTime;
+		var shiftBNameStarTime = "14:30:00";
+		var shiftBNameEndTime = "23:00:00";
+		var shiftBNameStarTime1 = CheckShift + " " + shiftBNameStarTime;
+		var shiftBNameEndTime1 = CheckShift + " " + shiftBNameEndTime;
+		var millis = new Date(shiftANameStarTime1);
+		millis=millis.setSeconds(millis.getSeconds());
+		var ShiftAStart = millis;
+		var millis1 = new Date(shiftANameEndTime1);
+		millis1=millis1.setSeconds(millis1.getSeconds());
+		var ShiftAEnd =millis1;
+		var millisB = new Date(shiftBNameStarTime1);
+		millisB=millisB.setSeconds(millisB.getSeconds());
+		var ShiftBStart = millisB;
+		var millis1B = new Date(shiftBNameEndTime1);
+		millis1B=millis1B.setSeconds(millis1B.getSeconds());
+		var ShiftBEnd = millis1B;
+		var Shift = "";
+		console.log("Shift A:",ShiftAStart,ShiftAEnd);
+		console.log("Shift B:",ShiftBStart,ShiftBEnd);
+		console.log("Shift Date",shiftDate);
+		if(shiftDate >=ShiftAStart && shiftDate <= ShiftAEnd)
+		{
+			Shift = "A";
+		}
+		else if (shiftDate >= ShiftBStart && shiftDate <= ShiftBEnd)
+		{
+			Shift = "B";
+		}
+		else
+		{
+			Shift = "C";
+		}
+		if(jobCards[b]["jobId"]["jobcardStatus"] != "Completed"){
+			updatedAt = "NA";
+			Shift = "NA";
+		}
+    console.log("Shift",Shift);
+		var machineWiseJobCard = {
+			'Created Date': createdDate,
+			'Estimated Date': jobCards[b]["jobId"]["estimatedDate"],
+			'Completed Date': updatedAt,
+			'Shift': Shift ,
+			'Machine Name': jobCards[b]["machineId"]["machineName"], 
+			'Operator Ticket No':jobCards[b]["operatorId"]["EmployeeId"],
+			'Name Of Operator':jobCards[b]["operatorId"]["name"],
+			'Job Card No':jobCards[b]["jobId"]["barcodeSerial"],
+			'Part Number':partNumber,
+			'Material Description':partDesc,
+			'Process Sequence':processSequence,
+			'Requested Quantity':jobCards[b]["jobId"]["requestedQuantity"],
+			'Actual Quantity':jobCards[b]["jobId"]["actualQuantity"],
+			'Balance Quantity':jobCards[b]["jobId"]["requestedQuantity"] - jobCards[b]["jobId"]["actualQuantity"],
+			'% Of Adherence':((jobCards[b]["jobId"]["actualQuantity"] / jobCards[b]["jobId"]["requestedQuantity"])*100),
+			'Machine Status':jobCards[b]["machineId"]["maintenanceStatus"],
+			'Remark':jobCards[b]["jobId"]["jobcardStatus"]
+		}
+		machineWiseJobCardsList.push(machineWiseJobCard);
+	} 
+}
+var xls1 = json2xls(machineWiseJobCardsList);
+dateTimeFormat = curr_date + "-" + curr_month + "-" +d.getFullYear();
+	// var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/DailyCreatedJobCard/Daily-Created-JobCard '+ dateTimeFormat +'.xlsx';
+	var filename1 = 'D:/TMML/Reports/MachineWise/Machine-Wise-JobCard '+ dateTimeFormat +'.xlsx';
+	fs.writeFileSync(filename1, xls1, 'binary',function(err) {
+		if (err) {
+			console.log('Some error occured - file either not saved or corrupted file saved.');
+			sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+		} else {
+			console.log('It\'s saved!');
+		}
+	});
+	var receiversList = await ReportList.find({
+		name : "Plan vs Actual for the machine"
+	});
+	receiversList = receiversList[0]["email"];
+	var mailText = "PFA for Machine Wise JobCard Report for "+dateTimeFormat+" Date";
+	console.log(mailText);
+	var mailOptions = {
+    from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
+    // from:"Sagar@briot.in",
+    //to: receiversList,
+    to:"santosh.adaki@tatamarcopolo.com",
+    subject: "Daily created job card Report", // Subject line
+    text: mailText,
+    attachments :[
+    {
+    	'filename':'Machine-Wise-JobCard '+dateTimeFormat+'.xlsx',
+    	'path': filename1
+    }
+    ],
+  };
+  transporter.sendMail(mailOptions, function(error, info) {
+  	if(error){
+  		sails.log.error("Machine-Wise-JobCard report mail not sent",error);
+  	} else {
+  		sails.log.info('Message sent: ' + info.response);
+  	}
+  });
+
 },
 
 };

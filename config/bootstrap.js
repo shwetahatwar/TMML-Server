@@ -58,25 +58,40 @@ module.exports.bootstrap = async function() {
       await dailyReports.dailyVsPlanVsReceivedReport();
       await dailyReports.dailyCreatedJobCardReport();
     }
-  },60000);
-
-  setInterval(async function(){
-    var today = new Date();
-    var time = today.getHours() + ":" + today.getMinutes();
-    // console.log("time",time);
-    if(time == "14:35"){
+    else if(time == "14:35"){
       await dailyReports.shiftWiseReport();
     }
     else if(time == "23:10"){
       await dailyReports.shiftWiseReport();
     }
-    else if(time == "7:10"){
+    else if(time == "5:50"){
       await dailyReports.shiftWiseReport();
     }
     else if(time == "0:20"){
       await dailyReports.shiftWiseReport();
     }
+    else if(time == "0:30"){
+      await dailyReports.machineWiseReport();
+    }
   },60000);
+
+  // setInterval(async function(){
+  //   var today = new Date();
+  //   var time = today.getHours() + ":" + today.getMinutes();
+  //   // console.log("time",time);
+  //   if(time == "14:35"){
+  //     await dailyReports.shiftWiseReport();
+  //   }
+  //   else if(time == "23:10"){
+  //     await dailyReports.shiftWiseReport();
+  //   }
+  //   else if(time == "7:10"){
+  //     await dailyReports.shiftWiseReport();
+  //   }
+  //   else if(time == "0:20"){
+  //     await dailyReports.shiftWiseReport();
+  //   }
+  // },60000);
 
 
   // setInterval(function(){
