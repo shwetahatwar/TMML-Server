@@ -73,6 +73,12 @@ module.exports.bootstrap = async function() {
     else if(time == "0:30"){
       await dailyReports.machineWiseReport();
     }
+    else if(time == "0:37"){
+      await dailyReports.partWiseSMHReport();
+    }
+    else if(time == "0:45"){
+      await dailyReports.WIPReport();
+    }
   },60000);
 
   // setInterval(async function(){

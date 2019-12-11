@@ -105,6 +105,7 @@
   'GET /dailyMonthlyPartReport':'GetCount.dailyMonthlyPartReport',
   'GET /getPPartRelation':'GetCount.getPPartRelation',
   'GET /getSrNo':'GetCount.getSrNo',
+  'POST /printPartLabel':'GetCount.printPartLabel',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

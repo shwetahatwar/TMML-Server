@@ -7,6 +7,7 @@
 
 var fs  = require('fs');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var countController = require('../controllers/GetCountController');
 // var xmlParser = require("xml2json");
 var convert = require('xml-js');
 
@@ -265,16 +266,16 @@ module.exports = {
 
           var totalQty = pendingQty + req.body.quantity;
           // if( totalQty <= requestedQty) {
-          console.log("JobCard ID :",req.body.jobId);
-          var updatedJobCard = await JobCard.update({
-            id:req.body.jobId
-          })
-          .set({
-            jobcardStatus:"Completed",
-            actualQuantity:totalQty
-          });
-          console.log("Line 268 :",req.body.jobId);
-          sails.log.info("Job Card Completed:"+req.body.jobId+"", updatedJobCard);
+            console.log("JobCard ID :",req.body.jobId);
+            var updatedJobCard = await JobCard.update({
+              id:req.body.jobId
+            })
+            .set({
+              jobcardStatus:"Completed",
+              actualQuantity:totalQty
+            });
+            console.log("Line 268 :",req.body.jobId);
+            sails.log.info("Job Card Completed:"+req.body.jobId+"", updatedJobCard);
           // var dateTime = new Date();
           var uniqueNumberSap;
           var sapEntry = await SapTransaction.find({
@@ -394,7 +395,10 @@ module.exports = {
           .set({
             remarks:req.body.note
           });
-
+          var a=req.body.quantity;
+          req.body.quantity =a; 
+          req.body.partNumber = newPartNumberAdded;
+          return countController.printPartLabel(req,res);
           res.send("Final Location");
         }
       }
@@ -627,6 +631,11 @@ module.exports = {
       .set({
         remarks:req.body.note
       });
+      console.log("newPartNumberAdded",newPartNumberAdded);
+      var a=req.body.quantity;
+      req.body.quantity =a; 
+      req.body.partNumber = newPartNumberAdded;
+      return countController.printPartLabel(req,res);
       res.send("Final Location");
     },
 
@@ -667,17 +676,17 @@ module.exports = {
           processStatus:"Completed",processStatus:"FinalLocation"
         },limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
       }).populate('jobId')
-      .populate('processSequenceId')
-      .populate('machineId')
-      .populate('locationId')
-      .populate('operatorId');
-    }
-    res.send(jobCards);
-  },
-};
+        .populate('processSequenceId')
+        .populate('machineId')
+        .populate('locationId')
+        .populate('operatorId');
+      }
+      res.send(jobCards);
+    },
+  };
 
 
-async function manualSapTransaction(plantAdd,dateAdd,materialAdd,jobcardAdd,uniqueNumberAdd,quantityAdd){
+  async function manualSapTransaction(plantAdd,dateAdd,materialAdd,jobcardAdd,uniqueNumberAdd,quantityAdd){
   // jobcardAdd = jobcardAdd.substring(3,18);
   // uniqueNumberAdd = uniqueNumberAdd.substring(1,12);
   console.log("In Manual SAP",uniqueNumberAdd);

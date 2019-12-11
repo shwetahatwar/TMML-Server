@@ -54,13 +54,14 @@ module.exports = {
       console.log("Daily Upload Data",dailySchedule);
       if(req.body.actions=="New"){
         var obj=Object.getOwnPropertyNames(dailySchedule[0]);
+        console.log("obj",obj);
         var day1=obj[2];
-        var day2=obj[3];
-        var day3=obj[4];
-        var day4=obj[5];
-        var day5=obj[6];
+        var day2=obj[5];
+        var day3=obj[8];
+        var day4=obj[11];
+        var day5=obj[14];
         console.log(day1);
-        console.log(dailySchedule[0][day1]);
+        console.log(dailySchedule[0][day1],dailySchedule[0][day2],dailySchedule[0][day2],dailySchedule[0][day4],dailySchedule[0][day5]);
         var day;
         for(var counter=0;counter<5;counter++)
           if(counter==0){
