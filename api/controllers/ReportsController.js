@@ -4,6 +4,7 @@ var fs = require('fs');
 const roundTo = require('round-to');
 var self = module.exports = {
 
+	//---------------------  Shift Wise and Daily Report (Managed In Same Function) (For Day wise Report-Shift D )  -----------
 	shiftWiseReport :async function(req,res){
 		var selfSignedConfig = {
 			host: '128.9.24.24',
@@ -343,6 +344,8 @@ else{
 
 },
 
+// ----------------- Daily Error Report (Process Sequence Defined Wrong) -------------------------------
+
 dailyErrorReport:async function(req,res){
 	errorParts = [];
 	var selfSignedConfig = {
@@ -433,6 +436,8 @@ dailyErrorReport:async function(req,res){
   	}
   });
 },
+
+//------------------ Daily Vs Plan VS Received Status Report (SAP Report) --------------
 
 dailyVsPlanVsReceivedReport:async function(req,res){
 	jobCardsList = [];
@@ -543,6 +548,9 @@ dailyVsPlanVsReceivedReport:async function(req,res){
   });
 }
 },
+
+
+//---- Daily Created Job Cards ---------------------
 
 dailyCreatedJobCardReport:async function(req,res){
 	machineWiseJobCardsList = [];
@@ -656,6 +664,9 @@ dailyCreatedJobCardReport:async function(req,res){
   });
 }
 },
+
+
+ //-------------- Machine Wise Report --------------------
 
 machineWiseReport:async function(req,res){
 	machineWiseJobCardsList = [];
@@ -810,6 +821,9 @@ machineWiseReport:async function(req,res){
 
 },
 
+
+//----------------- Plan SMH Vs AMH Report Partwise ---------
+
 partWiseSMHReport:async function(req,res){
 	partsList = [];
 	var selfSignedConfig = {
@@ -963,6 +977,8 @@ partWiseSMHReport:async function(req,res){
   	}
   });
 },
+
+//------------- WIP Report Day Wise -------------------------------
 
 WIPReport:async function (req, res) {
 	wipList = [];
@@ -1345,6 +1361,9 @@ WIPReport:async function (req, res) {
   });
 },
 
+
+// ------------- Common get Shift Function ------------
+
 shiftFunction: function(updatedAt){
 	var shiftDate = updatedAt;
 	var TimeStamp = parseInt(updatedAt);
@@ -1388,6 +1407,8 @@ shiftFunction: function(updatedAt){
 	}
 	return Shift;
 },
+
+//------------ Common Get Process Sequence of Job Card ------------
 
 totalProcessesFunction:async function(barcodeSerial) {
 	var processSequence1;
