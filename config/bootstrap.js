@@ -79,6 +79,12 @@ module.exports.bootstrap = async function() {
     else if(time == "0:45"){
       await dailyReports.WIPReport();
     }
+     else if(time == "0:48"){
+      await dailyReports.dailyPendingJobcardsReport();
+    }
+    else if(time == "0:50"){
+      await dailyReports.dailyNewJobCardsReport();
+    }
   },60000);
 
   // setInterval(async function(){

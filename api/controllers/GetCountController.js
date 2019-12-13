@@ -923,6 +923,21 @@ transporter.sendMail(mailOptions, function(error, info) {
 });
 },
 
+getJobCardsDatewise:async function(req,res){
+	if(req.query.createdAtStart != null && req.query.createdAtEnd != null ){
+		var skipCount = req.query.skip;
+		var limitCount=200;
+		var jobCards = await JobCard.find({
+			where : {createdAt :{ '>=':req.query.createdAtStart,'<=':req.query.createdAtEnd}},
+			limit:limitCount,skip:skipCount,sort:[{ id: 'ASC'}]
+		}).populate('productionSchedulePartRelationId');
+		res.send(jobCards);
+	}
+	else{
+		res.send('No Data Found');
+	}
+},
+
 printPartLabel:async function(req,res){
 	console.log("PartNumber",req.body.partNumber);
 	console.log("qty",req.body.quantity);
@@ -964,6 +979,5 @@ printPartLabel:async function(req,res){
     	console.log('client disconnected');
     });
     res.send("Final Location");
-}
-
+},
 };

@@ -289,14 +289,14 @@ var self = module.exports = {
     	'path': filename1
     }
     ],
-  };
-  transporter.sendMail(mailOptions, function(error, info) {
-  	if(error){
-  		sails.log.error("Daily report mail not sent",error);
-  	} else {
-  		sails.log.info('Daily report mail sent: ' + info.response);
-  	}
-  });
+};
+transporter.sendMail(mailOptions, function(error, info) {
+	if(error){
+		sails.log.error("Daily report mail not sent",error);
+	} else {
+		sails.log.info('Daily report mail sent: ' + info.response);
+	}
+});
 }
 else{
 	var xls1 = json2xls(shiftWiseJobCards);
@@ -327,14 +327,14 @@ else{
     	'path': filename1
     }
     ],
-  };
-  transporter.sendMail(mailOptions, function(error, info) {
-  	if(error){
-  		sails.log.error("Shift Wise report mail not sent",error);
-  	} else {
-  		sails.log.info('Shift Wise report sent: ' + info.response);
-  	}
-  });
+};
+transporter.sendMail(mailOptions, function(error, info) {
+	if(error){
+		sails.log.error("Shift Wise report mail not sent",error);
+	} else {
+		sails.log.info('Shift Wise report sent: ' + info.response);
+	}
+});
 }
 }
 else{
@@ -427,14 +427,14 @@ dailyErrorReport:async function(req,res){
     	'path': filename1
     }
     ],
-  };
-  transporter.sendMail(mailOptions, function(error, info) {
-  	if(error){
-  		sails.log.error("Error report mail not sent",error);
-  	} else {
-  		sails.log.info('Error report mail sent: ' + info.response);
-  	}
-  });
+};
+transporter.sendMail(mailOptions, function(error, info) {
+	if(error){
+		sails.log.error("Error report mail not sent",error);
+	} else {
+		sails.log.info('Error report mail sent: ' + info.response);
+	}
+});
 },
 
 //------------------ Daily Vs Plan VS Received Status Report (SAP Report) --------------
@@ -538,14 +538,14 @@ dailyVsPlanVsReceivedReport:async function(req,res){
     	'path': filename1
     }
     ],
-  };
-  transporter.sendMail(mailOptions, function(error, info) {
-  	if(error){
-  		sails.log.error("Plan-Vs-Actual-Vs-Received-Status mail not sent",error);
-  	} else {
-  		sails.log.info('Plan-Vs-Actual-Vs-Received-Status Message sent: ' + info.response);
-  	}
-  });
+};
+transporter.sendMail(mailOptions, function(error, info) {
+	if(error){
+		sails.log.error("Plan-Vs-Actual-Vs-Received-Status mail not sent",error);
+	} else {
+		sails.log.info('Plan-Vs-Actual-Vs-Received-Status Message sent: ' + info.response);
+	}
+});
 }
 },
 
@@ -654,134 +654,134 @@ dailyCreatedJobCardReport:async function(req,res){
     	'path': filename1
     }
     ],
-  };
-  transporter.sendMail(mailOptions, function(error, info) {
-  	if(error){
-  		sails.log.error("Daily Created jobCard report mail not sent",error);
-  	} else {
-  		sails.log.info('Daily Created jobCard report Message sent: ' + info.response);
-  	}
-  });
+};
+transporter.sendMail(mailOptions, function(error, info) {
+	if(error){
+		sails.log.error("Daily Created jobCard report mail not sent",error);
+	} else {
+		sails.log.info('Daily Created jobCard report Message sent: ' + info.response);
+	}
+});
 }
 },
 
 
  //-------------- Machine Wise Report --------------------
 
-machineWiseReport:async function(req,res){
-	machineWiseJobCardsList = [];
-	var selfSignedConfig = {
-		host: '128.9.24.24',
-		port: 25
-		
-	};
-	var transporter = nodemailer.createTransport(selfSignedConfig);
-	var processSequenceList="";
-	var dateTimeFormat;
-	var updatedAtStart=0;
-	var updatedAtEnd=0;
-	var d = new Date();
-	var curr_date = d.getDate()-1;
-	if(curr_date.toString().length == 1){
-		curr_date = "0" + curr_date
-	}
-	var curr_month = parseInt(d.getMonth()) + 1;
-	curr_month = ""+curr_month;
-	if(curr_month.toString().length == 1){
-		curr_month = "0" + curr_month
-	}
-	var curr_year = d.getFullYear();
-	curr_year = curr_year.toString();
-	curr_year = curr_year.substring(2,4);
-	dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
+ machineWiseReport:async function(req,res){
+ 	machineWiseJobCardsList = [];
+ 	var selfSignedConfig = {
+ 		host: '128.9.24.24',
+ 		port: 25
 
-	var startTime =  (parseInt(d.getMonth()) + 1) +"-"+ (parseInt(d.getDate()) - 1) +"-"+ d.getFullYear()+ " " +"00:00:01";
-	var dt = new Date(startTime);
-	updatedAtStart=dt.setSeconds( dt.getSeconds());
-	var EndTime =  (parseInt(d.getMonth()) + 1) +"-"+ (parseInt(d.getDate()) - 1)+"-"+ d.getFullYear()+ " " +"23:59:00";
-	dt = new Date(EndTime);
-	updatedAtEnd=dt.setSeconds( dt.getSeconds());
-	console.log(updatedAtStart,updatedAtEnd);
-	var sql = `SELECT distinct machineId
-	FROM [TestDatabase].[dbo].[jobprocesssequencerelation] where updatedAt between `+updatedAtStart+` AND `+updatedAtEnd+` order by machineId asc`;
-	console.log("sql",sql);
-	var machineIdsList = await sails.sendNativeQuery(sql,[]);
-	console.log("length",machineIdsList["recordset"].length);
-	for(var a=0;a<machineIdsList["recordset"].length;a++){
-		if(machineIdsList["recordset"][a]["machineId"] !=null && machineIdsList["recordset"][a]["machineId"] != undefined){
-			var jobCards = await JobProcessSequenceRelation.find({
-				where:{updatedAt :{ '>=':updatedAtStart,'<=':updatedAtEnd}, machineId : machineIdsList["recordset"][a]["machineId"]},sort: [{ id: 'DESC'}]
-			}).populate('jobId')
-			.populate('processSequenceId')
-			.populate('machineId')
-			.populate('locationId')
-			.populate('operatorId');
-		}
-		for(var b=0;b<jobCards.length;b++){
-			var partNumber = "";
-			var partDesc = "";
-			var processSequence = "";
-			var parts = await PartNumber.find({
-				id: jobCards[b]["processSequenceId"]["partId"]
-			});
-			if(parts[0] != null && parts[0] != undefined){
-				partNumber = parts[0]["partNumber"];
-				partDesc = parts[0]["description"];
-			}
-			var totalProcesses =await self.totalProcessesFunction(jobCards[b]["jobId"]["barcodeSerial"]);
-			if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 1){
-				processSequence = totalProcesses[0]["processSequence1"];
-			}
-			else if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 2){
-				processSequence = totalProcesses[0]["processSequence2"];
-			}
-			else if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 3){
-				processSequence = totalProcesses[0]["processSequence3"];
-			}
-			else if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 4){
-				processSequence = totalProcesses[0]["processSequence4"];
-			}
-			else if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 5){
-				processSequence = totalProcesses[0]["processSequence5"];
-			}
-			var TimeStamp = parseInt(jobCards[b]["jobId"]["createdAt"]);
-			var createdDate = new Date(TimeStamp);
-			createdDate = createdDate.toDateString();
-			TimeStamp = parseInt(jobCards[b]["jobId"]["updatedAt"]);
-			var updatedAt = new Date(TimeStamp);
-			updatedAt = updatedAt.toDateString();
+ 	};
+ 	var transporter = nodemailer.createTransport(selfSignedConfig);
+ 	var processSequenceList="";
+ 	var dateTimeFormat;
+ 	var updatedAtStart=0;
+ 	var updatedAtEnd=0;
+ 	var d = new Date();
+ 	var curr_date = d.getDate()-1;
+ 	if(curr_date.toString().length == 1){
+ 		curr_date = "0" + curr_date
+ 	}
+ 	var curr_month = parseInt(d.getMonth()) + 1;
+ 	curr_month = ""+curr_month;
+ 	if(curr_month.toString().length == 1){
+ 		curr_month = "0" + curr_month
+ 	}
+ 	var curr_year = d.getFullYear();
+ 	curr_year = curr_year.toString();
+ 	curr_year = curr_year.substring(2,4);
+ 	dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
 
-			var Shift =await self.shiftFunction(parseInt(jobCards[b]["jobId"]["updatedAt"]));
-			if(jobCards[b]["jobId"]["jobcardStatus"] != "Completed"){
-				updatedAt = "NA";
-				Shift = "NA";
-			}
-			console.log("Shift",Shift);
-			var machineWiseJobCard = {
-				'Created Date': createdDate,
-				'Estimated Date': jobCards[b]["jobId"]["estimatedDate"],
-				'Completed Date': updatedAt,
-				'Shift': Shift ,
-				'Machine Name': jobCards[b]["machineId"]["machineName"], 
-				'Operator Ticket No':jobCards[b]["operatorId"]["EmployeeId"],
-				'Name Of Operator':jobCards[b]["operatorId"]["name"],
-				'Job Card No':jobCards[b]["jobId"]["barcodeSerial"],
-				'Part Number':partNumber,
-				'Material Description':partDesc,
-				'Process Sequence':processSequence,
-				'Requested Quantity':jobCards[b]["jobId"]["requestedQuantity"],
-				'Actual Quantity':jobCards[b]["jobId"]["actualQuantity"],
-				'Balance Quantity':jobCards[b]["jobId"]["requestedQuantity"] - jobCards[b]["jobId"]["actualQuantity"],
-				'% Of Adherence':((jobCards[b]["jobId"]["actualQuantity"] / jobCards[b]["jobId"]["requestedQuantity"])*100),
-				'Machine Status':jobCards[b]["machineId"]["maintenanceStatus"],
-				'Remark':jobCards[b]["jobId"]["jobcardStatus"]
-			}
-			machineWiseJobCardsList.push(machineWiseJobCard);
-		} 
-	}
-	var xls1 = json2xls(machineWiseJobCardsList);
-	dateTimeFormat = curr_date + "-" + curr_month + "-" +d.getFullYear();
-	var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/DailyCreatedJobCard/Daily-Created-JobCard '+ dateTimeFormat +'.xlsx';
+ 	var startTime =  (parseInt(d.getMonth()) + 1) +"-"+ (parseInt(d.getDate()) - 1) +"-"+ d.getFullYear()+ " " +"00:00:01";
+ 	var dt = new Date(startTime);
+ 	updatedAtStart=dt.setSeconds( dt.getSeconds());
+ 	var EndTime =  (parseInt(d.getMonth()) + 1) +"-"+ (parseInt(d.getDate()) - 1)+"-"+ d.getFullYear()+ " " +"23:59:00";
+ 	dt = new Date(EndTime);
+ 	updatedAtEnd=dt.setSeconds( dt.getSeconds());
+ 	console.log(updatedAtStart,updatedAtEnd);
+ 	var sql = `SELECT distinct machineId
+ 	FROM [TestDatabase].[dbo].[jobprocesssequencerelation] where updatedAt between `+updatedAtStart+` AND `+updatedAtEnd+` order by machineId asc`;
+ 	console.log("sql",sql);
+ 	var machineIdsList = await sails.sendNativeQuery(sql,[]);
+ 	console.log("length",machineIdsList["recordset"].length);
+ 	for(var a=0;a<machineIdsList["recordset"].length;a++){
+ 		if(machineIdsList["recordset"][a]["machineId"] !=null && machineIdsList["recordset"][a]["machineId"] != undefined){
+ 			var jobCards = await JobProcessSequenceRelation.find({
+ 				where:{updatedAt :{ '>=':updatedAtStart,'<=':updatedAtEnd}, machineId : machineIdsList["recordset"][a]["machineId"]},sort: [{ id: 'DESC'}]
+ 			}).populate('jobId')
+ 			.populate('processSequenceId')
+ 			.populate('machineId')
+ 			.populate('locationId')
+ 			.populate('operatorId');
+ 		}
+ 		for(var b=0;b<jobCards.length;b++){
+ 			var partNumber = "";
+ 			var partDesc = "";
+ 			var processSequence = "";
+ 			var parts = await PartNumber.find({
+ 				id: jobCards[b]["processSequenceId"]["partId"]
+ 			});
+ 			if(parts[0] != null && parts[0] != undefined){
+ 				partNumber = parts[0]["partNumber"];
+ 				partDesc = parts[0]["description"];
+ 			}
+ 			var totalProcesses =await self.totalProcessesFunction(jobCards[b]["jobId"]["barcodeSerial"]);
+ 			if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 1){
+ 				processSequence = totalProcesses[0]["processSequence1"];
+ 			}
+ 			else if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 2){
+ 				processSequence = totalProcesses[0]["processSequence2"];
+ 			}
+ 			else if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 3){
+ 				processSequence = totalProcesses[0]["processSequence3"];
+ 			}
+ 			else if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 4){
+ 				processSequence = totalProcesses[0]["processSequence4"];
+ 			}
+ 			else if(jobCards[b]["processSequenceId"]["sequenceNumber"] == 5){
+ 				processSequence = totalProcesses[0]["processSequence5"];
+ 			}
+ 			var TimeStamp = parseInt(jobCards[b]["jobId"]["createdAt"]);
+ 			var createdDate = new Date(TimeStamp);
+ 			createdDate = createdDate.toDateString();
+ 			TimeStamp = parseInt(jobCards[b]["jobId"]["updatedAt"]);
+ 			var updatedAt = new Date(TimeStamp);
+ 			updatedAt = updatedAt.toDateString();
+
+ 			var Shift =await self.shiftFunction(parseInt(jobCards[b]["jobId"]["updatedAt"]));
+ 			if(jobCards[b]["jobId"]["jobcardStatus"] != "Completed"){
+ 				updatedAt = "NA";
+ 				Shift = "NA";
+ 			}
+ 			console.log("Shift",Shift);
+ 			var machineWiseJobCard = {
+ 				'Created Date': createdDate,
+ 				'Estimated Date': jobCards[b]["jobId"]["estimatedDate"],
+ 				'Completed Date': updatedAt,
+ 				'Shift': Shift ,
+ 				'Machine Name': jobCards[b]["machineId"]["machineName"], 
+ 				'Operator Ticket No':jobCards[b]["operatorId"]["EmployeeId"],
+ 				'Name Of Operator':jobCards[b]["operatorId"]["name"],
+ 				'Job Card No':jobCards[b]["jobId"]["barcodeSerial"],
+ 				'Part Number':partNumber,
+ 				'Material Description':partDesc,
+ 				'Process Sequence':processSequence,
+ 				'Requested Quantity':jobCards[b]["jobId"]["requestedQuantity"],
+ 				'Actual Quantity':jobCards[b]["jobId"]["actualQuantity"],
+ 				'Balance Quantity':jobCards[b]["jobId"]["requestedQuantity"] - jobCards[b]["jobId"]["actualQuantity"],
+ 				'% Of Adherence':((jobCards[b]["jobId"]["actualQuantity"] / jobCards[b]["jobId"]["requestedQuantity"])*100),
+ 				'Machine Status':jobCards[b]["machineId"]["maintenanceStatus"],
+ 				'Remark':jobCards[b]["jobId"]["jobcardStatus"]
+ 			}
+ 			machineWiseJobCardsList.push(machineWiseJobCard);
+ 		} 
+ 	}
+ 	var xls1 = json2xls(machineWiseJobCardsList);
+ 	dateTimeFormat = curr_date + "-" + curr_month + "-" +d.getFullYear();
+ 	var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/DailyCreatedJobCard/Daily-Created-JobCard '+ dateTimeFormat +'.xlsx';
 	// var filename1 = 'D:/TMML/Reports/MachineWise/Machine-Wise-JobCard '+ dateTimeFormat +'.xlsx';
 	fs.writeFileSync(filename1, xls1, 'binary',function(err) {
 		if (err) {
@@ -810,14 +810,14 @@ machineWiseReport:async function(req,res){
     	'path': filename1
     }
     ],
-  };
-  transporter.sendMail(mailOptions, function(error, info) {
-  	if(error){
-  		sails.log.error("Machine-Wise-JobCard report mail not sent",error);
-  	} else {
-  		sails.log.info('Machine-Wise-JobCard Message sent: ' + info.response);
-  	}
-  });
+};
+transporter.sendMail(mailOptions, function(error, info) {
+	if(error){
+		sails.log.error("Machine-Wise-JobCard report mail not sent",error);
+	} else {
+		sails.log.info('Machine-Wise-JobCard Message sent: ' + info.response);
+	}
+});
 
 },
 
@@ -968,14 +968,14 @@ partWiseSMHReport:async function(req,res){
     	'path': filename1
     }
     ],
-  };
-  transporter.sendMail(mailOptions, function(error, info) {
-  	if(error){
-  		sails.log.error("SMH-Vs-AMH-PartWise report mail not sent",error);
-  	} else {
-  		sails.log.info('SMH-Vs-AMH-PartWise Message sent: ' + info.response);
-  	}
-  });
+};
+transporter.sendMail(mailOptions, function(error, info) {
+	if(error){
+		sails.log.error("SMH-Vs-AMH-PartWise report mail not sent",error);
+	} else {
+		sails.log.info('SMH-Vs-AMH-PartWise Message sent: ' + info.response);
+	}
+});
 },
 
 //------------- WIP Report Day Wise -------------------------------
@@ -1351,14 +1351,14 @@ WIPReport:async function (req, res) {
     	'path': filename1
     }
     ],
-  };
-  transporter.sendMail(mailOptions, function(error, info) {
-  	if(error){
-  		sails.log.error("WIP status of machine shop Report mail not sent",error);
-  	} else {
-  		sails.log.info('WIP status of machine shop Report Message sent: ' + info.response);
-  	}
-  });
+};
+transporter.sendMail(mailOptions, function(error, info) {
+	if(error){
+		sails.log.error("WIP status of machine shop Report mail not sent",error);
+	} else {
+		sails.log.info('WIP status of machine shop Report Message sent: ' + info.response);
+	}
+});
 },
 
 
@@ -1589,4 +1589,300 @@ totalProcessesFunction:async function(barcodeSerial) {
 	totalProcesses.push(processes);
 	return totalProcesses;
 },
+
+
+// Daily pending Job cards 
+
+dailyPendingJobcardsReport:async function(req,res){
+	var selfSignedConfig = {
+		host: '128.9.24.24',
+		port: 25
+		
+	};
+	var transporter = nodemailer.createTransport(selfSignedConfig);
+	var processSequenceList="";
+	var dateTimeFormat;
+	var partNumber = "";
+	var partDesc = "";
+	var rawmaterial= "";
+	var rawDescription= "";
+	var cellName = "";
+	var machineName = "";
+	var firstProcess = "";
+	var nextProcess = "";
+	var nextSequenceNo = 0;
+	var nextProcessSequence = "";
+	var pendingJobcarList = [];
+	var d = new Date();
+	var curr_date = d.getDate()-1;
+	if(curr_date.toString().length == 1){
+		curr_date = "0" + curr_date
+	}
+	var curr_month = parseInt(d.getMonth()) + 1;
+	curr_month = ""+curr_month;
+	if(curr_month.toString().length == 1){
+		curr_month = "0" + curr_month
+	}
+	var curr_year = d.getFullYear();
+	curr_year = curr_year.toString();
+	curr_year = curr_year.substring(2,4);
+	dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
+
+	var startTime =  (parseInt(d.getMonth()) + 1) +"-"+ (parseInt(d.getDate()) - 1) +"-"+ d.getFullYear()+ " " +"00:00:01";
+	var dt = new Date(startTime);
+	updatedAtStart = dt.setSeconds( dt.getSeconds());
+	var EndTime =  (parseInt(d.getMonth()) + 1) +"-"+ (parseInt(d.getDate()) - 1)+"-"+ d.getFullYear()+ " " +"23:59:00";
+	dt = new Date(EndTime);
+	updatedAtEnd = dt.setSeconds( dt.getSeconds());
+	console.log("TimeStamp",updatedAtStart,updatedAtEnd);
+	// updatedAtStart=1567315983637;
+	// updatedAtEnd =1568181409069;
+	var jobCards = await JobCard.find({
+		where:{ updatedAt :{ '>=':updatedAtStart,'<=':updatedAtEnd},jobcardStatus:'Pending'}
+	}).populate('productionSchedulePartRelationId');
+
+	if(jobCards[0]!=null && jobCards[0]!= undefined){
+
+		for(var b=0;b<jobCards.length;b++){
+
+			var parts = await PartNumber.find({
+				id: jobCards[b]["productionSchedulePartRelationId"]["partNumberId"]
+			}).populate('rawMaterialId');
+
+			if(parts[0] != null && parts[0] != undefined){
+				partNumber = parts[0]["partNumber"];
+				partDesc = parts[0]["description"];
+				rawmaterial = parts[0]["rawMaterialId"]["rawMaterialNumber"];
+				rawDescription = parts[0]["rawMaterialId"]["description"];
+			}
+			var getProcessSequence = await ProcessSequence.find({
+				sequenceNumber:1,
+				partId: jobCards[b]["productionSchedulePartRelationId"]["partNumberId"],
+				status:1
+			});
+
+			if(getProcessSequence[0] != null && getProcessSequence[0] != undefined){
+				var getMachineGroupId = await MachineGroup.find({
+					id:getProcessSequence[0]["machineGroupId"]
+				})
+				.populate("machines");
+				if(getMachineGroupId[0] != null && getMachineGroupId[0] != undefined && getMachineGroupId[0]["machines"][0] != null && getMachineGroupId[0]["machines"][0] != undefined){
+					var getCellName = await Cell.find({
+						id:getMachineGroupId[0]["machines"][0]["cellId"]
+					});
+					cellName = getCellName[0]["name"]
+				}
+			}
+
+			var machineData = await JobProcessSequenceRelation.find({
+				where:{ jobId :jobCards[b]["id"]},sort: [{ id: 'ASC'}]
+			}).populate('machineId');
+
+			if(machineData[0] != null && machineData[0] != undefined){
+				machineName = machineData[0]["machineId"]["machineName"];
+				for(var e=0;e<machineData.length;e++){
+					var nextProcess = 0;
+					var sequenceNumber = 0;
+					if (machineData[e]["processStatus"] != "FinalLocation")
+					{
+						nextProcess = machineData[e]["sequenceNumber"];
+						sequenceNumber =parseInt(machineData[e]["sequenceNumber"]) + 1;
+						nextSequenceNo = sequenceNumber;
+					}
+				}
+			}
+
+			var totalProcesses =await self.totalProcessesFunction(jobCards[b]["barcodeSerial"]);
+			processSequenceList = totalProcesses[0];
+			console.log("totalProcesses[0].length",totalProcesses[0].length);
+			if(totalProcesses[0].length ==1){
+				nextProcessSequence ="NA";
+			}
+			firstProcess = totalProcesses[0].processSequence1;
+			console.log("firstProcess",firstProcess);
+			if(nextSequenceNo !=0){
+				if (nextSequenceNo == 2)
+				{
+					nextProcessSequence = totalProcesses[0].processSequence2;
+				}
+				if (nextSequenceNo == 3)
+				{
+					nextProcessSequence = totalProcesses[0].processSequence3;
+				}
+				if (nextSequenceNo == 4)
+				{
+					nextProcessSequence = totalProcesses[0].processSequence4;
+					
+				}
+				if (nextSequenceNo == 5)
+				{
+					nextProcessSequence = totalProcesses[0].processSequence2;
+				}
+			}
+
+			var jobCard = {
+				'Date': jobCards[b]["estimatedDate"],
+				'Cell No': cellName ,
+				'Job Card Serial': jobCards[b]["barcodeSerial"],
+				'Machine Name': machineName,
+				'Primary Process': firstProcess,
+				'Next Process': nextProcessSequence,
+				'Part Number': partNumber,
+				'Material Description': partDesc,
+				'Plan (Requested) Quantity': jobCards[b]["requestedQuantity"],
+				'Pending Quantity': jobCards[b]["requestedQuantity"],
+				'Raw Material Description': rawDescription,
+				'Job Card Status': jobCards[b]["jobcardStatus"]
+			}
+			pendingJobcarList.push(jobCard);
+		}
+		var xls1 = json2xls(pendingJobcarList);
+		dateTimeFormat = curr_date + "-" + curr_month + "-" +d.getFullYear();
+		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/DailyPendingCards/Daily-Pending-job-card-Report '+ dateTimeFormat +'.xlsx';
+		// var filename1 = 'D:/TMML/Reports/DailyPendingCards/Daily-Pending-job-card-Report '+ dateTimeFormat +'.xlsx';
+		fs.writeFileSync(filename1, xls1, 'binary',function(err) {
+			if (err) {
+				console.log('Some error occured - file either not saved or corrupted file saved.');
+				sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+			} else {
+				console.log('It\'s saved!');
+			}
+		});
+		var receiversList = await ReportList.find({
+			name : "Daily pending job cards"
+		});
+		receiversList = receiversList[0]["email"];
+		var mailText = "PFA for Daily Pending Job Cards Report";
+		console.log(mailText);
+		var mailOptions = {
+    from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
+    // from:"Sagar@briot.in",
+    //to: receiversList,
+    to:"santosh.adaki@tatamarcopolo.com",
+    subject: "Pending Job Cards Report", // Subject line
+    text: mailText,
+    attachments :[
+    {
+    	'filename':'Daily-Pending-job-card-Report '+dateTimeFormat+'.xlsx',
+    	'path': filename1
+    }
+    ],
+};
+transporter.sendMail(mailOptions, function(error, info) {
+	if(error){
+		sails.log.error("Daily-Pending-job-card-Report mail not sent",error);
+	} else {
+		sails.log.info('Daily-Pending-job-card-Report Message sent: ' + info.response);
+	}
+});
+}
+else{
+	res.send('No data available!');
+}
+},
+
+// Machine Wise Pending Job cards
+
+dailyNewJobCardsReport:async function(req,res){
+	var selfSignedConfig = {
+		host: '128.9.24.24',
+		port: 25
+		
+	};
+	var transporter = nodemailer.createTransport(selfSignedConfig);
+	var dateTimeFormat;
+	var partNumber = "";
+	var partDesc = "";
+	var createdDate = "";
+	var newJobcarList = [];
+	var d = new Date();
+	var curr_date = d.getDate()-1;
+	if(curr_date.toString().length == 1){
+		curr_date = "0" + curr_date
+	}
+	var curr_month = parseInt(d.getMonth()) + 1;
+	curr_month = ""+curr_month;
+	if(curr_month.toString().length == 1){
+		curr_month = "0" + curr_month
+	}
+	var curr_year = d.getFullYear();
+	curr_year = curr_year.toString();
+	curr_year = curr_year.substring(2,4);
+	dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
+
+	var startTime =  (parseInt(d.getMonth()) + 1) +"-"+ (parseInt(d.getDate()) - 1) +"-"+ d.getFullYear()+ " " +"00:00:01";
+	var dt = new Date(startTime);
+	updatedAtStart = dt.setSeconds( dt.getSeconds());
+	
+	var sql = `SELECT * ,(select top 1 TestDatabase.dbo.partnumber.partNumber from TestDatabase.dbo.partnumber where TestDatabase.dbo.partnumber.id = (select top 1 TestDatabase.dbo.productionschedulepartrelation.partNumberId from TestDatabase.dbo.productionschedulepartrelation where TestDatabase.dbo.productionschedulepartrelation.id = TestDatabase.dbo.jobcard.productionSchedulePartRelationId)) as PartNumber,
+	(select top 1 TestDatabase.dbo.productionschedulepartrelation.inductionDate from TestDatabase.dbo.productionschedulepartrelation where TestDatabase.dbo.productionschedulepartrelation.id = jobcard.productionSchedulePartRelationId ) as InductionDate, 
+	(select top 1 TestDatabase.dbo.productionschedulepartrelation.planFor from TestDatabase.dbo.productionschedulepartrelation where TestDatabase.dbo.productionschedulepartrelation.id = jobcard.productionSchedulePartRelationId ) as PlanFor
+	FROM [TestDatabase].[dbo].[jobcard] where jobcardStatus='New'`;
+	console.log("sql",sql);
+	var jobCards = await sails.sendNativeQuery(sql,[]);
+	console.log(jobCards["recordset"].length)
+	if(jobCards["recordset"][0]!=null && jobCards["recordset"][0]!= undefined){
+		for(var b=0;b<jobCards["recordset"].length;b++){
+			var TimeStamp = parseInt(jobCards["recordset"][b]["createdAt"]);
+			createdDate = new Date(TimeStamp);
+			createdDate =createdDate.toString().substring(0,24);
+			var jobCard = {
+				'Job Card Barcode': jobCards["recordset"][b]["barcodeSerial"],
+				'Created Date': createdDate,
+				'Estimated Date': jobCards["recordset"][b]["estimatedDate"],
+				'Part Number': jobCards["recordset"][b]["PartNumber"],
+				'Requested Quantity': jobCards["recordset"][b]["requestedQuantity"],
+				'Actual Quantity': jobCards["recordset"][b]["actualQuantity"],
+				'Induction Date' : jobCards["recordset"][b]["InductionDate"],
+				'Plan For' : jobCards["recordset"][b]["PlanFor"],
+				'JobCard Status' : jobCards["recordset"][b]["jobcardStatus"]
+			}
+			newJobcarList.push(jobCard);
+		}
+		var xls1 = json2xls(newJobcarList);
+		dateTimeFormat = curr_date + "-" + curr_month + "-" +d.getFullYear();
+		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/NewJobCards/NewJobCards-Report '+ dateTimeFormat +'.xlsx';
+		// var filename1 = 'D:/TMML/Reports/NewJobCards/NewJobCards-Report '+ dateTimeFormat +'.xlsx';
+		fs.writeFileSync(filename1, xls1, 'binary',function(err) {
+			if (err) {
+				console.log('Some error occured - file either not saved or corrupted file saved.');
+				sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+			} else {
+				console.log('It\'s saved!');
+			}
+		});
+		var receiversList = await ReportList.find({
+			name : "Daily pending job cards"
+		});
+		receiversList = receiversList[0]["email"];
+		var mailText = "PFA for Daily New Job Cards Report";
+		console.log(mailText);
+		var mailOptions = {
+        from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
+    	// from:"Sagar@briot.in",
+    	//to: receiversList,
+    	to:"santosh.adaki@tatamarcopolo.com",
+    	subject: "New Job Cards Report", // Subject line
+    	text: mailText,
+    	attachments :[
+    	{
+    		'filename':'NewJobCards-Report '+dateTimeFormat+'.xlsx',
+    		'path': filename1
+    	}
+    	],
+    };
+    transporter.sendMail(mailOptions, function(error, info) {
+    	if(error){
+    		sails.log.error("NewJobCards-Report mail not sent",error);
+    	} else {
+    		sails.log.info('NewJobCards-Report Message sent: ' + info.response);
+    	}
+    });
+}
+else{
+	res.send('No data available!');
+}
+
+},
+
 };

@@ -128,7 +128,13 @@ module.exports = {
     var sap315 = await SapTransaction.find({
       jobCard: req.body.jobCard
     });
-    res.send(sap315);
+    if(sap315[0] != null && sap315[0] != undefined){
+      res.send(sap315);
+    }
+    else{
+      res.status(424);
+      res.send("Job Card is not completed or 313 is not done");
+    }
   }
 };
 

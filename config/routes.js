@@ -106,6 +106,7 @@
   'GET /getPPartRelation':'GetCount.getPPartRelation',
   'GET /getSrNo':'GetCount.getSrNo',
   'POST /printPartLabel':'GetCount.printPartLabel',
+  'GET /getJobCardsDatewise':'GetCount.getJobCardsDatewise',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 
