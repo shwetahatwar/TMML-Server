@@ -586,15 +586,14 @@ module.exports = {
       });
       var dups = [];
       var arr = partList.filter(function(el) {
-  // If it is not a duplicate, return true
-    if (dups.indexOf(el.PartNumber) == -1) {
-    dups.push(el.PartNumber);
-    return true;
-    }
-
-  return false;
+      // If it is not a duplicate, return true
+       if (dups.indexOf(el.PartNumber) == -1) {
+       dups.push(el.PartNumber);
+       return true;
+       }
+      return false;
   
-}); 
+      }); 
       console.log("dups",arr);
       var xls1 = json2xls(arr);
       var dateTimeFormat;
@@ -635,8 +634,8 @@ module.exports = {
           {
             var mailOptions = {
               from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
-              to: newEmployeeList[i].email, // list of receivers (who receives)
-              // to:"santosh.adaki@tatamarcopolo.com",
+              // to: newEmployeeList[i].email, // list of receivers (who receives)
+              to:"santosh.adaki@tatamarcopolo.com",
               subject: "Daily Schedule Upload Status", // Subject line
               text: mailText,
               attachments :[

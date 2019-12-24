@@ -704,7 +704,7 @@ module.exports = {
 			month = "Nov"
 		}
 		if(req.query.month =="12"){
-			month = "Dec"
+			month = "Dec"  
 		}
 		var createdAt = "01-" +month+"-"+req.query.year+"-12:00:00";
 		var createdAt1 = "30-"+month+"-"+req.query.year+"-23:59:00";
@@ -769,7 +769,7 @@ module.exports = {
 		// var sql = `SELECT createdAt,ROW_NUMBER() OVER(ORDER BY id ASC) AS Row# FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like `+`'`+ req.query.estimatedDate+`%'`;
 		var sql = ` WITH mytable as 
 		(select createdAt,ROW_NUMBER() over (order by createdAt) as 'row'
-		from  [TestDatabase26112019].[dbo].[jobcard] where estimateddate like `+`'`+ req.query.estimatedDate+`%') 
+		from  [TestDatabase].[dbo].[jobcard] where estimateddate like `+`'`+ req.query.estimatedDate+`%') 
 		select row,createdAt from mytable where createdAt=`+`'`+req.query.createdAt+`'`;
 
 		console.log("sql",sql);
@@ -856,15 +856,17 @@ module.exports = {
 		var createdAtEnd=dt.setSeconds(dt.getSeconds());
 
 		console.log('monthlySchedule: ', monthlySchedule);
-		var sql = ` WITH mytable as ( select * from monthlyschedulepartrelation where monthlyScheduleId = `+monthlySchedule[0]["id"]+`)
-		SELECT distinct partNumberId  ,SUM([requestedQuantity]) as sumValue,
-		(select top 1 mytable.partNumber from mytable with (nolock) where ( mytable.monthlyScheduleId=`+monthlySchedule[0]["id"]+` AND [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId= mytable.partNumber  ) )
+		var sql = ` WITH mytable as ( select * from monthlyschedulepartrelation where monthlyScheduleId =  `+monthlySchedule[0]["id"]+`)
+		SELECT distinct partNumberId,SUM([requestedQuantity]) as sumValue,
+		(select top 1 mytable.partNumber from mytable with (nolock) where ( mytable.monthlyScheduleId= `+monthlySchedule[0]["id"]+` AND [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId= mytable.partNumber  ) )
 		as partNumber,(select top 1  mytable.requiredInMonth from mytable with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId = mytable.partNumber))
 		as requiredInMonth,(select top 1  partNumber from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))
 		as PartNumber,(select top 1  description from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))
-		as PartDesc FROM [TestDatabase].[dbo].[productionschedulepartrelation] inner join mytable as parts on parts.partNumber = [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId where [TestDatabase].[dbo].[productionschedulepartrelation].updatedAt Between `+createdAtStart+` AND `+createdAtEnd+` And isJobCardCreated=1 group by [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId  order by sumValue desc
+		as PartDesc,
+		(select top 1  sum(quantity) from [TestDatabase].[dbo].saptransaction with (nolock) where (TestDatabase.dbo.saptransaction.createdAt  Between `+createdAtStart+` AND `+createdAtEnd+` AND [TestDatabase].[dbo].saptransaction.material = (select top 1  partNumber from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))))
+		as MontlyTotalProduced
+		FROM [TestDatabase].[dbo].[productionschedulepartrelation] inner join mytable as parts on parts.partNumber = [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId where [TestDatabase].[dbo].[productionschedulepartrelation].updatedAt Between `+createdAtStart+` AND `+createdAtEnd+`  And isJobCardCreated=1 group by [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId  order by sumValue desc
 		`;
-
 		console.log("sql",sql);
 		var monthlyData = await sails.sendNativeQuery(sql,[]);
 		console.log(monthlyData);
@@ -872,12 +874,21 @@ module.exports = {
 		if(monthlyData["recordset"] != null && monthlyData["recordset"] != undefined){
 			for(var i=0; i < monthlyData["recordset"].length; i++){
 				if(monthlyData["recordset"][i]["partNumber"] != null && monthlyData["recordset"][i]["partNumber"] != undefined){
+					var checkQty = "";
+					if(parseInt(monthlyData["recordset"][i]["requiredInMonth"]) < parseInt(monthlyData["recordset"][i]["sumValue"])){
+						var a = (parseInt( monthlyData["recordset"][i]["sumValue"] - monthlyData["recordset"][i]["requiredInMonth"]));
+						checkQty ="Qty Exceeded by"+a;
+					}
 					var pushPartDetails = {
 						'Part Number':monthlyData["recordset"][i]["PartNumber"],
 						'Part No Description':monthlyData["recordset"][i]["PartDesc"],
 						'Monthly Quantity': monthlyData["recordset"][i]["requiredInMonth"],
-						'Quantities In Production': monthlyData["recordset"][i]["sumValue"],
-						'Net Monthly Requirement' :parseInt(monthlyData["recordset"][i]["requiredInMonth"]) - parseInt( monthlyData["recordset"][i]["sumValue"])
+						'JC Generated Qty': monthlyData["recordset"][i]["sumValue"],
+						'Qty Booked till date': monthlyData["recordset"][i]["sumValue"],
+						'Qty Balance': parseInt(monthlyData["recordset"][i]["sumValue"]) - parseInt(monthlyData["recordset"][i]["MontlyTotalProduced"]),
+						'Month Total Produced Qty': monthlyData["recordset"][i]["MontlyTotalProduced"],
+						'Net Monthly Requirement' : parseInt(monthlyData["recordset"][i]["requiredInMonth"]) - parseInt( monthlyData["recordset"][i]["sumValue"]),
+						'Remarks' : checkQty
 					}
 					resTable.push(pushPartDetails);
 				}
@@ -885,7 +896,7 @@ module.exports = {
 		}
 		console.log(resTable);
 		var xls1 = json2xls(resTable);
-		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/NetMonthlyReport/Net-Monthly-Report'+ dateTimeFormat +'.xlsx';
+		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/NetMonthlyReport/Net-Monthly-Report '+ dateTimeFormat +'.xlsx';
 		fs.writeFileSync(filename1, xls1, 'binary',function(err) {
 			if (err) {
 				console.log('Some error occured - file either not saved or corrupted file saved.');
@@ -919,7 +930,7 @@ transporter.sendMail(mailOptions, function(error, info) {
 		sails.log.error("Net Monthly Requirement report mail not sent",error);
 	} else {
 		sails.log.info('Message sent: ' + info.response);
-	}
+	} 
 });
 },
 
@@ -944,24 +955,26 @@ printPartLabel:async function(req,res){
 	const HOST = '192.168.0.5';
 	const PORT = 9100;
 	let zpl = `^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR3,3~SD15^JUS^LRN^CI0^XZ
-	^XA
-	^MMT
-	^PW767
-	^LL0240
-	^LS0
-	^BY2,3,28^FT544,106^BCN,,Y,N
-	^FD>;12345678>69^FS
-	^BY2,3,28^FT279,111^BCN,,Y,N
-	^FD>;12345678>69^FS
-	^BY2,3,28^FT21,110^BCN,,Y,N
-	^FD>;12345678>69^FS
-	^PQ1,0,1,Y^XZ`
-	zpl = zpl.replace("123456",req.body.partNumber);
+		^XA
+		^MMT
+		^PW831
+		^LL0240
+		^LS0
+		^BY2,3,28^FT580,106^BCN,,Y,N
+		^FD>;87654321^FS
+		^BY2,3,28^FT310,111^BCN,,Y,N
+		^FD>;2345678^FS
+		^BY2,3,28^FT50,110^BCN,,Y,N
+		^FD>;12345678^FS
+		^PQ1,0,1,Y^XZ`
+	zpl = zpl.replace("87654321",req.body.partNumber);
+	zpl = zpl.replace("234567",req.body.partNumber);
+	zpl = zpl.replace("12345678",req.body.partNumber);
     // use net.connect () method to create a TCP client instance
     let client = net.connect(PORT, HOST, ()=>{
     	console.log('Printing labels...');
       // Send data to the server. This method is actually the socket.write () method, because the client parameter is an object on the communication side.
-      for (var i=0;i<req.body.quantity;i=+3)
+      for (var i=0;i<req.body.quantity;i+=3)
       {
       	client.write(zpl);
       }
