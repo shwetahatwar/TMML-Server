@@ -664,7 +664,6 @@ module.exports = {
 	},
 
 	dailyMonthlyPartReport: async function(req,res){
-
 		var monthlySchedule = await MonthlySchedule.find({
 			year:req.query.year,
 			month:req.query.month
