@@ -792,7 +792,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		}
 		var xls1 = json2xls(machineWiseJobCardsList);
 		dateTimeFormat = curr_date + "-" + curr_month + "-" +d.getFullYear();
-		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/DailyCreatedJobCard/Daily-Created-JobCard '+ dateTimeFormat +'.xlsx';
+		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/MachineWise/Machine-Wise-JobCard '+ dateTimeFormat +'.xlsx';
 		// var filename1 = 'D:/TMML/Reports/MachineWise/Machine-Wise-JobCard '+ dateTimeFormat +'.xlsx';
 		fs.writeFileSync(filename1, xls1, 'binary',function(err) {
 			if (err) {
@@ -873,7 +873,6 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		}).populate('jobId')
 		.populate('processSequenceId')
 		.populate('machineId')
-		.populate('locationId')
 		.populate('operatorId');
 
 		for(var b=0;b<jobCards.length;b++){
@@ -950,8 +949,8 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		}
 		var xls1 = json2xls(partsList);
 		dateTimeFormat = curr_date + "-" + curr_month + "-" +d.getFullYear();
-		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/DailyCreatedJobCard/Daily-Created-JobCard '+ dateTimeFormat +'.xlsx';
-		// var filename1 = 'D:/TMML/Reports/SMHVsAMHPart/SMH-Vs-AMH-PartWise '+ dateTimeFormat +'.xlsx';
+		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/SMHVsAMHPart/Part-Wise-SMH '+ dateTimeFormat +'.xlsx';
+			// var filename1 = 'D:/TMML/Reports/SMHVsAMHPart/SMH-Vs-AMH-PartWise '+ dateTimeFormat +'.xlsx';
 		fs.writeFileSync(filename1, xls1, 'binary',function(err) {
 			if (err) {
 				console.log('Some error occured - file either not saved or corrupted file saved.');
@@ -1020,10 +1019,18 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		updatedAtStart = dt.setSeconds( dt.getSeconds());
 		console.log("updatedAtStart",updatedAtStart);
 
-		var jobCards = await JobCard.find({
-			where:{ updatedAt :{'<=':updatedAtStart},jobcardStatus: 'In Progress'}
-		}).populate('productionSchedulePartRelationId');
+		// var jobCards = await JobCard.find({
+		// 	where:{ updatedAt :{'<=':updatedAtStart},jobcardStatus: 'In Progress'}
+		// }).populate('productionSchedulePartRelationId');
 
+		var sql = `SELECT *,
+		(select partnumberId from TestDatabase.dbo.productionschedulepartrelation where TestDatabase.dbo.productionschedulepartrelation.id
+		= TestDatabase.dbo.jobcard.productionSchedulePartRelationId) as partNumberId
+ 		FROM [TestDatabase].[dbo].jobcard where jobcardStatus = 'In Progress'`;
+		console.log("sql",sql);
+		var jobCardsList = await sails.sendNativeQuery(sql,[]);
+		var jobCards = jobCardsList["recordset"];
+        console.log("jobCards",jobCards);
 		for(var b=0;b<jobCards.length;b++){
 			var partNumber = "";
 			var partDesc = "";
@@ -1049,7 +1056,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			processStatusOfCurrent = "";
 
 			var parts = await PartNumber.find({
-				id: jobCards[b]["productionSchedulePartRelationId"]["partNumberId"]
+				id: jobCards[b]["partNumberId"]
 			}).populate('rawMaterialId');
 
 			if(parts[0] != null && parts[0] != undefined){
@@ -1061,7 +1068,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 
 			var getProcessSequence = await ProcessSequence.find({
 				sequenceNumber:1,
-				partId: jobCards[b]["productionSchedulePartRelationId"]["partNumberId"],
+				partId: jobCards[b]["partNumberId"],
 				status:1
 			});
 
@@ -1333,8 +1340,8 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		}
 		var xls1 = json2xls(wipList);
 		dateTimeFormat = curr_date + "-" + curr_month + "-" +d.getFullYear();
-		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/WIP/Daily-WIP-Report '+ dateTimeFormat +'.xlsx';
-		// var filename1 = 'D:/TMML/Reports/WIP/Daily-WIP-Report '+ dateTimeFormat +'.xlsx';
+		// var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/WIP/Daily-WIP-Report '+ dateTimeFormat +'.xlsx';
+		var filename1 = 'D:/TMML/Reports/WIP/Daily-WIP-Report '+ dateTimeFormat +'.xlsx';
 		fs.writeFileSync(filename1, xls1, 'binary',function(err) {
 			if (err) {
 				console.log('Some error occured - file either not saved or corrupted file saved.');

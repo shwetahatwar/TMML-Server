@@ -508,6 +508,7 @@ module.exports = {
       var machineGroup ={};
       var partList = [];
       console.log("currentYear & month",currentYear,currentMonth);
+      sails.log.info("currentYear & month",currentYear,currentMonth);
       var getMonthlyScheduleId = await MonthlySchedule.find({
         year:currentYear,
         month:currentMonth

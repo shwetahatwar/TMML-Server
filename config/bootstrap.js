@@ -76,7 +76,7 @@ module.exports.bootstrap = async function() {
     else if(time == "0:37"){
       await dailyReports.partWiseSMHReport();
     }
-    else if(time == "0:45"){
+    else if(time == "0:42"){
       await dailyReports.WIPReport();
     }
      else if(time == "0:48"){
@@ -86,6 +86,7 @@ module.exports.bootstrap = async function() {
       await dailyReports.dailyNewJobCardsReport();
     }
   },60000);
+
 
   // setInterval(async function(){
   //   var today = new Date();

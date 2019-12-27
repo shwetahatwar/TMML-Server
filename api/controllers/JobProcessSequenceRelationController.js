@@ -7,7 +7,6 @@
 
 var fs  = require('fs');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-var countController = require('../controllers/GetCountController');
 // var xmlParser = require("xml2json");
 var convert = require('xml-js');
 
@@ -266,16 +265,16 @@ module.exports = {
 
           var totalQty = pendingQty + req.body.quantity;
           // if( totalQty <= requestedQty) {
-            console.log("JobCard ID :",req.body.jobId);
-            var updatedJobCard = await JobCard.update({
-              id:req.body.jobId
-            })
-            .set({
-              jobcardStatus:"Completed",
-              actualQuantity:totalQty
-            });
-            console.log("Line 268 :",req.body.jobId);
-            sails.log.info("Job Card Completed:"+req.body.jobId+"", updatedJobCard);
+          console.log("JobCard ID :",req.body.jobId);
+          var updatedJobCard = await JobCard.update({
+            id:req.body.jobId
+          })
+          .set({
+            jobcardStatus:"Completed",
+            actualQuantity:totalQty
+          });
+          console.log("Line 268 :",req.body.jobId);
+          sails.log.info("Job Card Completed:"+req.body.jobId+"", updatedJobCard);
           // var dateTime = new Date();
           var uniqueNumberSap;
           var sapEntry = await SapTransaction.find({
@@ -297,7 +296,7 @@ module.exports = {
               if(serialNumberSapLastStart == 'Z'){
                 serialNumberSapLatest = String.fromCharCode(serialNumberSapFirstStart.charCodeAt() + 1);
                 serialNumberSapLatest = serialNumberSapLatest + 'A';
-                console.log(serialNumberSapLatest);
+                console.log("Line 299",serialNumberSapLatest);
               }
               else{
                 serialNumberSapLatest = String.fromCharCode(serialNumberSapLastStart.charCodeAt() + 1);
@@ -321,7 +320,6 @@ module.exports = {
             curr_date = "0" + curr_date
           }
           var curr_month = parseInt(d.getMonth()) + 1;
-          curr_month = ""+curr_month;
           if(curr_month.toString().length == 1){
             curr_month = "0" + curr_month
           }
@@ -334,6 +332,7 @@ module.exports = {
           // dateTimeFormat = curr_year + "-" + curr_month + "-" + curr_date;
           // dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
           var newPartNumberAdded = partNumber[0]["partNumber"];
+          console.log("Line 336",newPartNumberAdded);
           await SapTransaction.create({
             plant:"7002",
             date:dateTimeFormat,
@@ -395,10 +394,7 @@ module.exports = {
           .set({
             remarks:req.body.note
           });
-          var a=req.body.quantity;
-          req.body.quantity =a; 
-          req.body.partNumber = newPartNumberAdded;
-          return countController.printPartLabel(req,res);
+
           res.send("Final Location");
         }
       }
@@ -516,6 +512,7 @@ module.exports = {
       var partNumber = await PartNumber.find({
         id:processSequence[0]["partId"]
       });
+      console.log("Line 516",partNumber)
       var updatedJobCard = await JobCard.update({
         id:req.body.jobId
       })
@@ -537,6 +534,7 @@ module.exports = {
         uniqueNumberSap = sapEntry[0]["uniqueNumber"];
         var serialNumberSapStart = uniqueNumberSap.substring(0,2);
         var serialNumberSapEnd = uniqueNumberSap.substring(2,8);
+        console.log("Line 536",serialNumberSapStart,serialNumberSapEnd)
         if(serialNumberSapEnd == "999999"){
           var serialNumberSapFirstStart = serialNumberSapStart.substring(0,1);
           var serialNumberSapLastStart = serialNumberSapStart.substring(1,2);
@@ -568,16 +566,21 @@ module.exports = {
         curr_date = "0" + curr_date
       }
       var curr_month = parseInt(d.getMonth()) + 1;
-      curr_month = ""+curr_month;
+      console.log(curr_month);
       if(curr_month.toString().length == 1){
         curr_month = "0" + curr_month
       }
       var curr_year = d.getFullYear();
-      curr_year = curr_year.substring(2,4);
+      curr_year = curr_year.toString().substring(2,4);
+      console.log("curr_year",curr_year);
       //console.log(curr_year);
       dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
       // dateTimeFormat = curr_year + "-" + curr_month + "-" + curr_date;
+      console.log("dateTimeFormat",dateTimeFormat);
+      console.log("Line 580",partNumber);
+       console.log("Line 581",partNumber[0]);
       var newPartNumberAdded = partNumber[0]["partNumber"];
+      console.log("Line 577",newPartNumberAdded);
       await SapTransaction.create({
         plant:"7002",
         date:dateTimeFormat,
@@ -631,11 +634,6 @@ module.exports = {
       .set({
         remarks:req.body.note
       });
-      console.log("newPartNumberAdded",newPartNumberAdded);
-      var a=req.body.quantity;
-      req.body.quantity =a; 
-      req.body.partNumber = newPartNumberAdded;
-      return countController.printPartLabel(req,res);
       res.send("Final Location");
     },
 
@@ -676,17 +674,17 @@ module.exports = {
           processStatus:"Completed",processStatus:"FinalLocation"
         },limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
       }).populate('jobId')
-        .populate('processSequenceId')
-        .populate('machineId')
-        .populate('locationId')
-        .populate('operatorId');
-      }
-      res.send(jobCards);
-    },
-  };
+      .populate('processSequenceId')
+      .populate('machineId')
+      .populate('locationId')
+      .populate('operatorId');
+    }
+    res.send(jobCards);
+  },
+};
 
 
-  async function manualSapTransaction(plantAdd,dateAdd,materialAdd,jobcardAdd,uniqueNumberAdd,quantityAdd){
+async function manualSapTransaction(plantAdd,dateAdd,materialAdd,jobcardAdd,uniqueNumberAdd,quantityAdd){
   // jobcardAdd = jobcardAdd.substring(3,18);
   // uniqueNumberAdd = uniqueNumberAdd.substring(1,12);
   console.log("In Manual SAP",uniqueNumberAdd);
