@@ -98,207 +98,207 @@ var self = module.exports = {
 		},limit:limitCount,sort: [{ id: 'ASC'}]
 	}).populate('productionSchedulePartRelationId');
 
-	if(jobCards[0] != null && jobCards[0] != undefined){
-		sails.log.info("jobCards length In ShiftWise Report: ",jobCards.length);
-		for(var i=0;i<jobCards.length;i++){
-			var partId = jobCards[i]["productionSchedulePartRelationId"]["partNumberId"];
-			var cellName ="";
-			var partNumber =await PartNumber.find({
-				id :partId ,
-			});
+		if(jobCards[0] != null && jobCards[0] != undefined){
+			sails.log.info("jobCards length In ShiftWise Report: ",jobCards.length);
+			for(var i=0;i<jobCards.length;i++){
+				var partId = jobCards[i]["productionSchedulePartRelationId"]["partNumberId"];
+				var cellName ="";
+				var partNumber =await PartNumber.find({
+					id :partId ,
+				});
 
-			var part = partNumber[0]["partNumber"];
-			var partDesc = partNumber[0]["description"];
-			var getProcessSequence = await ProcessSequence.find({
-				sequenceNumber:1,
-				partId:partId,
-				status:1
-			});
-			if(getProcessSequence[0] != null && getProcessSequence[0] != undefined){
-				var getMachineGroupId = await MachineGroup.find({
-					id:getProcessSequence[0]["machineGroupId"]
-				})
-				.populate("machines");
-				if(getMachineGroupId[0] != null && getMachineGroupId[0] != undefined && getMachineGroupId[0]["machines"][0] != null && getMachineGroupId[0]["machines"][0] != undefined){
-					var getCellName = await Cell.find({
-						id:getMachineGroupId[0]["machines"][0]["cellId"]
-					});
-					var sendCell = {
-						cellName: getCellName[0]["name"]
+				var part = partNumber[0]["partNumber"];
+				var partDesc = partNumber[0]["description"];
+				var getProcessSequence = await ProcessSequence.find({
+					sequenceNumber:1,
+					partId:partId,
+					status:1
+				});
+				if(getProcessSequence[0] != null && getProcessSequence[0] != undefined){
+					var getMachineGroupId = await MachineGroup.find({
+						id:getProcessSequence[0]["machineGroupId"]
+					})
+					.populate("machines");
+					if(getMachineGroupId[0] != null && getMachineGroupId[0] != undefined && getMachineGroupId[0]["machines"][0] != null && getMachineGroupId[0]["machines"][0] != undefined){
+						var getCellName = await Cell.find({
+							id:getMachineGroupId[0]["machines"][0]["cellId"]
+						});
+						var sendCell = {
+							cellName: getCellName[0]["name"]
+						}
+						var partCell=[];
+						partCell.push(sendCell);
 					}
-					var partCell=[];
-					partCell.push(sendCell);
+					cellName = partCell[0]["cellName"]
 				}
-				cellName = partCell[0]["cellName"]
-			}
 
-			var nextSequenceNo = 0;
-			var count = 0;
-			var pendingProcessSequence = "";
-			if(jobCards[i]["jobcardStatus"]=="Completed"){
-				pendingProcessSequence ="NA";
-			}
-			else{
-				var sequenceNo = await JobProcessSequenceRelation.find({
-					jobId: jobCards[i]["id"]
-				}).populate('jobId');
-				for(var a=0;a<sequenceNo.length;a++){
-					if(sequenceNo[a]["processStatus"] != "FinalLocation"){
-						console.log("ProcessStatus :",sequenceNo[a]["processStatus"]);
-						if(sequenceNo[a]["jobId"]["jobcardStatus"] =="In Progress"){
-							console.log("sequenceNo[a]",sequenceNo[a]["jobId"]);
-							nextSequenceNo =sequenceNo[a]["sequenceNumber"]+1;
-							console.log("nextSequenceNo 1",nextSequenceNo);
-							count =sequenceNo.length;
+				var nextSequenceNo = 0;
+				var count = 0;
+				var pendingProcessSequence = "";
+				if(jobCards[i]["jobcardStatus"]=="Completed"){
+					pendingProcessSequence ="NA";
+				}
+				else{
+					var sequenceNo = await JobProcessSequenceRelation.find({
+						jobId: jobCards[i]["id"]
+					}).populate('jobId');
+					for(var a=0;a<sequenceNo.length;a++){
+						if(sequenceNo[a]["processStatus"] != "FinalLocation"){
+							console.log("ProcessStatus :",sequenceNo[a]["processStatus"]);
+							if(sequenceNo[a]["jobId"]["jobcardStatus"] =="In Progress"){
+								console.log("sequenceNo[a]",sequenceNo[a]["jobId"]);
+								nextSequenceNo =sequenceNo[a]["sequenceNumber"]+1;
+								console.log("nextSequenceNo 1",nextSequenceNo);
+								count =sequenceNo.length;
+							}
+						}
+					}
+					console.log("nextSequenceNo",nextSequenceNo);
+				}
+				var totalProcesses =await self.totalProcessesFunction(jobCards[i]["barcodeSerial"]);
+				processSequenceList = totalProcesses[0];
+				console.log("totalProcesses[0].length",totalProcesses[0].length);
+				if(totalProcesses[0].length ==1){
+					pendingProcessSequence ="NA";
+				}
+				if(jobCards[i]["jobcardStatus"]=="New"){
+					pendingProcessSequence = processSequenceList;
+				}
+				if(nextSequenceNo !=0){
+					if (nextSequenceNo == 2)
+					{
+						if (totalProcesses[0].processSequence2 != null && totalProcesses[0].processSequence2 != "")
+						{
+							pendingProcessSequence = totalProcesses[0].processSequence2;
+						}
+						if (totalProcesses[0].processSequence3 != null && totalProcesses[0].processSequence3 != "")
+						{
+							pendingProcessSequence = totalProcesses[0].processSequence2 + "," + totalProcesses[0].processSequence3;
+						}
+						if (totalProcesses[0].processSequence4 != null && totalProcesses[0].processSequence4 != "")
+						{
+							pendingProcessSequence = totalProcesses[0].processSequence2 + "," + totalProcesses[0].processSequence3 + "," + totalProcesses[0].processSequence4;
+						}
+						if (totalProcesses[0].processSequence5 != null && totalProcesses[0].processSequence5 != "")
+						{
+							pendingProcessSequence = totalProcesses[0].processSequence2 + "," + totalProcesses[0].processSequence3 + "," + totalProcesses[0].processSequence4 + "," + totalProcesses[0].processSequence5;
+						}
+					}
+					if (nextSequenceNo == 3)
+					{
+						if (totalProcesses[0].processSequence3 != null && totalProcesses[0].processSequence3 != "")
+						{
+							pendingProcessSequence = totalProcesses[0].processSequence3;
+						}
+						if (totalProcesses[0].processSequence4 != null && totalProcesses[0].processSequence4 != "")
+						{
+							pendingProcessSequence = totalProcesses[0].processSequence3 + "," + totalProcesses[0].processSequence4;
+						}
+						if (totalProcesses[0].processSequence5 != null && totalProcesses[0].processSequence5 != "")
+						{
+							pendingProcessSequence = totalProcesses[0].processSequence3 + "," + totalProcesses[0].processSequence4 + "," + totalProcesses[0].processSequence5;
+						}
+					}
+					if (nextSequenceNo == 4)
+					{
+						if (totalProcesses[0].processSequence4 != null && totalProcesses[0].processSequence4 != "")
+						{
+							pendingProcessSequence = totalProcesses[0].processSequence4;
+						}
+						if (totalProcesses[0].processSequence5 != null && totalProcesses[0].processSequence5 != "")
+						{
+							pendingProcessSequence = totalProcesses[0].processSequence4 + "," + totalProcesses[0].processSequence5;
+						}
+					}
+					if (nextSequenceNo == 5)
+					{
+						if (totalProcesses[0].processSequence5 != null && totalProcesses[0].processSequence5 != "")
+						{
+							pendingProcessSequence = totalProcesses[0].processSequence2;
 						}
 					}
 				}
-				console.log("nextSequenceNo",nextSequenceNo);
-			}
-			var totalProcesses =await self.totalProcessesFunction(jobCards[i]["barcodeSerial"]);
-			processSequenceList = totalProcesses[0];
-			console.log("totalProcesses[0].length",totalProcesses[0].length);
-			if(totalProcesses[0].length ==1){
-				pendingProcessSequence ="NA";
-			}
-			if(jobCards[i]["jobcardStatus"]=="New"){
-				pendingProcessSequence = processSequenceList;
-			}
-			if(nextSequenceNo !=0){
-				if (nextSequenceNo == 2)
-				{
-					if (totalProcesses[0].processSequence2 != null && totalProcesses[0].processSequence2 != "")
-					{
-						pendingProcessSequence = totalProcesses[0].processSequence2;
-					}
-					if (totalProcesses[0].processSequence3 != null && totalProcesses[0].processSequence3 != "")
-					{
-						pendingProcessSequence = totalProcesses[0].processSequence2 + "," + totalProcesses[0].processSequence3;
-					}
-					if (totalProcesses[0].processSequence4 != null && totalProcesses[0].processSequence4 != "")
-					{
-						pendingProcessSequence = totalProcesses[0].processSequence2 + "," + totalProcesses[0].processSequence3 + "," + totalProcesses[0].processSequence4;
-					}
-					if (totalProcesses[0].processSequence5 != null && totalProcesses[0].processSequence5 != "")
-					{
-						pendingProcessSequence = totalProcesses[0].processSequence2 + "," + totalProcesses[0].processSequence3 + "," + totalProcesses[0].processSequence4 + "," + totalProcesses[0].processSequence5;
-					}
+				var TimeStamp = parseInt(jobCards[i]["createdAt"]);
+				var createdDate = new Date(TimeStamp);
+				createdDate = createdDate.toDateString();
+				TimeStamp = parseInt(jobCards[i]["updatedAt"]);
+				var updatedAt = new Date(TimeStamp);
+				updatedAt = updatedAt.toDateString();
+				if(jobCards[i]["jobcardStatus"] == "Completed"){
+					updatedAt = "NA";
 				}
-				if (nextSequenceNo == 3)
-				{
-					if (totalProcesses[0].processSequence3 != null && totalProcesses[0].processSequence3 != "")
-					{
-						pendingProcessSequence = totalProcesses[0].processSequence3;
+				var balanceQty = jobCards[i]["requestedQuantity"] - jobCards[i]["actualQuantity"];
+				var Adherence = (jobCards[i]["actualQuantity"] / jobCards[i]["requestedQuantity"]) *100;
+				if(Shift=="D"){
+					var jobCardsList = {
+						'Created Date': createdDate,
+						'Estimated Date' : jobCards[i]["estimatedDate"],
+						'Completed Date' : updatedAt,
+						'Cell No': cellName,
+						'Job Card Serial':jobCards[i]["barcodeSerial"],
+						'PartNumber' : part,
+						'ProcessSequence':processSequenceList,
+						'Material Description':partDesc,
+						'Requested Quantity' :jobCards[i]["requestedQuantity"],
+						'Actual Quantity':jobCards[i]["actualQuantity"],
+						'Balance Quantity':balanceQty,
+						'% Of Adherence' : Adherence,
+						'Pending Process':pendingProcessSequence,
+						'Job Card Status':jobCards[i]["jobcardStatus"]
 					}
-					if (totalProcesses[0].processSequence4 != null && totalProcesses[0].processSequence4 != "")
-					{
-						pendingProcessSequence = totalProcesses[0].processSequence3 + "," + totalProcesses[0].processSequence4;
-					}
-					if (totalProcesses[0].processSequence5 != null && totalProcesses[0].processSequence5 != "")
-					{
-						pendingProcessSequence = totalProcesses[0].processSequence3 + "," + totalProcesses[0].processSequence4 + "," + totalProcesses[0].processSequence5;
-					}
+					shiftWiseJobCards.push(jobCardsList);
 				}
-				if (nextSequenceNo == 4)
-				{
-					if (totalProcesses[0].processSequence4 != null && totalProcesses[0].processSequence4 != "")
-					{
-						pendingProcessSequence = totalProcesses[0].processSequence4;
+				else{
+					var jobCardsList = {
+						'Created Date': createdDate,
+						'Estimated Date' : jobCards[i]["estimatedDate"],
+						'Completed Date' : updatedAt,
+						'Cell No': cellName,
+						'Shift':Shift,
+						'Job Card Serial':jobCards[i]["barcodeSerial"],
+						'PartNumber' : part,
+						'ProcessSequence':processSequenceList,
+						'Material Description':partDesc,
+						'Requested Quantity' :jobCards[i]["requestedQuantity"],
+						'Actual Quantity':jobCards[i]["actualQuantity"],
+						'Balance Quantity':balanceQty,
+						'% Of Adherence' : Adherence,
+						'Pending Process':pendingProcessSequence,
+						'Job Card Status':jobCards[i]["jobcardStatus"]
 					}
-					if (totalProcesses[0].processSequence5 != null && totalProcesses[0].processSequence5 != "")
-					{
-						pendingProcessSequence = totalProcesses[0].processSequence4 + "," + totalProcesses[0].processSequence5;
-					}
-				}
-				if (nextSequenceNo == 5)
-				{
-					if (totalProcesses[0].processSequence5 != null && totalProcesses[0].processSequence5 != "")
-					{
-						pendingProcessSequence = totalProcesses[0].processSequence2;
-					}
+					shiftWiseJobCards.push(jobCardsList);
 				}
 			}
-			var TimeStamp = parseInt(jobCards[i]["createdAt"]);
-			var createdDate = new Date(TimeStamp);
-			createdDate = createdDate.toDateString();
-			TimeStamp = parseInt(jobCards[i]["updatedAt"]);
-			var updatedAt = new Date(TimeStamp);
-			updatedAt = updatedAt.toDateString();
-			if(jobCards[i]["jobcardStatus"] == "Completed"){
-				updatedAt = "NA";
-			}
-			var balanceQty = jobCards[i]["requestedQuantity"] - jobCards[i]["actualQuantity"];
-			var Adherence = (jobCards[i]["actualQuantity"] / jobCards[i]["requestedQuantity"]) *100;
-			if(Shift=="D"){
-				var jobCardsList = {
-					'Created Date': createdDate,
-					'Estimated Date' : jobCards[i]["estimatedDate"],
-					'Completed Date' : updatedAt,
-					'Cell No': cellName,
-					'Job Card Serial':jobCards[i]["barcodeSerial"],
-					'PartNumber' : part,
-					'ProcessSequence':processSequenceList,
-					'Material Description':partDesc,
-					'Requested Quantity' :jobCards[i]["requestedQuantity"],
-					'Actual Quantity':jobCards[i]["actualQuantity"],
-					'Balance Quantity':balanceQty,
-					'% Of Adherence' : Adherence,
-					'Pending Process':pendingProcessSequence,
-					'Job Card Status':jobCards[i]["jobcardStatus"]
-				}
-				shiftWiseJobCards.push(jobCardsList);
-			}
-			else{
-				var jobCardsList = {
-					'Created Date': createdDate,
-					'Estimated Date' : jobCards[i]["estimatedDate"],
-					'Completed Date' : updatedAt,
-					'Cell No': cellName,
-					'Shift':Shift,
-					'Job Card Serial':jobCards[i]["barcodeSerial"],
-					'PartNumber' : part,
-					'ProcessSequence':processSequenceList,
-					'Material Description':partDesc,
-					'Requested Quantity' :jobCards[i]["requestedQuantity"],
-					'Actual Quantity':jobCards[i]["actualQuantity"],
-					'Balance Quantity':balanceQty,
-					'% Of Adherence' : Adherence,
-					'Pending Process':pendingProcessSequence,
-					'Job Card Status':jobCards[i]["jobcardStatus"]
-				}
-				shiftWiseJobCards.push(jobCardsList);
-			}
-		}
-		if(Shift == "D"){
-			curr_date = d.getDate()-1;
-			dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
-			var xls1 = json2xls(shiftWiseJobCards);
-			var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/PlanVsActualDay/Plan-Vs-Actual-Day '+ dateTimeFormat +'.xlsx';
-			fs.writeFileSync(filename1, xls1, 'binary',function(err) {
-				if (err) {
-					console.log('Some error occured - file either not saved or corrupted file saved.');
-					sails.log.error("Some error occured - file either not saved or corrupted file saved.");
-				} else {
-					console.log('It\'s saved!');
-				}
-			});
+			if(Shift == "D"){
+				curr_date = d.getDate()-1;
+				dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
+				var xls1 = json2xls(shiftWiseJobCards);
+				var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/PlanVsActualDay/Plan-Vs-Actual-Day '+ dateTimeFormat +'.xlsx';
+				fs.writeFileSync(filename1, xls1, 'binary',function(err) {
+					if (err) {
+						console.log('Some error occured - file either not saved or corrupted file saved.');
+						sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+					} else {
+						console.log('It\'s saved!');
+					}
+				});
 
-			var receiversList = await ReportList.find({
-				name : "Plan vs Actual for the day"
-			});
-			receiversList = receiversList[0]["email"];
-			var mailText = "PFA for Plan Vs Actual For the Day Report details";
-			var mailOptions = {
+				var receiversList = await ReportList.find({
+					name : "Plan vs Actual for the day"
+				});
+				receiversList = receiversList[0]["email"];
+				var mailText = "PFA for Plan Vs Actual For the Day Report details";
+				var mailOptions = {
 				from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
 				// to: receiversList,// list of receivers (who receives)
 				to: "santosh.adaki@tatamarcopolo.com",
 				subject: "Plan Vs Actual Day Report", // Subject line
 				text: mailText,
 				attachments :[
-					{
-						'filename':'Plan-Vs-Actual-Day Report '+dateTimeFormat+'.xlsx',
-						'path': filename1
-					}
+				{
+					'filename':'Plan-Vs-Actual-Day Report '+dateTimeFormat+'.xlsx',
+					'path': filename1
+				}
 				],
 			};
 			transporter.sendMail(mailOptions, function(error, info) {
@@ -333,10 +333,10 @@ var self = module.exports = {
 				subject: "Shift Wise Report", // Subject line
 				text: mailText,
 				attachments :[
-					{
-						'filename':'ShiftWise Report '+dateTimeFormat+' Shift'+Shift+'.xlsx',
-						'path': filename1
-					}
+				{
+					'filename':'ShiftWise Report '+dateTimeFormat+' Shift'+Shift+'.xlsx',
+					'path': filename1
+				}
 				],
 			};
 			transporter.sendMail(mailOptions, function(error, info) {
@@ -384,10 +384,10 @@ dailyErrorReport:async function(req,res){
 	curr_year = curr_year.substring(2,4);
 	dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
 
-	var sql = `SELECT partNumber,[TestDatabase2412201924122019].dbo.partnumber.description as partDesc,manPower,SMH,[TestDatabase24122019].dbo.partnumber.remarks,materialGroup,[TestDatabase24122019].dbo.partnumber.UOM as partUOM,rawMaterialId,(select top 1 rawMaterialNumber from [TestDatabase24122019].dbo.rawmaterial with (nolock) where [TestDatabase24122019].dbo.rawmaterial.id
-	= [TestDatabase24122019].dbo.partnumber.rawMaterialId ) as rawMaterial,(select top 1 [TestDatabase24122019].dbo.rawmaterial.description from [TestDatabase24122019].dbo.rawmaterial with (nolock) where [TestDatabase24122019].dbo.rawmaterial.id
-	= [TestDatabase24122019].dbo.partnumber.rawMaterialId ) as rawDescription FROM [TestDatabase24122019].[dbo].[partnumber]
-	inner join [TestDatabase24122019].dbo.rawmaterial as rawMaterial on rawMaterial.id = [TestDatabase24122019].[dbo].partnumber.rawMaterialId where [TestDatabase24122019].dbo.partnumber.remarks NOT IN ('NA', '','OK','okay') ORDER BY [TestDatabase24122019].dbo.partnumber.id DESC`;
+	var sql = `SELECT partNumber,[TestDatabase].dbo.partnumber.description as partDesc,manPower,SMH,[TestDatabase].dbo.partnumber.remarks,materialGroup,[TestDatabase].dbo.partnumber.UOM as partUOM,rawMaterialId,(select top 1 rawMaterialNumber from [TestDatabase].dbo.rawmaterial with (nolock) where [TestDatabase].dbo.rawmaterial.id
+	= [TestDatabase].dbo.partnumber.rawMaterialId ) as rawMaterial,(select top 1 [TestDatabase].dbo.rawmaterial.description from [TestDatabase].dbo.rawmaterial with (nolock) where [TestDatabase].dbo.rawmaterial.id
+	= [TestDatabase].dbo.partnumber.rawMaterialId ) as rawDescription FROM [TestDatabase].[dbo].[partnumber]
+	inner join [TestDatabase].dbo.rawmaterial as rawMaterial on rawMaterial.id = [TestDatabase].[dbo].partnumber.rawMaterialId where [TestDatabase].dbo.partnumber.remarks NOT IN ('NA', '','OK','okay') ORDER BY [TestDatabase].dbo.partnumber.id DESC`;
 	console.log("sql",sql);
 	var parts = await sails.sendNativeQuery(sql,[]);
 
@@ -433,10 +433,10 @@ dailyErrorReport:async function(req,res){
 		subject: "Error report of process sequence defined wrong", // Subject line
 		text: mailText,
 		attachments :[
-			{
-				'filename':'ErrorReport '+dateTimeFormat+'.xlsx',
-				'path': filename1
-			}
+		{
+			'filename':'ErrorReport '+dateTimeFormat+'.xlsx',
+			'path': filename1
+		}
 		],
 	};
 	transporter.sendMail(mailOptions, function(error, info) {
@@ -485,58 +485,58 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 	updatedAtEnd=dt.setSeconds( dt.getSeconds());
 	console.log("TimeStamps: ",updatedAtStart,updatedAtEnd);
 
-	var sql = `select barcodeSerial,requestedQuantity,actualQuantity,[TestDatabase24122019].dbo.jobcard.createdAt as createdAt,[TestDatabase24122019].dbo.jobcard.estimatedDate,[TestDatabase24122019].dbo.jobcard.updatedAt as updatedAt,productionSchedulePartRelationId,
-	(select top 1 material from [TestDatabase24122019].dbo.saptransaction where [TestDatabase24122019].dbo.saptransaction.jobCard = [TestDatabase24122019].dbo.jobcard.barcodeSerial) as SAPMaterial,(select top 1 quantity from [TestDatabase24122019].dbo.saptransaction where
-		[TestDatabase24122019].dbo.saptransaction.jobCard = [TestDatabase24122019].dbo.jobcard.barcodeSerial) as SAPQuantity,
-		(select top 1 remarks from [TestDatabase24122019].dbo.saptransaction where [TestDatabase24122019].dbo.saptransaction.jobCard = [TestDatabase24122019].dbo.jobcard.barcodeSerial) as ReceivedStatus
-		from [TestDatabase24122019].dbo.jobcard inner join [TestDatabase24122019].dbo.saptransaction as sap on sap.jobCard = [TestDatabase24122019].dbo.jobcard.barcodeSerial where [TestDatabase24122019].dbo.jobcard.updatedAt between `+updatedAtStart+` AND `+updatedAtEnd+`  ORDER BY [TestDatabase24122019].dbo.jobcard.id DESC`;
-		console.log("sql",sql);
-		var jobCards = await sails.sendNativeQuery(sql,[]);
+	var sql = `select barcodeSerial,requestedQuantity,actualQuantity,[TestDatabase].dbo.jobcard.createdAt as createdAt,[TestDatabase].dbo.jobcard.estimatedDate,[TestDatabase].dbo.jobcard.updatedAt as updatedAt,productionSchedulePartRelationId,
+	(select top 1 material from [TestDatabase].dbo.saptransaction where [TestDatabase].dbo.saptransaction.jobCard = [TestDatabase].dbo.jobcard.barcodeSerial) as SAPMaterial,(select top 1 quantity from [TestDatabase].dbo.saptransaction where
+	[TestDatabase].dbo.saptransaction.jobCard = [TestDatabase].dbo.jobcard.barcodeSerial) as SAPQuantity,
+	(select top 1 remarks from [TestDatabase].dbo.saptransaction where [TestDatabase].dbo.saptransaction.jobCard = [TestDatabase].dbo.jobcard.barcodeSerial) as ReceivedStatus
+	from [TestDatabase].dbo.jobcard inner join [TestDatabase].dbo.saptransaction as sap on sap.jobCard = [TestDatabase].dbo.jobcard.barcodeSerial where [TestDatabase].dbo.jobcard.updatedAt between `+updatedAtStart+` AND `+updatedAtEnd+`  ORDER BY [TestDatabase].dbo.jobcard.id DESC`;
+	console.log("sql",sql);
+	var jobCards = await sails.sendNativeQuery(sql,[]);
 
-		console.log(jobCards["recordset"].length)
-		if(jobCards["recordset"].length !=0){
-			for(var i=0;i<jobCards["recordset"].length;i++){
-				var TimeStamp = parseInt(jobCards["recordset"][i]["createdAt"]);
-				console.log("TimeStamp",jobCards["recordset"][i]);
-				var createdDate = new Date(TimeStamp);
-				console.log("Created  Date",createdDate);
-				createdDate = createdDate.toDateString();
-				TimeStamp = parseInt(jobCards["recordset"][i]["updatedAt"]);
-				var updatedAt = new Date(TimeStamp);
-				updatedAt = updatedAt.toDateString();
-				console.log(createdDate,updatedAt);
+	console.log(jobCards["recordset"].length)
+	if(jobCards["recordset"].length !=0){
+		for(var i=0;i<jobCards["recordset"].length;i++){
+			var TimeStamp = parseInt(jobCards["recordset"][i]["createdAt"]);
+			console.log("TimeStamp",jobCards["recordset"][i]);
+			var createdDate = new Date(TimeStamp);
+			console.log("Created  Date",createdDate);
+			createdDate = createdDate.toDateString();
+			TimeStamp = parseInt(jobCards["recordset"][i]["updatedAt"]);
+			var updatedAt = new Date(TimeStamp);
+			updatedAt = updatedAt.toDateString();
+			console.log(createdDate,updatedAt);
 
-				var jobCardPart = {
-					'Job Card Serial' : jobCards["recordset"][i]["barcodeSerial"],
-					'Part Number' : jobCards["recordset"][i]["SAPMaterial"],
-					'Requested Quantity' : jobCards["recordset"][i]["requestedQuantity"],
-					'Actual Quantity' : jobCards["recordset"][i]["actualQuantity"],
-					'Created Date' : createdDate,
-					'Estimated Date' : jobCards["recordset"][i]["estimatedDate"],
-					'Completed Date' : updatedAt,
-					'SAP Part Number' : jobCards["recordset"][i]["SAPMaterial"],
-					'SAP Quantity' : jobCards["recordset"][i]["SAPQuantity"],
-					'Received Status':jobCards["recordset"][i]["ReceivedStatus"]
-				}
-				jobCardsList.push(jobCardPart);
+			var jobCardPart = {
+				'Job Card Serial' : jobCards["recordset"][i]["barcodeSerial"],
+				'Part Number' : jobCards["recordset"][i]["SAPMaterial"],
+				'Requested Quantity' : jobCards["recordset"][i]["requestedQuantity"],
+				'Actual Quantity' : jobCards["recordset"][i]["actualQuantity"],
+				'Created Date' : createdDate,
+				'Estimated Date' : jobCards["recordset"][i]["estimatedDate"],
+				'Completed Date' : updatedAt,
+				'SAP Part Number' : jobCards["recordset"][i]["SAPMaterial"],
+				'SAP Quantity' : jobCards["recordset"][i]["SAPQuantity"],
+				'Received Status':jobCards["recordset"][i]["ReceivedStatus"]
 			}
-			var xls1 = json2xls(jobCardsList);
-			var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/PlanVsActualVsReceivedStatus/Plan-Vs-Actual-Vs-Received-Status '+ dateTimeFormat +'.xlsx';
-			fs.writeFileSync(filename1, xls1, 'binary',function(err) {
-				if (err) {
-					console.log('Some error occured - file either not saved or corrupted file saved.');
-					sails.log.error("Some error occured - file either not saved or corrupted file saved.");
-				} else {
-					console.log('It\'s saved!');
-				}
-			});
-			var receiversList = await ReportList.find({
-				name : "Daily plan vs actual vs received status against job card"
-			});
-			receiversList = receiversList[0]["email"];
-			var mailText = "PFA for Plan Vs Actual Vs Received status Report";
-			console.log(mailText);
-			var mailOptions = {
+			jobCardsList.push(jobCardPart);
+		}
+		var xls1 = json2xls(jobCardsList);
+		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/PlanVsActualVsReceivedStatus/Plan-Vs-Actual-Vs-Received-Status '+ dateTimeFormat +'.xlsx';
+		fs.writeFileSync(filename1, xls1, 'binary',function(err) {
+			if (err) {
+				console.log('Some error occured - file either not saved or corrupted file saved.');
+				sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+			} else {
+				console.log('It\'s saved!');
+			}
+		});
+		var receiversList = await ReportList.find({
+			name : "Daily plan vs actual vs received status against job card"
+		});
+		receiversList = receiversList[0]["email"];
+		var mailText = "PFA for Plan Vs Actual Vs Received status Report";
+		console.log(mailText);
+		var mailOptions = {
 				from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
 				// from:"Sagar@briot.in",
 				//to: receiversList,
@@ -544,10 +544,10 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 				subject: "Daily plan vs actual vs received status against job card Report", // Subject line
 				text: mailText,
 				attachments :[
-					{
-						'filename':'Plan-Vs-Actual-Vs-Received-Status '+dateTimeFormat+'.xlsx',
-						'path': filename1
-					}
+				{
+					'filename':'Plan-Vs-Actual-Vs-Received-Status '+dateTimeFormat+'.xlsx',
+					'path': filename1
+				}
 				],
 			};
 			transporter.sendMail(mailOptions, function(error, info) {
@@ -598,9 +598,9 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		updatedAtEnd=dt.setSeconds( dt.getSeconds());
 		console.log("TimeStamps: ",updatedAtStart,updatedAtEnd);
 
-		var sql = `select barcodeSerial,requestedQuantity,actualQuantity,[TestDatabase24122019].dbo.jobcard.createdAt as createdAt,[TestDatabase24122019].dbo.jobcard.estimatedDate,[TestDatabase24122019].dbo.jobcard.updatedAt as updatedAt,productionSchedulePartRelationId,jobcardStatus,
-		(select top 1 partNumber from [TestDatabase24122019].dbo.partnumber where [TestDatabase24122019].dbo.partnumber.id = ((select top 1 partNumberId from [TestDatabase24122019].dbo.productionschedulepartrelation where [TestDatabase24122019].dbo.productionschedulepartrelation.id = [TestDatabase24122019].dbo.jobcard.productionSchedulePartRelationId))) as PartNumber
-		from [TestDatabase24122019].dbo.jobcard inner join [TestDatabase24122019].dbo.saptransaction as sap on sap.jobCard =  [TestDatabase24122019].dbo.jobcard.barcodeSerial where [TestDatabase24122019].dbo.jobcard.updatedAt between 1565684192322 AND 1566966195253 ORDER BY [TestDatabase24122019].dbo.jobcard.id DESC`;
+		var sql = `select barcodeSerial,requestedQuantity,actualQuantity,[TestDatabase].dbo.jobcard.createdAt as createdAt,[TestDatabase].dbo.jobcard.estimatedDate,[TestDatabase].dbo.jobcard.updatedAt as updatedAt,productionSchedulePartRelationId,jobcardStatus,
+		(select top 1 partNumber from [TestDatabase].dbo.partnumber where [TestDatabase].dbo.partnumber.id = ((select top 1 partNumberId from [TestDatabase].dbo.productionschedulepartrelation where [TestDatabase].dbo.productionschedulepartrelation.id = [TestDatabase].dbo.jobcard.productionSchedulePartRelationId))) as PartNumber
+		from [TestDatabase].dbo.jobcard inner join [TestDatabase].dbo.saptransaction as sap on sap.jobCard =  [TestDatabase].dbo.jobcard.barcodeSerial where [TestDatabase].dbo.jobcard.updatedAt Between `+updatedAtStart+` AND `+updatedAtEnd+` ORDER BY [TestDatabase].dbo.jobcard.id DESC`;
 		console.log("sql",sql);
 		var jobCards = await sails.sendNativeQuery(sql,[]);
 
@@ -660,10 +660,10 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 				subject: "Daily created job card Report", // Subject line
 				text: mailText,
 				attachments :[
-					{
-						'filename':'Daily-Created-JobCard '+dateTimeFormat+'.xlsx',
-						'path': filename1
-					}
+				{
+					'filename':'Daily-Created-JobCard '+dateTimeFormat+'.xlsx',
+					'path': filename1
+				}
 				],
 			};
 			transporter.sendMail(mailOptions, function(error, info) {
@@ -714,7 +714,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		updatedAtEnd=dt.setSeconds( dt.getSeconds());
 		console.log(updatedAtStart,updatedAtEnd);
 		var sql = `SELECT distinct machineId
-		FROM [TestDatabase24122019].[dbo].[jobprocesssequencerelation] where updatedAt between `+updatedAtStart+` AND `+updatedAtEnd+` order by machineId asc`;
+		FROM [TestDatabase].[dbo].[jobprocesssequencerelation] where updatedAt between `+updatedAtStart+` AND `+updatedAtEnd+` order by machineId asc`;
 		console.log("sql",sql);
 		var machineIdsList = await sails.sendNativeQuery(sql,[]);
 		console.log("length",machineIdsList["recordset"].length);
@@ -816,10 +816,10 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			subject: "Machine Wise job cards Report", // Subject line
 			text: mailText,
 			attachments :[
-				{
-					'filename':'Machine-Wise-JobCard '+dateTimeFormat+'.xlsx',
-					'path': filename1
-				}
+			{
+				'filename':'Machine-Wise-JobCard '+dateTimeFormat+'.xlsx',
+				'path': filename1
+			}
 			],
 		};
 		transporter.sendMail(mailOptions, function(error, info) {
@@ -951,21 +951,21 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		dateTimeFormat = curr_date + "-" + curr_month + "-" +d.getFullYear();
 		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/SMHVsAMHPart/Part-Wise-SMH '+ dateTimeFormat +'.xlsx';
 			// var filename1 = 'D:/TMML/Reports/SMHVsAMHPart/SMH-Vs-AMH-PartWise '+ dateTimeFormat +'.xlsx';
-		fs.writeFileSync(filename1, xls1, 'binary',function(err) {
-			if (err) {
-				console.log('Some error occured - file either not saved or corrupted file saved.');
-				sails.log.error("Some error occured - file either not saved or corrupted file saved.");
-			} else {
-				console.log('It\'s saved!');
-			}
-		});
-		var receiversList = await ReportList.find({
-			name : "SMH Vs AMH for each part"
-		});
-		receiversList = receiversList[0]["email"];
-		var mailText = "PFA for SMH Vs AMH for each part Report";
-		console.log(mailText);
-		var mailOptions = {
+			fs.writeFileSync(filename1, xls1, 'binary',function(err) {
+				if (err) {
+					console.log('Some error occured - file either not saved or corrupted file saved.');
+					sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+				} else {
+					console.log('It\'s saved!');
+				}
+			});
+			var receiversList = await ReportList.find({
+				name : "SMH Vs AMH for each part"
+			});
+			receiversList = receiversList[0]["email"];
+			var mailText = "PFA for SMH Vs AMH for each part Report";
+			console.log(mailText);
+			var mailOptions = {
 			from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
 			// from:"Sagar@briot.in",
 			//to: receiversList,
@@ -973,10 +973,10 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			subject: "SMH Vs AMH for each part Report", // Subject line
 			text: mailText,
 			attachments :[
-				{
-					'filename':'SMH-Vs-AMH-PartWise '+dateTimeFormat+'.xlsx',
-					'path': filename1
-				}
+			{
+				'filename':'SMH-Vs-AMH-PartWise '+dateTimeFormat+'.xlsx',
+				'path': filename1
+			}
 			],
 		};
 		transporter.sendMail(mailOptions, function(error, info) {
@@ -1026,11 +1026,11 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		var sql = `SELECT *,
 		(select partnumberId from TestDatabase.dbo.productionschedulepartrelation where TestDatabase.dbo.productionschedulepartrelation.id
 		= TestDatabase.dbo.jobcard.productionSchedulePartRelationId) as partNumberId
- 		FROM [TestDatabase].[dbo].jobcard where jobcardStatus = 'In Progress'`;
+		FROM [TestDatabase].[dbo].jobcard where jobcardStatus = 'In Progress'`;
 		console.log("sql",sql);
 		var jobCardsList = await sails.sendNativeQuery(sql,[]);
 		var jobCards = jobCardsList["recordset"];
-        console.log("jobCards",jobCards);
+		console.log("jobCards",jobCards);
 		for(var b=0;b<jobCards.length;b++){
 			var partNumber = "";
 			var partDesc = "";
@@ -1364,10 +1364,10 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			subject: "WIP status of machine shop Report", // Subject line
 			text: mailText,
 			attachments :[
-				{
-					'filename':'Daily-WIP-Report '+dateTimeFormat+'.xlsx',
-					'path': filename1
-				}
+			{
+				'filename':'Daily-WIP-Report '+dateTimeFormat+'.xlsx',
+				'path': filename1
+			}
 			],
 		};
 		transporter.sendMail(mailOptions, function(error, info) {
@@ -1780,10 +1780,10 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 				subject: "Pending Job Cards Report", // Subject line
 				text: mailText,
 				attachments :[
-					{
-						'filename':'Daily-Pending-job-card-Report '+dateTimeFormat+'.xlsx',
-						'path': filename1
-					}
+				{
+					'filename':'Daily-Pending-job-card-Report '+dateTimeFormat+'.xlsx',
+					'path': filename1
+				}
 				],
 			};
 			transporter.sendMail(mailOptions, function(error, info) {
@@ -1832,13 +1832,13 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		var dt = new Date(startTime);
 		updatedAtStart = dt.setSeconds( dt.getSeconds());
 
-		var sql = `SELECT * ,(select top 1 TestDatabase24122019.dbo.partnumber.partNumber from TestDatabase24122019.dbo.partnumber where TestDatabase24122019.dbo.partnumber.id = (select top 1 TestDatabase24122019.dbo.productionschedulepartrelation.partNumberId from TestDatabase24122019.dbo.productionschedulepartrelation where TestDatabase24122019.dbo.productionschedulepartrelation.id = TestDatabase24122019.dbo.jobcard.productionSchedulePartRelationId)) as PartNumber,
-		(select top 1 TestDatabase24122019.dbo.productionschedulepartrelation.inductionDate from TestDatabase24122019.dbo.productionschedulepartrelation where TestDatabase24122019.dbo.productionschedulepartrelation.id = jobcard.productionSchedulePartRelationId ) as InductionDate,
-		(select top 1 TestDatabase24122019.dbo.productionschedulepartrelation.planFor from TestDatabase24122019.dbo.productionschedulepartrelation where TestDatabase24122019.dbo.productionschedulepartrelation.id = jobcard.productionSchedulePartRelationId ) as PlanFor
-		FROM [TestDatabase24122019].[dbo].[jobcard] where jobcardStatus='New'`;
+		var sql = `SELECT * ,(select top 1 TestDatabase.dbo.partnumber.partNumber from TestDatabase.dbo.partnumber where TestDatabase.dbo.partnumber.id = (select top 1 TestDatabase.dbo.productionschedulepartrelation.partNumberId from TestDatabase.dbo.productionschedulepartrelation where TestDatabase.dbo.productionschedulepartrelation.id = TestDatabase.dbo.jobcard.productionSchedulePartRelationId)) as PartNumber,
+		(select top 1 TestDatabase.dbo.productionschedulepartrelation.inductionDate from TestDatabase.dbo.productionschedulepartrelation where TestDatabase.dbo.productionschedulepartrelation.id = jobcard.productionSchedulePartRelationId ) as InductionDate,
+		(select top 1 TestDatabase.dbo.productionschedulepartrelation.planFor from TestDatabase.dbo.productionschedulepartrelation where TestDatabase.dbo.productionschedulepartrelation.id = jobcard.productionSchedulePartRelationId ) as PlanFor
+		FROM [TestDatabase].[dbo].[jobcard] where jobcardStatus='New'`;
 		console.log("sql",sql);
 		var jobCards = await sails.sendNativeQuery(sql,[]);
-		console.log(jobCards["recordset"].length)
+		console.log(jobCards["recordset"].length);
 		if(jobCards["recordset"][0]!=null && jobCards["recordset"][0]!= undefined){
 			for(var b=0;b<jobCards["recordset"].length;b++){
 				var TimeStamp = parseInt(jobCards["recordset"][b]["createdAt"]);
@@ -1883,10 +1883,10 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 				subject: "New Job Cards Report", // Subject line
 				text: mailText,
 				attachments :[
-					{
-						'filename':'NewJobCards-Report '+dateTimeFormat+'.xlsx',
-						'path': filename1
-					}
+				{
+					'filename':'NewJobCards-Report '+dateTimeFormat+'.xlsx',
+					'path': filename1
+				}
 				],
 			};
 			transporter.sendMail(mailOptions, function(error, info) {
@@ -1902,5 +1902,415 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		}
 
 	},
+
+	dailyJobCardsCountMail:async function(req,res){
+		var selfSignedConfig = {
+			host: 'smtp.zoho.com',
+            port: 465,
+            secure: true, // use SSL
+            auth: {
+                user: "sagar@briot.in",
+                pass: "Sagar#543"
+            }
+
+		};
+		
+		var transporter = nodemailer.createTransport(selfSignedConfig);
+		var dateArray = [];
+		var d = new Date();
+		var dateToday = d.getDate();
+
+		var firstDate = (parseInt(d.getDate()) - 1);
+		if(dateToday == 1){
+			firstDate = 30;
+		}		
+		var startTime =  (parseInt(d.getMonth()) + 1) +"-"+ firstDate +"-"+ d.getFullYear()+ " " +"00:00:01";
+		var dt = new Date(startTime);
+		var updatedAtStartFirst = dt.setSeconds( dt.getSeconds());
+		var endTime =  (parseInt(d.getMonth()) + 1) +"-"+ firstDate +"-"+ d.getFullYear()+ " " +"23:59:01";
+		dt = new Date(endTime);
+		var updatedAtEndFirst = dt.setSeconds( dt.getSeconds());
+		var filename = firstDate +"-"+ (parseInt(d.getMonth()) + 1) +"-"+ d.getFullYear()+ " ";
+		var singleDate = {
+			'updatedAtStart' : updatedAtStartFirst,
+			'updatedAtEnd' :   updatedAtEndFirst,
+			'filename' : filename
+		}
+		dateArray.push(singleDate);
+		var secondDate = (parseInt(d.getDate()) - 2);
+		if(dateToday == 1){
+			secondDate = 29;
+		}
+		else if(dateToday == 2){
+			secondDate = 30;
+		}
+		startTime =  (parseInt(d.getMonth()) + 1) +"-"+ secondDate +"-"+ d.getFullYear()+ " " +"00:00:01";
+		dt = new Date(startTime);
+		var updatedAtStartSecond = dt.setSeconds( dt.getSeconds());
+		endTime =  (parseInt(d.getMonth()) + 1) +"-"+ secondDate +"-"+ d.getFullYear()+ " " +"23:59:01";
+		dt = new Date(endTime);
+		var updatedAtEndSecond = dt.setSeconds( dt.getSeconds());
+		filename = secondDate +"-"+ (parseInt(d.getMonth()) + 1) +"-"+ d.getFullYear()+ " ";
+		singleDate = {
+			'updatedAtStart' : updatedAtStartSecond,
+			'updatedAtEnd' :   updatedAtEndSecond,
+			'filename' : filename
+		}
+		dateArray.push(singleDate);
+
+		var thirdDate = (parseInt(d.getDate()) - 3);
+		if(dateToday == 1){
+			thirdDate = 28;
+		}
+		else if(dateToday == 2){
+			thirdDate = 29;
+		}
+		else if(dateToday == 3){
+			thirdDate = 30;
+		}
+		startTime =  (parseInt(d.getMonth()) + 1) +"-"+ thirdDate +"-"+ d.getFullYear()+ " " +"00:00:01";
+		dt = new Date(startTime);
+		var updatedAtStartThird = dt.setSeconds( dt.getSeconds());
+		endTime =  (parseInt(d.getMonth()) + 1) +"-"+ thirdDate +"-"+ d.getFullYear()+ " " +"23:59:01";
+		dt = new Date(endTime);
+		var updatedAtEndThird = dt.setSeconds( dt.getSeconds());
+		filename = thirdDate +"-"+ (parseInt(d.getMonth()) + 1) +"-"+ d.getFullYear()+ " ";
+		singleDate = {
+			'updatedAtStart' : updatedAtStartThird,
+			'updatedAtEnd' :   updatedAtEndThird,
+			'filename' : filename
+		}
+		dateArray.push(singleDate);
+
+		var fourthDate = (parseInt(d.getDate()) - 4);
+		if(dateToday == 1){
+			fourthDate =27;
+		}
+		else if(dateToday == 2){
+			fourthDate = 28;
+		}
+		else if(dateToday == 3){
+			fourthDate = 29;
+		}
+		else if(dateToday == 4){
+			fourthDate = 30;
+		}
+		startTime =  (parseInt(d.getMonth()) + 1) +"-"+ fourthDate +"-"+ d.getFullYear()+ " " +"00:00:01";
+		dt = new Date(startTime);
+		var updatedAtStartFourth = dt.setSeconds( dt.getSeconds());
+		endTime =  (parseInt(d.getMonth()) + 1) +"-"+ fourthDate +"-"+ d.getFullYear()+ " " +"23:59:01";
+		dt = new Date(endTime);
+		var updatedAtEndFourth = dt.setSeconds( dt.getSeconds());
+		filename = fourthDate +"-"+ (parseInt(d.getMonth()) + 1) +"-"+ d.getFullYear()+ " ";
+		singleDate = {
+			'updatedAtStart' : updatedAtStartFourth,
+			'updatedAtEnd' :   updatedAtEndFourth,
+			'filename' : filename
+		}
+		dateArray.push(singleDate);
+
+		var fifthDate = (parseInt(d.getDate()) - 5);
+		if(dateToday == 1){
+			fifthDate =26;
+		}
+		else if(dateToday == 2){
+			fifthDate = 27;
+		}
+		else if(dateToday == 3){
+			fifthDate = 28;
+		}
+		else if(dateToday == 4){
+			fifthDate = 29;
+		}
+		else if(dateToday == 5){
+			fifthDate = 30;
+		}
+		startTime =  (parseInt(d.getMonth()) + 1) +"-"+ fifthDate +"-"+ d.getFullYear()+ " " +"00:00:01";
+		dt = new Date(startTime);
+		var updatedAtStartFifth = dt.setSeconds( dt.getSeconds());
+		endTime =  (parseInt(d.getMonth()) + 1) +"-"+ fifthDate +"-"+ d.getFullYear()+ " " +"23:59:01";
+		dt = new Date(endTime);
+		var updatedAtEndFifth = dt.setSeconds( dt.getSeconds());
+		filename = fifthDate +"-"+ (parseInt(d.getMonth()) + 1) +"-"+ d.getFullYear()+ " ";
+		singleDate = {
+			'updatedAtStart' : updatedAtStartFifth,
+			'updatedAtEnd' :   updatedAtEndFifth,
+			'filename' : filename
+		}
+		dateArray.push(singleDate);
+
+		var sixthDate = (parseInt(d.getDate()) - 6);
+		if(dateToday == 1){
+			sixthDate =25;
+		}
+		else if(dateToday == 2){
+			sixthDate = 26;
+		}
+		else if(dateToday == 3){
+			sixthDate = 27;
+		}
+		else if(dateToday == 4){
+			sixthDate = 28;
+		}
+		else if(dateToday == 5){
+			sixthDate = 29;
+		}
+		else if(dateToday == 6){
+			sixthDate = 30;
+		}
+		startTime =  (parseInt(d.getMonth()) + 1) +"-"+ sixthDate +"-"+ d.getFullYear()+ " " +"00:00:01";
+		dt = new Date(startTime);
+		var updatedAtStartSixth = dt.setSeconds( dt.getSeconds());
+		endTime =  (parseInt(d.getMonth()) + 1) +"-"+ sixthDate +"-"+ d.getFullYear()+ " " +"23:59:01";
+		dt = new Date(endTime);
+		var updatedAtEndSixth = dt.setSeconds( dt.getSeconds());
+		filename = sixthDate +"-"+ (parseInt(d.getMonth()) + 1) +"-"+ d.getFullYear()+ " ";
+		singleDate = {
+			'updatedAtStart' : updatedAtStartSixth,
+			'updatedAtEnd' :   updatedAtEndSixth,
+			'filename' : filename
+		}
+		dateArray.push(singleDate);
+
+		var seventhDate = (parseInt(d.getDate()) - 7);
+		if(dateToday == 1){
+			seventhDate =24;
+		}
+		else if(dateToday == 2){
+			seventhDate = 25;
+		}
+		else if(dateToday == 3){
+			seventhDate = 26;
+		}
+		else if(dateToday == 4){
+			seventhDate = 27;
+		}
+		else if(dateToday == 5){
+			seventhDate = 28;
+		}
+		else if(dateToday == 6){
+			seventhDate = 29;
+		}
+		else if(dateToday == 7){
+			seventhDate = 29;
+		}
+		startTime =  (parseInt(d.getMonth()) + 1) +"-"+ seventhDate +"-"+ d.getFullYear()+ " " +"00:00:01";
+		dt = new Date(startTime);
+		var updatedAtStartSeventh = dt.setSeconds( dt.getSeconds());
+		endTime =  (parseInt(d.getMonth()) + 1) +"-"+ seventhDate +"-"+ d.getFullYear()+ " " +"23:59:01";
+		dt = new Date(endTime);
+		var updatedAtEndSeventh = dt.setSeconds( dt.getSeconds());
+		filename = seventhDate +"-"+ (parseInt(d.getMonth()) + 1) +"-"+ d.getFullYear()+ " ";
+		singleDate = {
+			'updatedAtStart' : updatedAtStartSeventh,
+			'updatedAtEnd' :   updatedAtEndSeventh,
+			'filename' : filename
+		}
+		dateArray.push(singleDate);
+		sails.log.info("dateArray :",dateArray);
+		var resTable = [];
+		var countTable = [];
+		var attachementList = [];
+		var a = 0;
+		var totalJc = 0;
+		var totalNew = 0;
+		var totalCompleted = 0;
+		var totalInProgress = 0;
+		for(var i=0;i<dateArray.length;i++){
+			var sql = `SELECT *,(select top 1 partNumber from TestDatabase.dbo.partnumber where id = (select top 1 partNumberId from [TestDatabase].dbo.productionschedulepartrelation where id = [TestDatabase].dbo.jobcard.productionSchedulePartRelationId)) as PartNumber,
+			(select top 1 planFor from [TestDatabase].dbo.productionschedulepartrelation where id = [TestDatabase].dbo.jobcard.productionSchedulePartRelationId) as PlanFor,
+			(select top 1 inductionDate from [TestDatabase].dbo.productionschedulepartrelation where id = [TestDatabase].dbo.jobcard.productionSchedulePartRelationId) as InductionDate
+			FROM [TestDatabase].[dbo].[jobcard] where updatedAt Between `+dateArray[i].updatedAtStart+` AND `+dateArray[i].updatedAtEnd+``;
+			console.log("sql",sql);
+			var jobCards = await sails.sendNativeQuery(sql,[]);
+			sails.log.info("for updatedAt :"+dateArray[i].updatedAtStart+"Jobcards count is"+jobCards["recordset"].length);
+			if(jobCards["recordset"][0]!=null && jobCards["recordset"][0]!= undefined){
+				for(var b=0;b<jobCards["recordset"].length;b++){
+					var TimeStamp = parseInt(jobCards["recordset"][b]["createdAt"]);
+					var createdDate = new Date(TimeStamp);
+					createdDate =createdDate.toString().substring(0,24);
+					TimeStamp = parseInt(jobCards["recordset"][b]["updatedAt"]);
+					var updatedDate = new Date(TimeStamp);
+					updatedDate =updatedDate.toString().substring(0,24);
+					if(jobCards["recordset"][b]["jobcardStatus"] != "Completed"){
+						updatedDate = "NA";
+					}
+					var jobCard = {
+						'Job Card Barcode': jobCards["recordset"][b]["barcodeSerial"],
+						'Created Date': createdDate,
+						'Estimated Date': jobCards["recordset"][b]["estimatedDate"],
+						'Completed Date': updatedDate,
+						'Part Number': jobCards["recordset"][b]["PartNumber"],
+						'Requested Quantity': jobCards["recordset"][b]["requestedQuantity"],
+						'Actual Quantity': jobCards["recordset"][b]["actualQuantity"],
+						'Induction Date' : jobCards["recordset"][b]["InductionDate"],
+						'Plan For' : jobCards["recordset"][b]["PlanFor"],
+						'JobCard Status' : jobCards["recordset"][b]["jobcardStatus"]
+					}
+					resTable.push(jobCard);
+				}
+				var fileName = dateArray[i].filename +" "+d.getHours()+" "+d.getMinutes()+" "+d.getSeconds() ;
+				var xls1 = json2xls(resTable);
+				// var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/WeekWiseReport/'+ fileName +'.xlsx';
+				var filename1 = 'D:/TMML/Reports/WeekWiseReport/'+ fileName +'.xlsx';
+				
+				fs.writeFileSync(filename1, xls1, 'binary',function(err) {
+					if (err) {
+						console.log('Some error occured - file either not saved or corrupted file saved.');
+						sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+					} else {
+						console.log('It\'s saved!');
+					}
+				});
+				var attachment = {
+					'filename': dateArray[i].filename +'.xlsx',
+					'path': filename1
+				}
+				attachementList.push(attachment);
+			}
+
+			var sql = `SELECT count(barcodeSerial) as Complete FROM [TestDatabase].[dbo].[jobcard] where updatedAt Between `+dateArray[i].updatedAtStart+` AND `+dateArray[i].updatedAtEnd+`AND jobcardStatus='Completed'`;
+			console.log("sql",sql);
+			var completedJobCards = await sails.sendNativeQuery(sql,[]);
+			console.log(completedJobCards["recordset"]);
+			sql = `SELECT count(barcodeSerial) as Inprogress FROM [TestDatabase].[dbo].[jobcard] where updatedAt Between `+dateArray[i].updatedAtStart+` AND `+dateArray[i].updatedAtEnd+`AND jobcardStatus='In Progress'`;
+			console.log("sql",sql);
+			var inProgressJobCards = await sails.sendNativeQuery(sql,[]);
+			sql = `SELECT count(barcodeSerial) as newCards FROM [TestDatabase].[dbo].[jobcard] where updatedAt Between `+dateArray[i].updatedAtStart+` AND `+dateArray[i].updatedAtEnd+` AND jobcardStatus='New'`;
+			console.log("sql",sql);
+			var newJobCards = await sails.sendNativeQuery(sql,[]);
+			a = a+1;
+			totalJc = totalJc +jobCards["recordset"].length;
+			totalCompleted = totalCompleted + completedJobCards["recordset"][0]["Complete"];
+			totalInProgress = totalInProgress +inProgressJobCards["recordset"][0]["Inprogress"];
+			totalNew = totalNew +newJobCards["recordset"][0]["newCards"];
+			var count = {
+				'SrNo': a,
+				'Completed': completedJobCards["recordset"][0]["Complete"],
+				'Inprogress': inProgressJobCards["recordset"][0]["Inprogress"],
+				'New': newJobCards["recordset"][0]["newCards"],
+				'Total': jobCards["recordset"].length,
+				'Date': dateArray[i].filename,
+				'totalJc' : totalJc,
+				'totalCompleted': totalCompleted,
+				'totalInProgress': totalInProgress,
+				'totalNew': totalNew
+			}
+			countTable.push(count);
+		}
+		var mailText = "PFA for Job Card Report";
+		sails.log.info(attachementList);
+		console.log(countTable);
+		var result ="<b>"+ mailText +"</b> <br/>"; 
+		result += "<br/>";
+		result += "<table border=1>";
+		result += "<th>Sr No</td>";
+		result += "<th>Plan Date</td>";
+		result += "<th>Issued Total JC</td>";
+		result += "<th>Completed JC</td>";
+		result += "<th>In Progress JC</td>";
+		result += "<th>Pending(Not Started)</td>";
+		result += "<th>Total</td>";
+		for(var s=0; s<=countTable.length; s++) {
+			if(s ==countTable.length){
+			result += "<tr>";
+			result += "<td colspan=2><b>Total: </b></td>";
+			// result += "<td>""</td>";
+			result += "<td><b>"+countTable[s-1]["totalJc"]+"</b></td>";
+			result += "<td><b>"+countTable[s-1]["totalCompleted"]+"</b></td>";
+			result += "<td><b>"+countTable[s-1]["totalInProgress"]+"</b></td>";
+			result += "<td><b>"+countTable[s-1]["totalNew"]+"</td>";
+			result += "<td></td>";
+			result += "</tr>";
+		}
+		else{
+			result += "<tr>";
+			result += "<td>"+countTable[s]["SrNo"]+"</td>";
+			result += "<td>"+countTable[s]["Date"]+"</td>";
+			result += "<td>"+countTable[s]["Total"]+"</td>";
+			result += "<td>"+countTable[s]["Completed"]+"</td>";
+			result += "<td>"+countTable[s]["Inprogress"]+"</td>";
+			result += "<td>"+countTable[s]["New"]+"</td>";
+			result += "<td>"+countTable[s]["Total"]+"</td>";
+			result += "</tr>";
+		}
+	}
+	result += "</table>";
+	var mailOptions = {
+    	// from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
+    	from:"Sagar@briot.in",
+    	//to: receiversList,
+    	// to:"santosh.adaki@tatamarcopolo.com",
+    	to:"Sagar@briot.in",
+    	subject: "Job Card Report", // Subject line
+    	html: ''+result+'',
+    	attachments : attachementList
+    };
+    transporter.sendMail(mailOptions, function(error, info) {
+    	if(error){
+    		sails.log.error("job Card report mail not sent",error);
+    	} else {
+    		sails.log.info('job Card report sent: ' + info.response);
+    	} 
+    });
+},
+
+MonthlyReportList:async function(req,res){
+	var resTable = [];
+	var d = new Date();	
+	for(var i=1;i<=31;i++){
+		var startTime = req.query.month +"-"+ i +"-"+ d.getFullYear()+ " " +"00:00:01";
+		var dt = new Date(startTime);
+		var updatedAtStart = dt.setSeconds( dt.getSeconds());
+		var endTime = req.query.month +"-"+ i +"-"+ d.getFullYear()+ " " +"23:59:01";
+		dt = new Date(endTime);
+		var updatedAtEnd = dt.setSeconds( dt.getSeconds());
+		var filename = i +"-"+ (parseInt(d.getMonth()) + 1) +"-"+ d.getFullYear()+ " ";
+
+		var sql = `SELECT count(barcodeSerial) as Complete FROM [TestDatabase].[dbo].[jobcard] where updatedAt Between `+updatedAtStart+` AND `+updatedAtEnd+`AND jobcardStatus='Completed'`;
+		console.log("sql",sql);
+		var completedJobCards = await sails.sendNativeQuery(sql,[]);
+		sql = `SELECT count(barcodeSerial) as Inprogress FROM [TestDatabase].[dbo].[jobcard] where updatedAt Between `+updatedAtStart+` AND `+updatedAtEnd+`AND jobcardStatus='In Progress'`;
+		console.log("sql",sql);
+		var inProgressJobCards = await sails.sendNativeQuery(sql,[]);
+		sql = `SELECT count(barcodeSerial) as newCards FROM [TestDatabase].[dbo].[jobcard] where updatedAt Between `+updatedAtStart+` AND `+updatedAtEnd+` AND jobcardStatus='New'`;
+		console.log("sql",sql);
+		var newJobCards = await sails.sendNativeQuery(sql,[]);
+		sql = `SELECT count(barcodeSerial) as totalCards FROM [TestDatabase].[dbo].[jobcard] where updatedAt Between `+updatedAtStart+` AND `+updatedAtEnd+``;
+		console.log("sql",sql);
+		var totalCards = await sails.sendNativeQuery(sql,[]);
+
+		var singleDate = {
+			'SrNo': i,
+			'completed': completedJobCards["recordset"][0]["Complete"],
+			'inProgress': inProgressJobCards["recordset"][0]["Inprogress"],
+			'NewCards': newJobCards["recordset"][0]["newCards"],
+			'total': totalCards["recordset"][0]["totalCards"],
+			'date' : filename
+		}
+		resTable.push(singleDate);	
+	}
+	var totalJC=0;
+	var CompletedJC=0;
+	var inProgressJC=0;
+	var newJC=0;
+	for(var a=0;a<resTable.length;a++){
+		CompletedJC = CompletedJC+resTable[a]["completed"];
+		inProgressJC = inProgressJC+resTable[a]["inProgress"];
+		newJC = newJC+resTable[a]["NewCards"];
+		totalJC = totalJC + resTable[a]["total"]
+	}
+	// totalJC = CompletedJC + inProgressJC + newJC;
+	var singleDate = {
+		'SrNo': 0,
+		'Completed':CompletedJC,
+		'inProgress':inProgressJC ,
+		'NewCards': newJC,
+		'total':totalJC,
+		'date' : 0
+	}
+	resTable.push(singleDate);
+	res.send(resTable);
+},
 
 };
