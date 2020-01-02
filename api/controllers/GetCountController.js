@@ -883,7 +883,7 @@ module.exports = {
 						'Part No Description':monthlyData["recordset"][i]["PartDesc"],
 						'Monthly Quantity': monthlyData["recordset"][i]["requiredInMonth"],
 						'JC Generated Qty': monthlyData["recordset"][i]["sumValue"],
-						'Qty Booked till date': monthlyData["recordset"][i]["sumValue"],
+						'Qty Booked till date': monthlyData["recordset"][i]["MontlyTotalProduced"],
 						'Qty Balance': parseInt(monthlyData["recordset"][i]["sumValue"]) - parseInt(monthlyData["recordset"][i]["MontlyTotalProduced"]),
 						'Month Total Produced Qty': monthlyData["recordset"][i]["MontlyTotalProduced"],
 						'Net Monthly Requirement' : parseInt(monthlyData["recordset"][i]["requiredInMonth"]) - parseInt( monthlyData["recordset"][i]["sumValue"]),

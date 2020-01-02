@@ -20,10 +20,10 @@ module.exports = {
     var d = new Date();
     var newDay = d.getDate();
     if(newDay.toString().length == 1)
-    newDay = "0" + newDay;
+      newDay = "0" + newDay;
     var newMonth = d.getMonth();
     if(newMonth.toString().length == 1)
-    newMonth = "0" + newMonth;
+      newMonth = "0" + newMonth;
     var newYear = d.getFullYear();
     var newDateTimeNow = newDay + "." + newMonth + "." + newYear;
     await newSapTransactionEntry(newDateTimeNow);
@@ -139,7 +139,7 @@ module.exports = {
     }
     catch{
       res.status(424);
-        res.send("Job Card is not completed or 313 is not done");
+      res.send("Job Card is not completed or 313 is not done");
     }
     
   }
@@ -163,26 +163,26 @@ async function satTransactionEntry(getJobCardCompleted){
 
       if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
         // for(var i =0;i<xmlItems.length;i++){
-        var sapTransaction = await SapTransaction.update({
-          uniqueNumber:resultData["Zbktxt"]["_text"],
-          jobCard:getJobCardCompleted["jobCard"]
-        })
-        .set({
-          documentNumber:resultData["Zmblnr"]["_text"],
-          documentYear:resultData["Zmjahr"]["_text"],
-          remarks:resultData["Zremarks"]["_text"]
-        });
-        await SapTransactionLog.create({
-          plant:"7002",
-          date:getJobCardCompleted["date"],
-          material:getJobCardCompleted["material"],
-          jobCard:getJobCardCompleted["jobCard"],
-          uniqueNumber:resultData["Zbktxt"]["_text"],
-          quantity:getJobCardCompleted["quantity"],
-          documentNumber:resultData["Zmblnr"]["_text"],
-          documentYear:resultData["Zmjahr"]["_text"],
-          remarks:resultData["Zremarks"]["_text"]
-        });
+          var sapTransaction = await SapTransaction.update({
+            uniqueNumber:resultData["Zbktxt"]["_text"],
+            jobCard:getJobCardCompleted["jobCard"]
+          })
+          .set({
+            documentNumber:resultData["Zmblnr"]["_text"],
+            documentYear:resultData["Zmjahr"]["_text"],
+            remarks:resultData["Zremarks"]["_text"]
+          });
+          await SapTransactionLog.create({
+            plant:"7002",
+            date:getJobCardCompleted["date"],
+            material:getJobCardCompleted["material"],
+            jobCard:getJobCardCompleted["jobCard"],
+            uniqueNumber:resultData["Zbktxt"]["_text"],
+            quantity:getJobCardCompleted["quantity"],
+            documentNumber:resultData["Zmblnr"]["_text"],
+            documentYear:resultData["Zmjahr"]["_text"],
+            remarks:resultData["Zremarks"]["_text"]
+          });
         // }
       }
       else if(resultData["Zremarks"]["_text"] == "Unique Number and Job Card already exists" || resultData["Zremarks"]["_text"] == "315 already done against this JC/ unique no combination"){
@@ -331,7 +331,30 @@ async function newSapTransactionEntry(newDateTimeNow){
               })
               .fetch();
               console.log("newPartNumber", newPartNumber1[0]);
-              sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
+              if(newPartNumber1 [0] != null && newPartNumber1[0] != undefined){
+                var selfSignedConfig = {
+                  host: '128.9.24.24',
+                  port: 25
+                };
+                var transporter = nodemailer.createTransport(selfSignedConfig);
+                var mailText = "New Part Added into Software by SAP: ";
+                mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
+                mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
+                var mailOptions = {
+                from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
+                to:"santosh.adaki@tatamarcopolo.com;ashishm@tatamotors.com;santosh.arishinakar@tatamarcopolo.com",
+                subject: "NEW part added by SAP", // Subject line
+                text: mailText,
+              };
+              transporter.sendMail(mailOptions, function(error, info) {
+                if(error){
+                 sails.log.error("NewJobCards-Report mail not sent",error);
+               } else {
+                sails.log.info('NewJobCards-Report Message sent: ' + info.response);
+              }
+            });
+            }
+            sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
               // break;
             }
             else{

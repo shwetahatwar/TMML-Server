@@ -290,8 +290,8 @@ var self = module.exports = {
 				var mailText = "PFA for Plan Vs Actual For the Day Report details";
 				var mailOptions = {
 				from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
-				// to: receiversList,// list of receivers (who receives)
-				to: "santosh.adaki@tatamarcopolo.com",
+				to: receiversList,// list of receivers (who receives)
+				// to: "santosh.adaki@tatamarcopolo.com",
 				subject: "Plan Vs Actual Day Report", // Subject line
 				text: mailText,
 				attachments :[
@@ -328,8 +328,8 @@ var self = module.exports = {
 			var mailText = "PFA for Shift Wise Report details";
 			var mailOptions = {
 				from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
-				// to: receiversList,// list of receivers (who receives)
-				to: "santosh.adaki@tatamarcopolo.com",
+				to: receiversList,// list of receivers (who receives)
+				// to: "santosh.adaki@tatamarcopolo.com",
 				subject: "Shift Wise Report", // Subject line
 				text: mailText,
 				attachments :[
@@ -428,8 +428,8 @@ dailyErrorReport:async function(req,res){
 	var mailOptions = {
 		from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
 		// from:"Sagar@briot.in",
-		//to: receiversList,
-		to:"santosh.adaki@tatamarcopolo.com",
+		to: receiversList,
+		// to:"santosh.adaki@tatamarcopolo.com",
 		subject: "Error report of process sequence defined wrong", // Subject line
 		text: mailText,
 		attachments :[
@@ -539,8 +539,8 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		var mailOptions = {
 				from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
 				// from:"Sagar@briot.in",
-				//to: receiversList,
-				to:"santosh.adaki@tatamarcopolo.com",
+				to: receiversList,
+				// to:"santosh.adaki@tatamarcopolo.com",
 				subject: "Daily plan vs actual vs received status against job card Report", // Subject line
 				text: mailText,
 				attachments :[
@@ -655,8 +655,8 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			var mailOptions = {
 				from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
 				// from:"Sagar@briot.in",
-				//to: receiversList,
-				to:"santosh.adaki@tatamarcopolo.com",
+				to: receiversList,
+				// to:"santosh.adaki@tatamarcopolo.com",
 				subject: "Daily created job card Report", // Subject line
 				text: mailText,
 				attachments :[
@@ -811,8 +811,8 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		var mailOptions = {
 			from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
 			// from:"Sagar@briot.in",
-			//to: receiversList,
-			to:"santosh.adaki@tatamarcopolo.com",
+			to: receiversList,
+			// to:"santosh.adaki@tatamarcopolo.com",
 			subject: "Machine Wise job cards Report", // Subject line
 			text: mailText,
 			attachments :[
@@ -968,8 +968,8 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			var mailOptions = {
 			from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
 			// from:"Sagar@briot.in",
-			//to: receiversList,
-			to:"santosh.adaki@tatamarcopolo.com",
+			to: receiversList,
+			// to:"santosh.adaki@tatamarcopolo.com",
 			subject: "SMH Vs AMH for each part Report", // Subject line
 			text: mailText,
 			attachments :[
@@ -1340,8 +1340,8 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		}
 		var xls1 = json2xls(wipList);
 		dateTimeFormat = curr_date + "-" + curr_month + "-" +d.getFullYear();
-		// var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/WIP/Daily-WIP-Report '+ dateTimeFormat +'.xlsx';
-		var filename1 = 'D:/TMML/Reports/WIP/Daily-WIP-Report '+ dateTimeFormat +'.xlsx';
+		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/WIP/Daily-WIP-Report '+ dateTimeFormat +'.xlsx';
+	  //	var filename1 = 'D:/TMML/Reports/WIP/Daily-WIP-Report '+ dateTimeFormat +'.xlsx';
 		fs.writeFileSync(filename1, xls1, 'binary',function(err) {
 			if (err) {
 				console.log('Some error occured - file either not saved or corrupted file saved.');
@@ -1359,8 +1359,8 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		var mailOptions = {
 			from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
 			// from:"Sagar@briot.in",
-			//to: receiversList,
-			to:"santosh.adaki@tatamarcopolo.com",
+			to: receiversList,
+			// to:"santosh.adaki@tatamarcopolo.com",
 			subject: "WIP status of machine shop Report", // Subject line
 			text: mailText,
 			attachments :[
@@ -1775,8 +1775,8 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			var mailOptions = {
 				from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
 				// from:"Sagar@briot.in",
-				//to: receiversList,
-				to:"santosh.adaki@tatamarcopolo.com",
+				to: receiversList,
+				// to:"santosh.adaki@tatamarcopolo.com",
 				subject: "Pending Job Cards Report", // Subject line
 				text: mailText,
 				attachments :[
@@ -1878,8 +1878,8 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			var mailOptions = {
 				from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
 				// from:"Sagar@briot.in",
-				//to: receiversList,
-				to:"santosh.adaki@tatamarcopolo.com",
+				to: receiversList,
+				// to:"santosh.adaki@tatamarcopolo.com",
 				subject: "New Job Cards Report", // Subject line
 				text: mailText,
 				attachments :[
@@ -1905,16 +1905,9 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 
 	dailyJobCardsCountMail:async function(req,res){
 		var selfSignedConfig = {
-			host: 'smtp.zoho.com',
-            port: 465,
-            secure: true, // use SSL
-            auth: {
-                user: "sagar@briot.in",
-                pass: "Sagar#543"
-            }
-
+			host: '128.9.24.24',
+			port: 25
 		};
-		
 		var transporter = nodemailer.createTransport(selfSignedConfig);
 		var dateArray = [];
 		var d = new Date();
@@ -1923,7 +1916,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		var firstDate = (parseInt(d.getDate()) - 1);
 		if(dateToday == 1){
 			firstDate = 30;
-		}		
+		}
 		var startTime =  (parseInt(d.getMonth()) + 1) +"-"+ firstDate +"-"+ d.getFullYear()+ " " +"00:00:01";
 		var dt = new Date(startTime);
 		var updatedAtStartFirst = dt.setSeconds( dt.getSeconds());
@@ -2151,9 +2144,9 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 				}
 				var fileName = dateArray[i].filename +" "+d.getHours()+" "+d.getMinutes()+" "+d.getSeconds() ;
 				var xls1 = json2xls(resTable);
-				// var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/WeekWiseReport/'+ fileName +'.xlsx';
-				var filename1 = 'D:/TMML/Reports/WeekWiseReport/'+ fileName +'.xlsx';
-				
+				var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/WeekWiseReport/'+ fileName +'.xlsx';
+				// var filename1 = 'D:/TMML/Reports/WeekWiseReport/'+ fileName +'.xlsx';
+
 				fs.writeFileSync(filename1, xls1, 'binary',function(err) {
 					if (err) {
 						console.log('Some error occured - file either not saved or corrupted file saved.');
@@ -2201,7 +2194,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		var mailText = "PFA for Job Card Report";
 		sails.log.info(attachementList);
 		console.log(countTable);
-		var result ="<b>"+ mailText +"</b> <br/>"; 
+		var result ="<b>"+ mailText +"</b> <br/>";
 		result += "<br/>";
 		result += "<table border=1>";
 		result += "<th>Sr No</td>";
@@ -2236,12 +2229,15 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		}
 	}
 	result += "</table>";
-	var mailOptions = {
-    	// from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
-    	from:"Sagar@briot.in",
-    	//to: receiversList,
+	    var receiversList = await ReportList.find({
+				name : "Daily pending job cards"
+			});
+			receiversList = receiversList[0]["email"];
+	 var mailOptions = {
+    	from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
+    	to: receiversList,
     	// to:"santosh.adaki@tatamarcopolo.com",
-    	to:"Sagar@briot.in",
+    	to: receiversList,
     	subject: "Job Card Report", // Subject line
     	html: ''+result+'',
     	attachments : attachementList
@@ -2251,21 +2247,22 @@ dailyVsPlanVsReceivedReport:async function(req,res){
     		sails.log.error("job Card report mail not sent",error);
     	} else {
     		sails.log.info('job Card report sent: ' + info.response);
-    	} 
+    	}
     });
 },
 
 MonthlyReportList:async function(req,res){
 	var resTable = [];
-	var d = new Date();	
+	var d = new Date();
+	console.log(req.query.year);
 	for(var i=1;i<=31;i++){
-		var startTime = req.query.month +"-"+ i +"-"+ d.getFullYear()+ " " +"00:00:01";
+		var startTime = req.query.month +"-"+ i +"-"+ req.query.year+ " " +"00:00:01";
 		var dt = new Date(startTime);
 		var updatedAtStart = dt.setSeconds( dt.getSeconds());
-		var endTime = req.query.month +"-"+ i +"-"+ d.getFullYear()+ " " +"23:59:01";
+		var endTime = req.query.month +"-"+ i +"-"+ req.query.year+ " " +"23:59:01";
 		dt = new Date(endTime);
 		var updatedAtEnd = dt.setSeconds( dt.getSeconds());
-		var filename = i +"-"+ (parseInt(d.getMonth()) + 1) +"-"+ d.getFullYear()+ " ";
+		var filename = i +"-"+ req.query.month +"-"+ req.query.year+ " ";
 
 		var sql = `SELECT count(barcodeSerial) as Complete FROM [TestDatabase].[dbo].[jobcard] where updatedAt Between `+updatedAtStart+` AND `+updatedAtEnd+`AND jobcardStatus='Completed'`;
 		console.log("sql",sql);
@@ -2288,7 +2285,7 @@ MonthlyReportList:async function(req,res){
 			'total': totalCards["recordset"][0]["totalCards"],
 			'date' : filename
 		}
-		resTable.push(singleDate);	
+		resTable.push(singleDate);
 	}
 	var totalJC=0;
 	var CompletedJC=0;

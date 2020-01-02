@@ -49,7 +49,7 @@ module.exports.bootstrap = async function() {
     var today = new Date();
     var time = today.getHours() + ":" + today.getMinutes();
     // console.log("time",time);
-    if(time == "0:13"){
+    if(time == "2:17"){
       await sapTransaction.dailyReport();
       await getCountReport.netMonthlyReportMail();
       await dailyReports.dailyErrorReport();
@@ -84,6 +84,9 @@ module.exports.bootstrap = async function() {
     }
     else if(time == "0:50"){
       await dailyReports.dailyNewJobCardsReport();
+    }
+    else if(time =="0:2"){
+      await dailyReports.dailyJobCardsCountMail();
     }
   },60000);
 
