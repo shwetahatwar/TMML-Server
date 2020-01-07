@@ -499,6 +499,7 @@ module.exports = {
       
       var obj=Object.getOwnPropertyNames(dailySchedule[0]);
       var day1=obj[2];
+      console.log(day1);
       var currentMonth = day1;
       var currentYear = day1;
       currentMonth = currentMonth.substr(3,2);

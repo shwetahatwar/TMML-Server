@@ -801,6 +801,9 @@ module.exports = {
 		if(curr_month.toString().length == 1){
 			curr_month = "0" + curr_month
 		}
+		if(month.toString().length == 1){
+			month = "0" + month
+		}
 		var curr_year = d.getFullYear();
 		curr_year = curr_year.toString();
 		curr_year = curr_year.substring(2,4);
@@ -855,14 +858,14 @@ module.exports = {
 		var createdAtEnd=dt.setSeconds(dt.getSeconds());
 
 		console.log('monthlySchedule: ', monthlySchedule);
-		var sql = ` WITH mytable as ( select * from monthlyschedulepartrelation where monthlyScheduleId =  `+monthlySchedule[0]["id"]+`)
+		var sql = ` WITH mytable as ( select distinct partNumber,requiredInMonth,monthlyScheduleId from monthlyschedulepartrelation where monthlyScheduleId =  `+monthlySchedule[0]["id"]+`)
 		SELECT distinct partNumberId,SUM([requestedQuantity]) as sumValue,
 		(select top 1 mytable.partNumber from mytable with (nolock) where ( mytable.monthlyScheduleId= `+monthlySchedule[0]["id"]+` AND [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId= mytable.partNumber  ) )
 		as partNumber,(select top 1  mytable.requiredInMonth from mytable with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId = mytable.partNumber))
 		as requiredInMonth,(select top 1  partNumber from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))
 		as PartNumber,(select top 1  description from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))
 		as PartDesc,
-		(select top 1  sum(quantity) from [TestDatabase].[dbo].saptransaction with (nolock) where (TestDatabase.dbo.saptransaction.createdAt  Between `+createdAtStart+` AND `+createdAtEnd+` AND [TestDatabase].[dbo].saptransaction.material = (select top 1  partNumber from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))))
+		(select top 1  sum(quantity) from [TestDatabase].[dbo].saptransaction with (nolock) where (TestDatabase.dbo.saptransaction.createdAt  Between `+createdAtStart+` AND `+createdAtEnd+` AND [TestDatabase].[dbo].saptransaction.remarks like 'Success%' AND [TestDatabase].[dbo].saptransaction.material = (select top 1  partNumber from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))))
 		as MontlyTotalProduced
 		FROM [TestDatabase].[dbo].[productionschedulepartrelation] inner join mytable as parts on parts.partNumber = [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId where [TestDatabase].[dbo].[productionschedulepartrelation].updatedAt Between `+createdAtStart+` AND `+createdAtEnd+`  And isJobCardCreated=1 group by [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId  order by sumValue desc
 		`;
@@ -877,6 +880,9 @@ module.exports = {
 					if(parseInt(monthlyData["recordset"][i]["requiredInMonth"]) < parseInt(monthlyData["recordset"][i]["sumValue"])){
 						var a = (parseInt( monthlyData["recordset"][i]["sumValue"] - monthlyData["recordset"][i]["requiredInMonth"]));
 						checkQty ="Qty Exceeded by"+a;
+					}
+					if(monthlyData["recordset"][i]["MontlyTotalProduced"] == null || monthlyData["recordset"][i]["MontlyTotalProduced"] =='NULL'){
+						monthlyData["recordset"][i]["MontlyTotalProduced"] = 0;
 					}
 					var pushPartDetails = {
 						'Part Number':monthlyData["recordset"][i]["PartNumber"],
