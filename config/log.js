@@ -11,20 +11,20 @@
  */
 
 
-var winston = require('winston');
-const customLogger = winston.createLogger({
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.File({
-      filename: 'combined.log',
-      level: 'verbose'
-    }),
-    new winston.transports.File({
-      filename: 'errors.log',
-      level: 'error'
-    })
-  ]
-});
+ var winston = require('winston');
+
+ /*see the documentation for Winston:  https://github.com/flatiron/winston */
+ var logger = new(winston.Logger)({
+   transports: [
+     new (winston.transports.Console)({}),
+     new (winston.transports.File)({
+       filename: 'logfile.log',
+       level: 'verbose',
+       json: true,
+       colorize: false
+     })
+   ]
+ });
 
 
 module.exports.log = {
@@ -43,8 +43,10 @@ module.exports.log = {
 
   // Pass in our custom logger, and pass all log levels through.
   // custom: customLogger,
-  level: 'verbose',
+  // level: 'verbose',
   // Disable captain's log so it doesn't prefix or stringify our meta data.
-  // inspect: false
-
+  inspect: false,
+  level: 'verbose',
+  colorize: false,
+  custom: logger
 };

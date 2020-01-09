@@ -28,14 +28,18 @@ module.exports = {
       status:1
     })
     .fetch()
-    .catch(error=>{console.log(error)});
+    .catch(error=>{
+      sails.log.error("Part Number not added in software"+req.body.partnumber+"",newPartNumberId);
+      console.log(error)});
     if(newPartNumberId != null && newPartNumberId != undefined){
       await PartFile.create({
         partId:newPartNumberId["id"],
         fileData:req.body.fileData,
         fileType:req.body.fileType
       })
-      .catch(error=>{console.log(error)});
+      .catch(error=>{
+        sails.log.error("Part Number file not uploaded in software"+req.body.partnumber+"");
+        console.log(error)});
     }
     for(var i=0;i<req.body.processes.length;i++){
       var isGroupName;
@@ -132,7 +136,9 @@ module.exports = {
       status:req.body.status
     })
     .fetch()
-    .catch(error=>{console.log(error)});
+    .catch(error=>{
+      sails.log.error("Part Numbers not added in software"+req.body.partnumber+"",newPartNumberId);
+      console.log(error)});
     if(newPartNumberId!=null && newPartNumberId!=undefined){
       await PartFile.create({
         partId:newPartNumberId["id"],
@@ -159,7 +165,9 @@ module.exports = {
             isGroup:isGroupName
           })
           .fetch()
-          .catch(error=>{console.log(error)});
+          .catch(error=>{
+            sails.log.error("error while uploading process sequence for new part",error);
+            console.log(error)});
           // console.log(newProcessSequenceId);
           if(newProcessSequenceId!=null&&newProcessSequenceId!=undefined){
             if(isGroupName == false){
@@ -191,7 +199,7 @@ module.exports = {
                 url: newURL
               },async function(error, response, body) {
                 if (error) {
-                  // sails.log.error(error);
+                  sails.log.error(error);
                 }
                 else {
                   // sails.log.info(response);
@@ -355,7 +363,8 @@ module.exports = {
               description: "",
               uom: partNumberBulkUpload[i].rmUOM,
               remarks: "",
-              status:1
+              status:1,
+              materialTypeId:2
             })
             .fetch();
             var kanbanLocationId;

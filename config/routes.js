@@ -104,6 +104,11 @@
   'GET /getErrorReport':'GetCount.getErrorReport',
   'GET /dailyMonthlyPartReport':'GetCount.dailyMonthlyPartReport',
   'GET /getPPartRelation':'GetCount.getPPartRelation',
+  'GET /getSrNo':'GetCount.getSrNo',
+  'POST /printPartLabel':'GetCount.printPartLabel',
+  'GET /getJobCardsDatewise':'GetCount.getJobCardsDatewise',
+  'GET /MonthlyReportList':'Reports.MonthlyReportList',
+  'GET /dailyJobCardsCountMail':'Reports.dailyJobCardsCountMail',
   // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 

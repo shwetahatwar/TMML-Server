@@ -25,7 +25,7 @@ module.exports = {
       if (employees.length > 0) {
         employeeDBId = employees[0]["id"];
       }
-    } 
+    }
     else {
       console.log("in Else", employeeDBId);
       employeeDBId = null;
@@ -46,7 +46,7 @@ module.exports = {
 
     console.log("Current Date: " + maintenanceTime + "\tNext Date: " + nextMaintenanceDate);
 
-    var machineUpdated = await Machine.update({ 
+    var machineUpdated = await Machine.update({
       id:req.body.machineId
     })
     .set({
@@ -94,7 +94,7 @@ module.exports = {
         if(newEmployeeList[0]!=null&&newEmployeeList[0]!=undefined){
           for(var i=0;i<newEmployeeList.length;i++){
             var mailOptions = {
-              from: newEmailService[0].senderUsername, // sender address (who sends)
+              from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
               to: newEmployeeList[i].email, // list of receivers (who receives)
               subject: mailSubject, // Subject line
               text: mailText
@@ -102,6 +102,7 @@ module.exports = {
             transporter.sendMail(mailOptions, function(error, info) {
               if(error){
                 console.log(error);
+                sails.log.error("Error while Sending maintenance Mail for machine: "+ machineName+"",error);
               } else {
                 console.log('Message sent: ' + info.response);
               }

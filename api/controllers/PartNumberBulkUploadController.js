@@ -62,7 +62,7 @@ module.exports={
             if(checkFlag == 0){
               var count=0;
               for(var j = 5; j <= 100; j=j+5){
-                
+
                 var sequenceNumber = xls_utils.encode_cell({c:j, r:i});
                 var sequenceNumberValue = sheet[sequenceNumber];
                 // console.log(sequenceNumber)
@@ -137,6 +137,7 @@ module.exports={
           }
         }
         return res.status(200).send(rejectedPart);
+        sails.log.error("Part Numbers not uploaded in software",rejectedPart);
       })
     }
   }

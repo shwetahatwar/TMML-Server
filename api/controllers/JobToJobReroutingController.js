@@ -17,7 +17,9 @@ module.exports = {
   		barcodeSerial:req.body.barcodeSerial
   	})
   	.fetch()
-  	.catch((error)=>{console.log(error)});
+  	.catch((error)=>{
+      sails.log.error("JobToJobReroutingController",error);
+      console.log(error)});
   	console.log(newJobCardId);
   	await Jobtojobrerouting.create({
   		fromJobId:req.body.fromJobId,
@@ -30,4 +32,3 @@ module.exports = {
   }
 
 };
-

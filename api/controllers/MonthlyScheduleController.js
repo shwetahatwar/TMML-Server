@@ -78,7 +78,9 @@ module.exports = {
         scheduleName:scheduleName
       })
       .fetch()
-      .catch(error=>{console.log(error)});
+      .catch(error=>{
+        sails.log.error("Error while creating monthly schedule",error);
+        console.log(error)});
     }
     // console.log(monthlyScheduleId[0]);
     if(monthlyScheduleId!=null&&monthlyScheduleId!=undefined){
@@ -104,14 +106,12 @@ module.exports = {
           .catch(error=>{console.log(error)});
         }
         else{
-         missingMonthlyParts.push(monthlySchedule[i].PartNumber);
-         console.log('Part Numbers Not found: ', missingMonthlyParts.toString());
-       }
-
-     }
-   }
-
-   var newEmployeeList = await Employee.find({
+           missingMonthlyParts.push(monthlySchedule[i].PartNumber);
+          console.log('Part Numbers Not found: ', missingMonthlyParts.toString());
+        }
+      }
+    }
+    var newEmployeeList = await Employee.find({
     notifyForMachineMaintenance:1
   });
    if(newEmployeeList[0]!=null&&newEmployeeList[0]!=undefined){
@@ -129,7 +129,8 @@ module.exports = {
         };
         transporter.sendMail(mailOptions, function(error, info) {
           if(error){
-            sails.log.error(error);
+            sails.log.error("Error while Sending monthly schedule mail",error);
+            // sails.log.error(error);
           } else {
             sails.log.info('Message sent: ' + info.response);
           }

@@ -49,7 +49,7 @@ module.exports.datastores = {
     *                                                                          *
     ***************************************************************************/
     adapter: 'sails-mssql', //Working
-    url: 'mssql://root:briot123@192.168.0.11:1433/TestDatabase', //Working
+    url: 'mssql://root:briot@123@192.168.0.15:1433/TestDatabase26112019', //Working
     // connectionTimeout: 300000,
     // requestTimeout: 0,
 
