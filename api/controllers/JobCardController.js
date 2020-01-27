@@ -6,10 +6,10 @@
  */
 
  module.exports = {
-  create: async function(req,res){
+   create: async function(req,res){
 
-    var globalDate = sails.config.myglobal.dateTimeGlobal;
-    var d = new Date();
+     var globalDate = sails.config.myglobal.dateTimeGlobal;
+     var d = new Date();
     // //console.log(d);
     var curr_time = d.getTime();
     // //console.log(curr_time);
@@ -119,6 +119,15 @@
     estimatedDate = dt.toString();
     estimatedDate = estimatedDate.substr(0,24);
 
+    var millis = estimatedDate.substring(4,16);
+    var seconds = estimatedDate.substring(17,23);
+    var month = millis.substring(0,3);
+    var day = millis.substring(4,6);
+    var year = millis.substring(7,11);
+    var date1 = month +"-"+ day+"-"+ year+ " " +seconds;
+    var dt = new Date(date1);
+    var updatedAtStart=dt.setSeconds( dt.getSeconds());
+
     var newJobCard = await JobCard.create({
       productionSchedulePartRelationId:req.body.productionSchedulePartRelationId,
       requestedQuantity:req.body.requestedQuantity,
@@ -127,7 +136,8 @@
       estimatedDate:estimatedDate,
       barcodeSerial:barcodeSerial,
       currentLocation:req.body.currentLocation,
-      jobcardStatus:req.body.jobcardStatus
+      jobcardStatus:req.body.jobcardStatus,
+      estimatedTimeStamp:updatedAtStart
     })
     .fetch()
     .catch((error)=>{
@@ -144,8 +154,8 @@
    //  }
 
    var machineGroups = await MachineGroup.find({
-    id:req.body.suggestedDropLocations
-  })
+     id:req.body.suggestedDropLocations
+   })
    .populate("machines");
     // //console.log("Line 200",machineGroups[0]);
     var suggestedLocations="";
@@ -155,13 +165,13 @@
     // //console.log(suggestedLocations)
     // //console.log(machineGroupNew[0]["machineGroupId"][0]["id"]);
     await Joblocationrelation.create({
-     jobcardId:newJobCard["id"],
-     jobProcessSequenceRelationId:0,
-     sourceLocation:1,
-     destinationLocationId:req.body.destinationLocationId,
-     suggestedDropLocations:suggestedLocations,
-     processStatus:"Pending"
-   })
+      jobcardId:newJobCard["id"],
+      jobProcessSequenceRelationId:0,
+      sourceLocation:1,
+      destinationLocationId:req.body.destinationLocationId,
+      suggestedDropLocations:suggestedLocations,
+      processStatus:"Pending"
+    })
     .catch((error)=>{
       sails.log.error(error);
       console.log(error)});
@@ -597,7 +607,7 @@
     var limitCount = 100;
     var skipCount = 0;
     if (req.query.limit) {
-     limitCount = req.query.limit;
+      limitCount = req.query.limit;
     }
     if(req.query.skip){
       skipCount = req.query.skip;
@@ -606,8 +616,8 @@
       if(req.query.updatedAtStart != null && req.query.updatedAtEnd != null ){
         var jobCards = await JobCard.find({
           where:{ updatedAt :{ '>=':req.query.updatedAtStart,'<=':req.query.updatedAtEnd}
-            },limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
-        }).populate('productionSchedulePartRelationId');
+        },limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
+      }).populate('productionSchedulePartRelationId');
       }
     }
     else
@@ -615,14 +625,15 @@
       if(req.query.updatedAtStart != null && req.query.updatedAtEnd != null ){
         var jobCards = await JobCard.find({
           where:{ updatedAt :{ '>=':req.query.updatedAtStart,'<=':req.query.updatedAtEnd,
-            barcodeSerial:req.query.barcodeSerial}
-            },limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
-        }).populate('productionSchedulePartRelationId');
+          barcodeSerial:req.query.barcodeSerial}
+        },limit:limitCount,sort: [{ id: 'DESC'}],skip:skipCount
+      }).populate('productionSchedulePartRelationId');
       }
     }
     res.send(jobCards);
   },
-getPartCell:async function(req,res){
+
+  getPartCell:async function(req,res){
   //console.log(req.query["parNumbertId"]);
   var getProcessSequence = await ProcessSequence.find({
     sequenceNumber:1,
@@ -655,6 +666,32 @@ getPartCell:async function(req,res){
     res.send("Exit");
   }
 },
+
+cancelJobCards:async function(req,res){
+  var dateFrom = 1577880092000;
+  var jobCards = await JobCard.find({where:{
+    createdAt : {'>': dateFrom},
+    jobcardStatus : 'New'
+  // }, sort: [{ id: 'DESC'}]});
+    },limit:50, sort: [{ id: 'DESC'}]});
+    console.log(jobCards.length);
+    for(var a=0;a<jobCards.length;a++){
+      var jobCardUpdate = await JobCard.update({
+        id : jobCards[a]["id"]
+      })
+      .set({
+        jobcardStatus:"Cancelled"
+      });
+
+      var jobProcessSeq = await Joblocationrelation.update({
+        jobcardId : jobCards[a]["id"]
+      })
+      .set({
+        processStatus:"Cancelled"
+      });
+    }
+    res.send('Done');
+  },
 
   getAllProcessJobCard:async function(req,res){
     var processSequence1;

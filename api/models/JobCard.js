@@ -5,28 +5,28 @@
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
-module.exports = {
+ module.exports = {
 
-  attributes: {
-    productionSchedulePartRelationId:{
-      model:'ProductionSchedulePartRelation'
-    },
-    trolleyId:{
-      model:'Trolley'
-    },
-    requestedQuantity:{
-      type:'number',
-      columnType: 'integer',
-    },
-    actualQuantity:{
-      type:'number',
-      columnType: 'integer',
-    },
-    status:{
-      type:'number',
-      columnType: 'integer',
-    },
-    jobcardStatus:{
+   attributes: {
+     productionSchedulePartRelationId:{
+       model:'ProductionSchedulePartRelation'
+     },
+     trolleyId:{
+       model:'Trolley'
+     },
+     requestedQuantity:{
+       type:'number',
+       columnType: 'integer',
+     },
+     actualQuantity:{
+       type:'number',
+       columnType: 'integer',
+     },
+     status:{
+       type:'number',
+       columnType: 'integer',
+     },
+     jobcardStatus:{
       type:'string' // New, Pending for Raw Material, Under Processing, Completed
     },
     estimatedDate:{
@@ -43,6 +43,10 @@ module.exports = {
     },
     updatedBy:{
       model:'User'
+    },
+    estimatedTimeStamp:{
+      type:'number',
+      columnType: 'bigint',
     },
     processes: {
       collection: 'JobProcessSequenceRelation',

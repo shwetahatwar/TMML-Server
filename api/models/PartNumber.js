@@ -64,6 +64,10 @@ module.exports = {
     kanbanLocation:{
       model:'Location'
     },
+    jcCreateStatus:{
+      type:'number',
+      columnType: 'integer',
+    },
     remarks:{
       type: 'string',
       defaultsTo: 'NA'

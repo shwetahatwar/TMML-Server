@@ -25,9 +25,32 @@ module.exports = {
     if(newMonth.toString().length == 1)
       newMonth = "0" + newMonth;
     var newYear = d.getFullYear();
-    var newDateTimeNow = newDay + "." + newMonth + "." + newYear;
+    var newDateTimeNow = newDay + "." + newMonth + "." + newYear;   
     await newSapTransactionEntry(newDateTimeNow);
     res.send();
+  },
+
+  get313Status:async function(req,res){
+    var sap315Status = await SapTransaction.find({
+      jobCard: req.query.jobCard
+    });
+    if(sap315Status[0] != null && sap315Status[0] != undefined){
+      if(sap315Status[0]["remarks"] != "" && sap315Status[0]["remarks"] != undefined){
+        res.send(sap315Status[0]["remarks"]);
+      }
+      else{
+        res.send("Job Card is completed but 313 is not yet done");
+      }
+    }
+    else{
+      var jobCardStatus = await JobCard.find({
+        barcodeSerial: req.query.jobCard
+      });
+      if(jobCardStatus[0] != null && jobCardStatus[0] != undefined){
+        var status = "Job Card Status is "+jobCardStatus[0]["jobcardStatus"];
+        res.send(status);
+      }
+    }
   },
 
   soapRequest1:async function(req,res){
@@ -390,6 +413,9 @@ async function newSapTransactionEntry(newDateTimeNow){
             });
             console.log(newRawMaterial[0]);
             if(newRawMaterial[0] != undefined && newRawMaterial[0] !=null){
+              var newRawMaterial = await RawMaterial.find({
+                rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
+              });
               console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
               var newLocationId;
               var newLocation = await Location.find({
@@ -425,15 +451,15 @@ async function newSapTransactionEntry(newDateTimeNow){
               .fetch();
               console.log("newPartNumber", newPartNumber1[0]);
               if(newPartNumber1 [0] != null && newPartNumber1[0] != undefined){
-               var selfSignedConfig = {
-                 host: '128.9.24.24',
-                 port: 25
-               };
-               var transporter = nodemailer.createTransport(selfSignedConfig);
-               var mailText = "New Part Added into Software by SAP: ";
-               mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
-               mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
-               var mailOptions = {
+                var selfSignedConfig = {
+                  host: '128.9.24.24',
+                  port: 25
+                };
+                var transporter = nodemailer.createTransport(selfSignedConfig);
+                var mailText = "New Part Added into Software by SAP: ";
+                mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
+                mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
+                var mailOptions = {
                from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
                to:"santosh.adaki@tatamarcopolo.com;ashishm@tatamotors.com;santosh.arishinakar@tatamarcopolo.com",
                subject: "NEW part added by SAP", // Subject line
@@ -441,11 +467,11 @@ async function newSapTransactionEntry(newDateTimeNow){
              };
              transporter.sendMail(mailOptions, function(error, info) {
                if(error){
-                sails.log.error("NewJobCards-Report mail not sent",error);
-              } else {
-               sails.log.info('NewJobCards-Report Message sent: ' + info.response);
-             }
-           });
+                 sails.log.error("NewJobCards-Report mail not sent",error);
+               } else {
+                 sails.log.info('NewJobCards-Report Message sent: ' + info.response);
+               }
+             });
            }
            sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
               // break;
@@ -453,10 +479,11 @@ async function newSapTransactionEntry(newDateTimeNow){
             else{
               var newRawMaterialId = await RawMaterial.create({
                 rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
-                description: "",
+                description: ["ZMAKTX1"]["_text"],
                 uom: resultData[i]["ZMEINS"]["_text"],
                 remarks: "",
-                status:1
+                status:1,
+                materialTypeId:1
               })
               .fetch();
               console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
@@ -496,8 +523,32 @@ async function newSapTransactionEntry(newDateTimeNow){
               sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
             }
           }
-        }
+        } 
         else if(resultData[i]["ZSTATUS"] == "C"){
+          var newRawMaterialIdUpdated;
+          var newRawMaterial = await RawMaterial.find({
+            rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
+          })
+          if(newRawMaterial[0] != null && newRawMaterial[0] != undefined){
+            newRawMaterialIdUpdated = newRawMaterial[0]["id"];
+            var newRawMaterial = await RawMaterial.update({
+              rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
+            }).set({
+              description: ["ZMAKTX1"]["_text"],
+            });
+          }
+          else{
+            var newRawMaterialId = await RawMaterial.create({
+              rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
+              description: ["ZMAKTX1"]["_text"],
+              uom: resultData[i]["ZMEINS"]["_text"],
+              remarks: "",
+              status:1,
+              materialTypeId:1
+            })
+            .fetch();
+            newRawMaterialIdUpdated = newRawMaterialId["id"];
+          }
           var partNumber = PartNumber.update({
             partNumber:resultData[i]["ZIDNRK"]["_text"]
           })
@@ -508,8 +559,9 @@ async function newSapTransactionEntry(newDateTimeNow){
             partStatus:resultData[i]["ZSTATUS"]["_text"],
             uom:resultData[i]["ZMEINS"]["_text"],
             materialGroup:resultData[i]["ZMATKL"]["_text"],
+            rawMaterialId:newRawMaterialIdUpdated
           });
-        }
+        } 
         else if(resultData[i]["ZSTATUS"] == "B"){
           var partNumber = PartNumber.update({
             partNumber:resultData[i]["ZIDNRK"]["_text"]

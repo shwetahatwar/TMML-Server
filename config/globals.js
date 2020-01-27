@@ -8,9 +8,10 @@
  * For more information on any of these options, check out:
  * https://sailsjs.com/config/globals
  */
-
-module.exports.globals = {
-
+ module.exports.myGlobalVariables = {
+   globalOne: 1,
+ }
+ module.exports.globals = {
   /****************************************************************************
   *                                                                           *
   * Whether to expose the locally-installed Lodash as a global variable       *
@@ -28,7 +29,7 @@ module.exports.globals = {
   * > Your code can (and probably should) use `await` as much as possible.    *
   *                                                                           *
   ****************************************************************************/
-
+  
   async: false,
 
   /****************************************************************************

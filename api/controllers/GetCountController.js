@@ -9,6 +9,36 @@ var fs = require('fs');
 const net = require('net');
 module.exports = {
 
+	updateJobCard:async function(req,res){
+		var jobCards =await JobCard.find({where:{
+			estimatedTimeStamp: 0
+		}, sort: [{ id: 'DESC'}]});
+		// },limit:350, sort: [{ id: 'DESC'}]});
+		console.log(jobCards.length);
+		for(var a=0;a<jobCards.length;a++){
+			if(jobCards[a]["estimatedDate"].length > 20){
+				var millis = jobCards[a]["estimatedDate"].substring(4,16);
+				var seconds = jobCards[a]["estimatedDate"].substring(17,23);
+				var month = millis.substring(0,3);
+				var day = millis.substring(4,6);
+				var year = millis.substring(7,11);
+				console.log(month,day,year);
+				var date1 = month +"-"+ day+"-"+ year+ " " +seconds;
+				dt = new Date(date1);
+				var timestamp=dt.setSeconds( dt.getSeconds());
+				console.log(timestamp);
+
+				await JobCard.update({
+					id:jobCards[a]["id"]
+				})
+				.set({
+					estimatedTimeStamp:timestamp
+				});
+			}
+		}
+		res.send('done')
+	},
+
 	getAllEmployeeCount:async function(req,res){
 		if(req.query.name ==null){
 			var employeeCount = await Employee.count({
@@ -944,7 +974,7 @@ getJobCardsDatewise:async function(req,res){
 		var skipCount = req.query.skip;
 		var limitCount=200;
 		var jobCards = await JobCard.find({
-			where : {createdAt :{ '>=':req.query.createdAtStart,'<=':req.query.createdAtEnd}},
+			where : {estimatedTimeStamp :{ '>=':req.query.createdAtStart,'<=':req.query.createdAtEnd}},
 			limit:limitCount,skip:skipCount,sort:[{ id: 'ASC'}]
 		}).populate('productionSchedulePartRelationId');
 		res.send(jobCards);
@@ -960,18 +990,18 @@ printPartLabel:async function(req,res){
 	const HOST = '192.168.0.5';
 	const PORT = 9100;
 	let zpl = `^XA~TA000~JSN^LT0^MNW^MTT^PON^PMN^LH0,0^JMA^PR3,3~SD15^JUS^LRN^CI0^XZ
-		^XA
-		^MMT
-		^PW831
-		^LL0240
-		^LS0
-		^BY2,3,28^FT580,106^BCN,,Y,N
-		^FD>;87654321^FS
-		^BY2,3,28^FT310,111^BCN,,Y,N
-		^FD>;2345678^FS
-		^BY2,3,28^FT50,110^BCN,,Y,N
-		^FD>;12345678^FS
-		^PQ1,0,1,Y^XZ`
+	^XA
+	^MMT
+	^PW831
+	^LL0240
+	^LS0
+	^BY2,3,28^FT580,106^BCN,,Y,N
+	^FD>;87654321^FS
+	^BY2,3,28^FT310,111^BCN,,Y,N
+	^FD>;2345678^FS
+	^BY2,3,28^FT50,110^BCN,,Y,N
+	^FD>;12345678^FS
+	^PQ1,0,1,Y^XZ`
 	zpl = zpl.replace("87654321",req.body.partNumber);
 	zpl = zpl.replace("234567",req.body.partNumber);
 	zpl = zpl.replace("12345678",req.body.partNumber);
