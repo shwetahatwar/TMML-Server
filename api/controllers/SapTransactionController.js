@@ -105,36 +105,40 @@ module.exports = {
         }
         jsonArrayStore.push(tempArryStore);
       }
-  }
-  console.log("a:",a);
-  console.log("b:",b);
-  var xls1 = json2xls(jsonArrayStore);
-  var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Sap-Report/sapDetails '+ dateTimeFormat +'.xlsx';
-  fs.writeFileSync(filename1, xls1, 'binary',function(err) {
-    if (err) {
-      console.log('Some error occured - file either not saved or corrupted file saved.');
-      sails.log.error("Some error occured - file either not saved or corrupted file saved.");
-    } else {
-      console.log('It\'s saved!');
     }
-  });
+    console.log("a:",a);
+    console.log("b:",b);
+    var xls1 = json2xls(jsonArrayStore);
+    var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Sap-Report/sapDetails '+ dateTimeFormat +'.xlsx';
+    fs.writeFileSync(filename1, xls1, 'binary',function(err) {
+      if (err) {
+        console.log('Some error occured - file either not saved or corrupted file saved.');
+        sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+      } else {
+        console.log('It\'s saved!');
+      }
+    });
 
-  var mailText = "PFA for SAP details";
-  mailText = mailText + "\n 313 Done for " + sapDetails.length +" Parts" ;
-  mailText = mailText + "\n 315 Done for " + a +" Parts" ;
-  mailText = mailText + "\n 315 Not Done for " + b +" Parts" ;
-  console.log(mailText);
-  var mailOptions = {
+    var mailText = "PFA for SAP details";
+    mailText = mailText + "\n 313 Done for " + sapDetails.length +" Parts" ;
+    mailText = mailText + "\n 315 Done for " + a +" Parts" ;
+    mailText = mailText + "\n 315 Not Done for " + b +" Parts" ;
+    console.log(mailText);
+    var receiversList = await ReportList.find({
+      name : "313 and 315 Report"
+    });
+    receiversList = receiversList[0]["email"];
+    var mailOptions = {
     from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
-    to: "m.inayathulla@tatamarcopolo.com;ashishm@tatamotors.com;santosh.adaki@tatamarcopolo.com;praveen.datar@tatamarcopolo.com;", // list of receivers (who receives)
-    // to: "santosh.adaki@tatamarcopolo.com",
+    // to: "m.inayathulla@tatamarcopolo.com;ashishm@tatamotors.com;santosh.adaki@tatamarcopolo.com;praveen.datar@tatamarcopolo.com;", // list of receivers (who receives)
+    to: receiversList,
     subject: "Sap Detailed Report", // Subject line
     text: mailText,
     attachments :[
-      {
-        'filename':'sapDetails '+dateTimeFormat+'.xlsx',
-        'path': filename1
-      }
+    {
+      'filename':'sapDetails '+dateTimeFormat+'.xlsx',
+      'path': filename1
+    }
     ],
   };
   transporter.sendMail(mailOptions, function(error, info) {

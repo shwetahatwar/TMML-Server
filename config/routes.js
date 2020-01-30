@@ -114,7 +114,7 @@
   'GET /pendingJobCards':'ProductionSchedulePartRelation.pendingJobCards',
   'GET /pendingJobCardsExport':'ProductionSchedulePartRelation.pendingJobCardsExport',
   'GET /cancelJobCards' : 'JobCard.cancelJobCards',
-  // 'GET  /logout': 'AuthController.logout',
+    // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',
 
   /***************************************************************************

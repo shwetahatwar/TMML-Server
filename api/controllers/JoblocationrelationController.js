@@ -126,7 +126,7 @@ module.exports = {
   getJobLocationRelationCount:async function(req,res){
     var jobLocationRelationNew = await Joblocationrelation.count({
       where:{
-        processStatus: { '!=' : ['Complete', 'Final Location'] }
+        processStatus: { '!=' : ['Complete', 'Final Location','Cancelled'] }
       }
     });
     var totalCount=[];

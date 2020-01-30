@@ -15,6 +15,7 @@ var sapPartNumber = require('../api/controllers/SapPartNumberController');
 var sapTransaction = require('../api/controllers/SapTransactionController');
 var getCountReport = require('../api/controllers/GetCountController');
 var dailyReports = require('../api/controllers/ReportsController');
+var globalVar = 1;
 //
 // var activeStrockOne = true;
 // var activeStrockTwo = true;

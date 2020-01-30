@@ -384,43 +384,43 @@
       id:req.body.jobcardId
     })
     .set({
-      actualQuantity:req.body.quantity,
-      jobcardStatus:"Completed",
+      jobcardStatus:"Cancelled",
       updatedBy:req.body.userId
     });
-    await Joblocationrelation.create({
-      jobcardId:req.body.jobcardId,
-      jobProcessSequenceRelationId:0,
-      sourceLocation:0,
-      suggestedDropLocations:"Store",
-      processStatus:"Pending"
-    });
-    await JobProcessSequenceRelation.update({
-      jobId:req.body.jobcardId
+    // await Joblocationrelation.create({
+    //   jobcardId:req.body.jobcardId,
+    //   jobProcessSequenceRelationId:0,
+    //   sourceLocation:0,
+    //   suggestedDropLocations:"Store",
+    //   processStatus:"Pending"
+    // });
+    await Joblocationrelation.update({
+      jobcardId:req.body.jobcardId
     })
     .set({
-      processStatus:"FinalComplete"
+      processStatus:"Cancelled"
     });
-    var dateTime = new Date();
-    var jobProcessSequenceRelation =await JobProcessSequenceRelation.find({
-      jobId:req.body.jobcardId
-    });
-    var processSequence = await ProcessSequence.find({
-      id:jobProcessSequenceRelation[0]["processSequenceId"],
-      status:1
-    });
-    var partNumber = await PartNumber.find({
-      id:processSequence[0]["partId"]
-    });
-    await SapTransaction.create({
-      plant:"Tata Marcopolo Dharwad",
-      date:dateTime,
-      material:partNumber[0]["partNumber"],
-      jobCard:jobCardBarcode[0]["barcodeSerial"],
-      uniqueNumber:dateTime,
-      quantity:req.body.quantity,
-      documentNumber:0
-    });
+    // var dateTime = new Date();
+    // var jobProcessSequenceRelation =await JobProcessSequenceRelation.find({
+    //   jobId:req.body.jobcardId
+    // });
+    // var processSequence = await ProcessSequence.find({
+    //   id:jobProcessSequenceRelation[0]["processSequenceId"],
+    //   status:1
+    // });
+    // var partNumber = await PartNumber.find({
+    //   id:processSequence[0]["partId"]
+    // });
+    // await SapTransaction.create({
+    //   plant:"Tata Marcopolo Dharwad",
+    //   date:dateTime,
+    //   material:partNumber[0]["partNumber"],
+    //   jobCard:jobCardBarcode[0]["barcodeSerial"],
+    //   uniqueNumber:dateTime,
+    //   quantity:req.body.quantity,
+    //   documentNumber:0
+    // });
+    res.send('done');
   },
 
   getJobcardCount:async function(req,res){
@@ -673,7 +673,7 @@ cancelJobCards:async function(req,res){
     createdAt : {'>': dateFrom},
     jobcardStatus : 'New'
   // }, sort: [{ id: 'DESC'}]});
-    },limit:50, sort: [{ id: 'DESC'}]});
+    },limit:250, sort: [{ id: 'DESC'}]});
     console.log(jobCards.length);
     for(var a=0;a<jobCards.length;a++){
       var jobCardUpdate = await JobCard.update({

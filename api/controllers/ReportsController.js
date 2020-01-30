@@ -384,10 +384,10 @@ dailyErrorReport:async function(req,res){
 	curr_year = curr_year.substring(2,4);
 	dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
 
-	var sql = `SELECT partNumber,[TestDatabase].dbo.partnumber.description as partDesc,manPower,SMH,[TestDatabase].dbo.partnumber.remarks,materialGroup,[TestDatabase].dbo.partnumber.UOM as partUOM,rawMaterialId,(select top 1 rawMaterialNumber from [TestDatabase].dbo.rawmaterial with (nolock) where [TestDatabase].dbo.rawmaterial.id
-	= [TestDatabase].dbo.partnumber.rawMaterialId ) as rawMaterial,(select top 1 [TestDatabase].dbo.rawmaterial.description from [TestDatabase].dbo.rawmaterial with (nolock) where [TestDatabase].dbo.rawmaterial.id
-	= [TestDatabase].dbo.partnumber.rawMaterialId ) as rawDescription FROM [TestDatabase].[dbo].[partnumber]
-	inner join [TestDatabase].dbo.rawmaterial as rawMaterial on rawMaterial.id = [TestDatabase].[dbo].partnumber.rawMaterialId where [TestDatabase].dbo.partnumber.remarks NOT IN ('NA', '','OK','okay') ORDER BY [TestDatabase].dbo.partnumber.id DESC`;
+	var sql = `SELECT partNumber,[TestDatabase30122019].dbo.partnumber.description as partDesc,manPower,SMH,[TestDatabase30122019].dbo.partnumber.remarks,materialGroup,[TestDatabase30122019].dbo.partnumber.UOM as partUOM,rawMaterialId,(select top 1 rawMaterialNumber from [TestDatabase30122019].dbo.rawmaterial with (nolock) where [TestDatabase30122019].dbo.rawmaterial.id
+	= [TestDatabase30122019].dbo.partnumber.rawMaterialId ) as rawMaterial,(select top 1 [TestDatabase30122019].dbo.rawmaterial.description from [TestDatabase30122019].dbo.rawmaterial with (nolock) where [TestDatabase30122019].dbo.rawmaterial.id
+	= [TestDatabase30122019].dbo.partnumber.rawMaterialId ) as rawDescription FROM [TestDatabase30122019].[dbo].[partnumber]
+	inner join [TestDatabase30122019].dbo.rawmaterial as rawMaterial on rawMaterial.id = [TestDatabase30122019].[dbo].partnumber.rawMaterialId where [TestDatabase30122019].dbo.partnumber.remarks NOT IN ('NA', '','OK','okay') ORDER BY [TestDatabase30122019].dbo.partnumber.id DESC`;
 	console.log("sql",sql);
 	var parts = await sails.sendNativeQuery(sql,[]);
 
@@ -485,11 +485,11 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 	updatedAtEnd=dt.setSeconds( dt.getSeconds());
 	console.log("TimeStamps: ",updatedAtStart,updatedAtEnd);
 
-	var sql = `select barcodeSerial,requestedQuantity,actualQuantity,[TestDatabase].dbo.jobcard.createdAt as createdAt,[TestDatabase].dbo.jobcard.estimatedDate,[TestDatabase].dbo.jobcard.updatedAt as updatedAt,productionSchedulePartRelationId,
-	(select top 1 material from [TestDatabase].dbo.saptransaction where [TestDatabase].dbo.saptransaction.jobCard = [TestDatabase].dbo.jobcard.barcodeSerial) as SAPMaterial,(select top 1 quantity from [TestDatabase].dbo.saptransaction where
-	[TestDatabase].dbo.saptransaction.jobCard = [TestDatabase].dbo.jobcard.barcodeSerial) as SAPQuantity,
-	(select top 1 remarks from [TestDatabase].dbo.saptransaction where [TestDatabase].dbo.saptransaction.jobCard = [TestDatabase].dbo.jobcard.barcodeSerial) as ReceivedStatus
-	from [TestDatabase].dbo.jobcard inner join [TestDatabase].dbo.saptransaction as sap on sap.jobCard = [TestDatabase].dbo.jobcard.barcodeSerial where [TestDatabase].dbo.jobcard.updatedAt between `+updatedAtStart+` AND `+updatedAtEnd+`  ORDER BY [TestDatabase].dbo.jobcard.id DESC`;
+	var sql = `select barcodeSerial,requestedQuantity,actualQuantity,[TestDatabase30122019].dbo.jobcard.createdAt as createdAt,[TestDatabase30122019].dbo.jobcard.estimatedDate,[TestDatabase30122019].dbo.jobcard.updatedAt as updatedAt,productionSchedulePartRelationId,
+	(select top 1 material from [TestDatabase30122019].dbo.saptransaction where [TestDatabase30122019].dbo.saptransaction.jobCard = [TestDatabase30122019].dbo.jobcard.barcodeSerial) as SAPMaterial,(select top 1 quantity from [TestDatabase30122019].dbo.saptransaction where
+	[TestDatabase30122019].dbo.saptransaction.jobCard = [TestDatabase30122019].dbo.jobcard.barcodeSerial) as SAPQuantity,
+	(select top 1 remarks from [TestDatabase30122019].dbo.saptransaction where [TestDatabase30122019].dbo.saptransaction.jobCard = [TestDatabase30122019].dbo.jobcard.barcodeSerial) as ReceivedStatus
+	from [TestDatabase30122019].dbo.jobcard inner join [TestDatabase30122019].dbo.saptransaction as sap on sap.jobCard = [TestDatabase30122019].dbo.jobcard.barcodeSerial where [TestDatabase30122019].dbo.jobcard.updatedAt between `+updatedAtStart+` AND `+updatedAtEnd+`  ORDER BY [TestDatabase30122019].dbo.jobcard.id DESC`;
 	console.log("sql",sql);
 	var jobCards = await sails.sendNativeQuery(sql,[]);
 
@@ -598,9 +598,9 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		updatedAtEnd=dt.setSeconds( dt.getSeconds());
 		console.log("TimeStamps: ",updatedAtStart,updatedAtEnd);
 
-		var sql = `select barcodeSerial,requestedQuantity,actualQuantity,[TestDatabase].dbo.jobcard.createdAt as createdAt,[TestDatabase].dbo.jobcard.estimatedDate,[TestDatabase].dbo.jobcard.updatedAt as updatedAt,productionSchedulePartRelationId,jobcardStatus,
-		(select top 1 partNumber from [TestDatabase].dbo.partnumber where [TestDatabase].dbo.partnumber.id = ((select top 1 partNumberId from [TestDatabase].dbo.productionschedulepartrelation where [TestDatabase].dbo.productionschedulepartrelation.id = [TestDatabase].dbo.jobcard.productionSchedulePartRelationId))) as PartNumber
-		from [TestDatabase].dbo.jobcard inner join [TestDatabase].dbo.saptransaction as sap on sap.jobCard =  [TestDatabase].dbo.jobcard.barcodeSerial where [TestDatabase].dbo.jobcard.updatedAt Between `+updatedAtStart+` AND `+updatedAtEnd+` ORDER BY [TestDatabase].dbo.jobcard.id DESC`;
+		var sql = `select barcodeSerial,requestedQuantity,actualQuantity,[TestDatabase30122019].dbo.jobcard.createdAt as createdAt,[TestDatabase30122019].dbo.jobcard.estimatedDate,[TestDatabase30122019].dbo.jobcard.updatedAt as updatedAt,productionSchedulePartRelationId,jobcardStatus,
+		(select top 1 partNumber from [TestDatabase30122019].dbo.partnumber where [TestDatabase30122019].dbo.partnumber.id = ((select top 1 partNumberId from [TestDatabase30122019].dbo.productionschedulepartrelation where [TestDatabase30122019].dbo.productionschedulepartrelation.id = [TestDatabase30122019].dbo.jobcard.productionSchedulePartRelationId))) as PartNumber
+		from [TestDatabase30122019].dbo.jobcard inner join [TestDatabase30122019].dbo.saptransaction as sap on sap.jobCard =  [TestDatabase30122019].dbo.jobcard.barcodeSerial where [TestDatabase30122019].dbo.jobcard.updatedAt Between `+updatedAtStart+` AND `+updatedAtEnd+` ORDER BY [TestDatabase30122019].dbo.jobcard.id DESC`;
 		console.log("sql",sql);
 		var jobCards = await sails.sendNativeQuery(sql,[]);
 
@@ -714,7 +714,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		updatedAtEnd=dt.setSeconds( dt.getSeconds());
 		console.log(updatedAtStart,updatedAtEnd);
 		var sql = `SELECT distinct machineId
-		FROM [TestDatabase].[dbo].[jobprocesssequencerelation] where updatedAt between `+updatedAtStart+` AND `+updatedAtEnd+` order by machineId asc`;
+		FROM [TestDatabase30122019].[dbo].[jobprocesssequencerelation] where updatedAt between `+updatedAtStart+` AND `+updatedAtEnd+` order by machineId asc`;
 		console.log("sql",sql);
 		var machineIdsList = await sails.sendNativeQuery(sql,[]);
 		console.log("length",machineIdsList["recordset"].length);
@@ -1026,9 +1026,9 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 		// }).populate('productionSchedulePartRelationId');
 
 		var sql = `SELECT *,
-		(select partnumberId from TestDatabase.dbo.productionschedulepartrelation where TestDatabase.dbo.productionschedulepartrelation.id
-		= TestDatabase.dbo.jobcard.productionSchedulePartRelationId) as partNumberId
-		FROM [TestDatabase].[dbo].jobcard where jobcardStatus = 'In Progress'`;
+		(select partnumberId from TestDatabase30122019.dbo.productionschedulepartrelation where TestDatabase30122019.dbo.productionschedulepartrelation.id
+		= TestDatabase30122019.dbo.jobcard.productionSchedulePartRelationId) as partNumberId
+		FROM [TestDatabase30122019].[dbo].jobcard where jobcardStatus = 'In Progress'`;
 		console.log("sql",sql);
 		var jobCardsList = await sails.sendNativeQuery(sql,[]);
 		var jobCards = jobCardsList["recordset"];
@@ -1834,10 +1834,10 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			var dt = new Date(startTime);
 			updatedAtStart = dt.setSeconds( dt.getSeconds());
 
-			var sql = `SELECT * ,(select top 1 TestDatabase.dbo.partnumber.partNumber from TestDatabase.dbo.partnumber where TestDatabase.dbo.partnumber.id = (select top 1 TestDatabase.dbo.productionschedulepartrelation.partNumberId from TestDatabase.dbo.productionschedulepartrelation where TestDatabase.dbo.productionschedulepartrelation.id = TestDatabase.dbo.jobcard.productionSchedulePartRelationId)) as PartNumber,
-			(select top 1 TestDatabase.dbo.productionschedulepartrelation.inductionDate from TestDatabase.dbo.productionschedulepartrelation where TestDatabase.dbo.productionschedulepartrelation.id = jobcard.productionSchedulePartRelationId ) as InductionDate,
-			(select top 1 TestDatabase.dbo.productionschedulepartrelation.planFor from TestDatabase.dbo.productionschedulepartrelation where TestDatabase.dbo.productionschedulepartrelation.id = jobcard.productionSchedulePartRelationId ) as PlanFor
-			FROM [TestDatabase].[dbo].[jobcard] where jobcardStatus='New'`;
+			var sql = `SELECT * ,(select top 1 TestDatabase30122019.dbo.partnumber.partNumber from TestDatabase30122019.dbo.partnumber where TestDatabase30122019.dbo.partnumber.id = (select top 1 TestDatabase30122019.dbo.productionschedulepartrelation.partNumberId from TestDatabase30122019.dbo.productionschedulepartrelation where TestDatabase30122019.dbo.productionschedulepartrelation.id = TestDatabase30122019.dbo.jobcard.productionSchedulePartRelationId)) as PartNumber,
+			(select top 1 TestDatabase30122019.dbo.productionschedulepartrelation.inductionDate from TestDatabase30122019.dbo.productionschedulepartrelation where TestDatabase30122019.dbo.productionschedulepartrelation.id = jobcard.productionSchedulePartRelationId ) as InductionDate,
+			(select top 1 TestDatabase30122019.dbo.productionschedulepartrelation.planFor from TestDatabase30122019.dbo.productionschedulepartrelation where TestDatabase30122019.dbo.productionschedulepartrelation.id = jobcard.productionSchedulePartRelationId ) as PlanFor
+			FROM [TestDatabase30122019].[dbo].[jobcard] where jobcardStatus='New'`;
 			console.log("sql",sql);
 			var jobCards = await sails.sendNativeQuery(sql,[]);
 			console.log(jobCards["recordset"].length);
@@ -1912,7 +1912,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			};
 			var transporter = nodemailer.createTransport(selfSignedConfig);
 			var dateArray = [];
-			var d = new Date();
+			var d = new Date(1568803712907);
 			console.log("d: ",d);
 			var dateToday = d.getDate();
 
@@ -2112,6 +2112,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			var totalNew = 0;
 			var totalCompleted = 0;
 			var totalInProgress = 0;
+			var totalCancelled = 0;
 			if(req.query.chart==1){
 				for(var i=0;i<dateArray.length;i++){
 					var startTime = dateArray[i].updatedAtStart;
@@ -2120,17 +2121,17 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 					var estimatedDateSearch = dt.toString();
 					estimatedDateSearch = estimatedDateSearch.substr(0,15);
 					estimatedDateSearch = "'" + estimatedDateSearch+" %" +"'" ;
-					var sql = `SELECT count(barcodeSerial) as Complete FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='Completed'`;
+					var sql = `SELECT count(barcodeSerial) as Complete FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='Completed'`;
 					console.log("sql",sql);
 					var completedJobCards = await sails.sendNativeQuery(sql,[]);
 					console.log(completedJobCards["recordset"]);
-					sql = `SELECT count(barcodeSerial) as Inprogress FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='In Progress'`;
+					sql = `SELECT count(barcodeSerial) as Inprogress FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='In Progress'`;
 					console.log("sql",sql);
 					var inProgressJobCards = await sails.sendNativeQuery(sql,[]);
-					sql = `SELECT count(barcodeSerial) as newCards FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='New'`;
+					sql = `SELECT count(barcodeSerial) as newCards FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='New'`;
 					console.log("sql",sql);
 					var newJobCards = await sails.sendNativeQuery(sql,[]);
-					sql = `SELECT count(barcodeSerial) as total FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+``;
+					sql = `SELECT count(barcodeSerial) as total FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+``;
 					console.log("sql",sql);
 					var allJobCardCount = await sails.sendNativeQuery(sql,[]);
 					a = a+1;
@@ -2167,11 +2168,11 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 					var estimatedDateSearch = dt.toString();
 					estimatedDateSearch = estimatedDateSearch.substr(0,15);
 					estimatedDateSearch = "'" + estimatedDateSearch+" %" +"'" ;
-					var sql = `SELECT sum(actualQuantity) as Complete FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='Completed'`;
+					var sql = `SELECT sum(actualQuantity) as Complete FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='Completed'`;
 					console.log("sql",sql);
 					var completedJobCards = await sails.sendNativeQuery(sql,[]);
 					console.log(completedJobCards["recordset"]);
-					sql = `SELECT sum(requestedQuantity) as total FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+``;
+					sql = `SELECT sum(requestedQuantity) as total FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+``;
 					console.log("sql",sql);
 					var allJobCardCount = await sails.sendNativeQuery(sql,[]);
 					a = a+1;
@@ -2202,13 +2203,13 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 					var estimatedDateSearch = dt.toString();
 					estimatedDateSearch = estimatedDateSearch.substr(0,15);
 					estimatedDateSearch = "'" + estimatedDateSearch+" %" +"'" ;
-					var sql = `select productionSchedulePartRelationId,(select distinct partNumberId from TestDatabase.dbo.productionschedulepartrelation where id=TestDatabase.dbo.jobcard.productionSchedulePartRelationId)as partId,
-					(select sum(cycleTime) as cycleTime from TestDatabase.dbo.processsequence where partId = (select distinct partNumberId from TestDatabase.dbo.productionschedulepartrelation where id=TestDatabase.dbo.jobcard.productionSchedulePartRelationId) )as TotalSMH from TestDatabase.dbo.jobcard where estimatedDate like `+estimatedDateSearch+` AND jobcardStatus='Completed'`;
+					var sql = `select productionSchedulePartRelationId,(select distinct partNumberId from TestDatabase30122019.dbo.productionschedulepartrelation where id=TestDatabase30122019.dbo.jobcard.productionSchedulePartRelationId)as partId,
+					(select sum(cycleTime) as cycleTime from TestDatabase30122019.dbo.processsequence where partId = (select distinct partNumberId from TestDatabase30122019.dbo.productionschedulepartrelation where id=TestDatabase30122019.dbo.jobcard.productionSchedulePartRelationId) )as TotalSMH from TestDatabase30122019.dbo.jobcard where estimatedDate like `+estimatedDateSearch+` AND jobcardStatus='Completed'`;
 					console.log("sql",sql);
 					var completedJobCards = await sails.sendNativeQuery(sql,[]);
 					console.log(completedJobCards["recordset"]);
-					sql = `select productionSchedulePartRelationId,(select distinct partNumberId from TestDatabase.dbo.productionschedulepartrelation where id=TestDatabase.dbo.jobcard.productionSchedulePartRelationId)as partId,
-					(select sum(cycleTime) as cycleTime from TestDatabase.dbo.processsequence where partId = (select distinct partNumberId from TestDatabase.dbo.productionschedulepartrelation where id=TestDatabase.dbo.jobcard.productionSchedulePartRelationId) )as TotalSMH from TestDatabase.dbo.jobcard where estimatedDate like `+estimatedDateSearch+``;
+					sql = `select productionSchedulePartRelationId,(select distinct partNumberId from TestDatabase30122019.dbo.productionschedulepartrelation where id=TestDatabase30122019.dbo.jobcard.productionSchedulePartRelationId)as partId,
+					(select sum(cycleTime) as cycleTime from TestDatabase30122019.dbo.processsequence where partId = (select distinct partNumberId from TestDatabase30122019.dbo.productionschedulepartrelation where id=TestDatabase30122019.dbo.jobcard.productionSchedulePartRelationId) )as TotalSMH from TestDatabase30122019.dbo.jobcard where estimatedDate like `+estimatedDateSearch+``;
 					console.log("sql",sql);
 					var allJobCardCount = await sails.sendNativeQuery(sql,[]);
 					a = a+1;
@@ -2241,10 +2242,10 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 					var estimatedDateSearch = dt.toString();
 					estimatedDateSearch = estimatedDateSearch.substr(0,15);
 					estimatedDateSearch = "'" + estimatedDateSearch+" %" +"'" ;
-					var sql = `SELECT *,(select top 1 partNumber from TestDatabase.dbo.partnumber where id = (select top 1 partNumberId from [TestDatabase].dbo.productionschedulepartrelation where id = [TestDatabase].dbo.jobcard.productionSchedulePartRelationId)) as PartNumber,
-					(select top 1 planFor from [TestDatabase].dbo.productionschedulepartrelation where id = [TestDatabase].dbo.jobcard.productionSchedulePartRelationId) as PlanFor,
-					(select top 1 inductionDate from [TestDatabase].dbo.productionschedulepartrelation where id = [TestDatabase].dbo.jobcard.productionSchedulePartRelationId) as InductionDate
-					FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+``;
+					var sql = `SELECT *,(select top 1 partNumber from TestDatabase30122019.dbo.partnumber where id = (select top 1 partNumberId from [TestDatabase30122019].dbo.productionschedulepartrelation where id = [TestDatabase30122019].dbo.jobcard.productionSchedulePartRelationId)) as PartNumber,
+					(select top 1 planFor from [TestDatabase30122019].dbo.productionschedulepartrelation where id = [TestDatabase30122019].dbo.jobcard.productionSchedulePartRelationId) as PlanFor,
+					(select top 1 inductionDate from [TestDatabase30122019].dbo.productionschedulepartrelation where id = [TestDatabase30122019].dbo.jobcard.productionSchedulePartRelationId) as InductionDate
+					FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+``;
 					console.log("sql",sql);
 					var jobCards = await sails.sendNativeQuery(sql,[]);
 					sails.log.info("for updatedAt :"+dateArray[i].updatedAtStart+"Jobcards count is"+jobCards["recordset"].length);
@@ -2275,81 +2276,90 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 						}
 						var fileName = dateArray[i].filename +" "+d.getHours()+" "+d.getMinutes()+" "+d.getSeconds() ;
 						var xls1 = json2xls(resTable);
-					// var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/WeekWiseReport/'+ fileName +'.xlsx';
-					var filename1 = 'D:/TMML/Reports/WeekWiseReport/'+ fileName +'.xlsx';
+						var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/WeekWiseReport/'+ fileName +'.xlsx';
+					    // var filename1 = 'D:/TMML/Reports/WeekWiseReport/'+ fileName +'.xlsx';
 
-					fs.writeFileSync(filename1, xls1, 'binary',function(err) {
-						if (err) {
-							console.log('Some error occured - file either not saved or corrupted file saved.');
-							sails.log.error("Some error occured - file either not saved or corrupted file saved.");
-						} else {
-							console.log('It\'s saved!');
-						}
-					});
-					var attachment = {
-						'filename': dateArray[i].filename +'.xlsx',
-						'path': filename1
+					    fs.writeFileSync(filename1, xls1, 'binary',function(err) {
+					    	if (err) {
+					    		console.log('Some error occured - file either not saved or corrupted file saved.');
+					    		sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+					    	} else {
+					    		console.log('It\'s saved!');
+					    	}
+					    });
+					    var attachment = {
+					    	'filename': dateArray[i].filename +'.xlsx',
+					    	'path': filename1
+					    }
+					    attachementList.push(attachment);
 					}
-					attachementList.push(attachment);
-				}
 
-				var startTime = dateArray[i].updatedAtStart;
-				var dt = new Date(startTime);
-				dt.setSeconds( dt.getSeconds());
-				var estimatedDateSearch = dt.toString();
-				estimatedDateSearch = estimatedDateSearch.substr(0,15);
-				estimatedDateSearch = "'" + estimatedDateSearch+" %" +"'" ;
-				var sql = `SELECT count(barcodeSerial) as Complete FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='Completed'`;
-				console.log("sql",sql);
-				var completedJobCards = await sails.sendNativeQuery(sql,[]);
-				console.log(completedJobCards["recordset"]);
-				sql = `SELECT count(barcodeSerial) as Inprogress FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='In Progress'`;
-				console.log("sql",sql);
-				var inProgressJobCards = await sails.sendNativeQuery(sql,[]);
-				sql = `SELECT count(barcodeSerial) as newCards FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='New'`;
-				console.log("sql",sql);
-				var newJobCards = await sails.sendNativeQuery(sql,[]);
-				a = a+1;
-				totalJc = totalJc +jobCards["recordset"].length;
-				totalCompleted = totalCompleted + completedJobCards["recordset"][0]["Complete"];
-				totalInProgress = totalInProgress +inProgressJobCards["recordset"][0]["Inprogress"];
-				totalNew = totalNew +newJobCards["recordset"][0]["newCards"];
-				var count = {
-					'SrNo': a,
-					'Completed': completedJobCards["recordset"][0]["Complete"],
-					'Inprogress': inProgressJobCards["recordset"][0]["Inprogress"],
-					'New': newJobCards["recordset"][0]["newCards"],
-					'Total': jobCards["recordset"].length,
-					'Date': dateArray[i].filename,
-					'totalJc' : totalJc,
-					'totalCompleted': totalCompleted,
-					'totalInProgress': totalInProgress,
-					'totalNew': totalNew
+					var startTime = dateArray[i].updatedAtStart;
+					var dt = new Date(startTime);
+					dt.setSeconds( dt.getSeconds());
+					var estimatedDateSearch = dt.toString();
+					estimatedDateSearch = estimatedDateSearch.substr(0,15);
+					estimatedDateSearch = "'" + estimatedDateSearch+" %" +"'" ;
+					var sql = `SELECT count(barcodeSerial) as Cancel FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='Cancelled'`;
+					console.log("sql",sql);
+					var cancelledJobCards = await sails.sendNativeQuery(sql,[]);
+					console.log(cancelledJobCards["recordset"]);
+					var sql = `SELECT count(barcodeSerial) as Complete FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='Completed'`;
+					console.log("sql",sql);
+					var completedJobCards = await sails.sendNativeQuery(sql,[]);
+					console.log(completedJobCards["recordset"]);
+					sql = `SELECT count(barcodeSerial) as Inprogress FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='In Progress'`;
+					console.log("sql",sql);
+					var inProgressJobCards = await sails.sendNativeQuery(sql,[]);
+					sql = `SELECT count(barcodeSerial) as newCards FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like  `+estimatedDateSearch+` AND jobcardStatus='New'`;
+					console.log("sql",sql);
+					var newJobCards = await sails.sendNativeQuery(sql,[]);
+					a = a+1;
+					totalJc = totalJc +jobCards["recordset"].length;
+					totalCompleted = totalCompleted + completedJobCards["recordset"][0]["Complete"];
+					totalInProgress = totalInProgress +inProgressJobCards["recordset"][0]["Inprogress"];
+					totalNew = totalNew +newJobCards["recordset"][0]["newCards"];
+					totalCancelled = totalCancelled +cancelledJobCards["recordset"][0]["Cancel"];
+					var count = {
+						'SrNo': a,
+						'Completed': completedJobCards["recordset"][0]["Complete"],
+						'Cancelled': cancelledJobCards["recordset"][0]["Cancel"],
+						'Inprogress': inProgressJobCards["recordset"][0]["Inprogress"],
+						'New': newJobCards["recordset"][0]["newCards"],
+						'Total': jobCards["recordset"].length,
+						'Date': dateArray[i].filename,
+						'totalJc' : totalJc,
+						'totalCompleted': totalCompleted,
+						'totalInProgress': totalInProgress,
+						'totalCancelled': totalCancelled,
+						'totalNew': totalNew
+					}
+					countTable.push(count);
 				}
-				countTable.push(count);
-			}
-			var mailText = "PFA for Job Card Report";
-			sails.log.info(attachementList);
-			console.log(countTable);
-			var result ="<b>"+ mailText +"</b> <br/>";
-			result += "<br/>";
-			result += "<table border=1>";
-			result += "<th>Sr No</td>";
-			result += "<th>Plan Date</td>";
-			result += "<th>Issued Total JC</td>";
-			result += "<th>Completed JC</td>";
-			result += "<th>In Progress JC</td>";
-			result += "<th>Pending(Not Started)</td>";
-			result += "<th>Total</td>";
-			for(var s=0; s<=countTable.length; s++) {
-				if(s ==countTable.length){
-					result += "<tr>";
-					result += "<td colspan=2><b>Total: </b></td>";
+				var mailText = "PFA for Job Card Report";
+				sails.log.info(attachementList);
+				console.log(countTable);
+				var result ="<b>"+ mailText +"</b> <br/>";
+				result += "<br/>";
+				result += "<table border=1>";
+				result += "<th>Sr No</td>";
+				result += "<th>Plan Date</td>";
+				result += "<th>Issued Total JC</td>";
+				result += "<th>Completed JC</td>";
+				result += "<th>In Progress JC</td>";
+				result += "<th>Pending(Not Started)</td>";
+				result += "<th>Cancelled JC</td>";
+				result += "<th>Total</td>";
+				for(var s=0; s<=countTable.length; s++) {
+					if(s ==countTable.length){
+						result += "<tr>";
+						result += "<td colspan=2><b>Total: </b></td>";
 					// result += "<td>""</td>";
 					result += "<td><b>"+countTable[s-1]["totalJc"]+"</b></td>";
 					result += "<td><b>"+countTable[s-1]["totalCompleted"]+"</b></td>";
 					result += "<td><b>"+countTable[s-1]["totalInProgress"]+"</b></td>";
 					result += "<td><b>"+countTable[s-1]["totalNew"]+"</td>";
+					result += "<td><b>"+countTable[s-1]["totalCancelled"]+"</td>";
 					result += "<td></td>";
 					result += "</tr>";
 				}
@@ -2361,6 +2371,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 					result += "<td>"+countTable[s]["Completed"]+"</td>";
 					result += "<td>"+countTable[s]["Inprogress"]+"</td>";
 					result += "<td>"+countTable[s]["New"]+"</td>";
+					result += "<td>"+countTable[s]["Cancelled"]+"</td>";
 					result += "<td>"+countTable[s]["Total"]+"</td>";
 					result += "</tr>";
 				}
@@ -2369,6 +2380,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			var receiversList = await ReportList.find({
 				name : "Daily pending job cards"
 			});
+			console.log("result",result);
 			receiversList = receiversList[0]["email"];
 			var mailOptions = {
 				from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
@@ -2408,16 +2420,19 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 				var estimatedDateSearch = dt.toString();
 				estimatedDateSearch = estimatedDateSearch.substr(0,15);
 				estimatedDateSearch = "'" + estimatedDateSearch+" %" +"'" ;
-				var sql = `SELECT count(barcodeSerial) as Complete FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like `+estimatedDateSearch+` AND jobcardStatus='Completed'`;
+				sql = `SELECT count(barcodeSerial) as cancelledCards FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like `+estimatedDateSearch+` AND jobcardStatus='Cancelled'`;
+				console.log("sql",sql);
+				var cancelledCards = await sails.sendNativeQuery(sql,[]);
+				var sql = `SELECT count(barcodeSerial) as Complete FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like `+estimatedDateSearch+` AND jobcardStatus='Completed'`;
 				console.log("sql",sql);
 				var completedJobCards = await sails.sendNativeQuery(sql,[]);
-				sql = `SELECT count(barcodeSerial) as Inprogress FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like `+estimatedDateSearch+` AND jobcardStatus='In Progress'`;
+				sql = `SELECT count(barcodeSerial) as Inprogress FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like `+estimatedDateSearch+` AND jobcardStatus='In Progress'`;
 				console.log("sql",sql);
 				var inProgressJobCards = await sails.sendNativeQuery(sql,[]);
-				sql = `SELECT count(barcodeSerial) as newCards FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like `+estimatedDateSearch+` AND jobcardStatus='New'`;
+				sql = `SELECT count(barcodeSerial) as newCards FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like `+estimatedDateSearch+` AND jobcardStatus='New'`;
 				console.log("sql",sql);
 				var newJobCards = await sails.sendNativeQuery(sql,[]);
-				sql = `SELECT count(barcodeSerial) as totalCards FROM [TestDatabase].[dbo].[jobcard] where estimatedDate like `+estimatedDateSearch+``;
+				sql = `SELECT count(barcodeSerial) as totalCards FROM [TestDatabase30122019].[dbo].[jobcard] where estimatedDate like `+estimatedDateSearch+``;
 				console.log("sql",sql);
 				var totalCards = await sails.sendNativeQuery(sql,[]);
 				var totalCards = await sails.sendNativeQuery(sql,[]);
@@ -2427,6 +2442,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 					'completed': completedJobCards["recordset"][0]["Complete"],
 					'inProgress': inProgressJobCards["recordset"][0]["Inprogress"],
 					'NewCards': newJobCards["recordset"][0]["newCards"],
+					'CancelledCards': cancelledCards["recordset"][0]["cancelledCards"],
 					'total': totalCards["recordset"][0]["totalCards"],
 					'date' : filename
 				}
@@ -2435,12 +2451,14 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			var totalJC=0;
 			var CompletedJC=0;
 			var inProgressJC=0;
+			var cancelledJC=0;
 			var newJC=0;
 			for(var a=0;a<resTable.length;a++){
 				CompletedJC = CompletedJC+resTable[a]["completed"];
 				inProgressJC = inProgressJC+resTable[a]["inProgress"];
 				newJC = newJC+resTable[a]["NewCards"];
-				totalJC = totalJC + resTable[a]["total"]
+				totalJC = totalJC + resTable[a]["total"];
+				cancelledJC = cancelledJC+resTable[a]["CancelledCards"];
 			}
 			// totalJC = CompletedJC + inProgressJC + newJC;
 			var singleDate = {
@@ -2449,7 +2467,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 				'inProgress':inProgressJC ,
 				'NewCards': newJC,
 				'total':totalJC,
-				'date' : 0
+				'date' : cancelledJC
 			}
 			resTable.push(singleDate);
 			res.send(resTable);

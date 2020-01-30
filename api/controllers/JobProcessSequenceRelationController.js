@@ -19,7 +19,7 @@ module.exports = {
     if(checkMachineStatus != null && checkMachineStatus != undefined){
       if(checkMachineStatus[0]["maintenanceStatus"] == "Available"){
         var jobCard = await JobCard.find({
-          id:req.body.jobId
+          id:req.body.jobId,
         });
         if(jobCard[0]!=null&&jobCard[0]!=undefined){
           //console.log(jobCard[0]["productionSchedulePartRelationId"]);
