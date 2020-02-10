@@ -18,8 +18,8 @@
  		}
  		// SELECT * FROM [dbo].[productionschedulepartrelation] WITH (NOLOCK) WHERE  ( [requestedQuantity]<>0 AND [isJobCardCreated]=0 ) ORDER BY [id] DESC
  		var sql = `SELECT TOP 100 * FROM (SELECT ROW_NUMBER() OVER (ORDER BY [id] DESC ) AS '__rownum__', [createdAt],[updatedAt],[id],[scheduleId],[partNumberId],[requestedQuantity],[scheduleStatus],[inductionDate],[planFor],[createdBy],[estimatedCompletionDate],[isJobCardCreated],[partRemark],
- 		(select top 1 partNumber from TestDatabase30122019.dbo.partnumber where TestDatabase30122019.dbo.partnumber.id = TestDatabase30122019.dbo.productionschedulepartrelation.partNumberId) as PartNumber,
- 		(select top 1 scheduleDate from TestDatabase30122019.dbo.productionschedule where TestDatabase30122019.dbo.productionschedule.id = TestDatabase30122019.dbo.productionschedulepartrelation.scheduleId) as Date FROM TestDatabase30122019.[dbo].[productionschedulepartrelation] WITH (NOLOCK) WHERE  ( [requestedQuantity]<>0 AND [isJobCardCreated]=0 AND [inductionDate]<>'NA' ) ) __outeroffset__ WHERE __outeroffset__.__rownum__ > `+skipCount+` ORDER BY [id] DESC`;
+ 		(select top 1 partNumber from TestDatabase.dbo.partnumber where TestDatabase.dbo.partnumber.id = TestDatabase.dbo.productionschedulepartrelation.partNumberId) as PartNumber,
+ 		(select top 1 scheduleDate from TestDatabase.dbo.productionschedule where TestDatabase.dbo.productionschedule.id = TestDatabase.dbo.productionschedulepartrelation.scheduleId) as Date FROM TestDatabase.[dbo].[productionschedulepartrelation] WITH (NOLOCK) WHERE  ( [requestedQuantity]<>0 AND [isJobCardCreated]=0 AND [inductionDate]<>'NA' ) ) __outeroffset__ WHERE __outeroffset__.__rownum__ > `+skipCount+` ORDER BY [id] DESC`;
  		console.log("sql",sql);
  		var pendingJobCardsList = await sails.sendNativeQuery(sql,[]);
  		console.log(pendingJobCardsList);
@@ -40,6 +40,7 @@
  		}
  		res.send(resTable);
  	},
+ 	
  	pendingJobCardsExport: async function(req,res){
  		var limitCount = 100;
  		var skipCount = 0;
@@ -51,8 +52,8 @@
  		}
  		// SELECT * FROM [dbo].[productionschedulepartrelation] WITH (NOLOCK) WHERE  ( [requestedQuantity]<>0 AND [isJobCardCreated]=0 ) ORDER BY [id] DESC
  		var sql = `SELECT TOP 100 * FROM (SELECT ROW_NUMBER() OVER (ORDER BY [id] DESC ) AS '__rownum__', [createdAt],[updatedAt],[id],[scheduleId],[partNumberId],[requestedQuantity],[scheduleStatus],[inductionDate],[planFor],[createdBy],[estimatedCompletionDate],[isJobCardCreated],[partRemark],
- 		(select top 1 partNumber from TestDatabase30122019.dbo.partnumber where TestDatabase30122019.dbo.partnumber.id = TestDatabase30122019.dbo.productionschedulepartrelation.partNumberId) as PartNumber,
- 		(select top 1 scheduleDate from TestDatabase30122019.dbo.productionschedule where TestDatabase30122019.dbo.productionschedule.id = TestDatabase30122019.dbo.productionschedulepartrelation.scheduleId) as Date FROM TestDatabase30122019.[dbo].[productionschedulepartrelation] WITH (NOLOCK) WHERE  ( [requestedQuantity]<>0 AND [isJobCardCreated]=0 AND [inductionDate]<>'NA' AND createdAt Between `+req.query.createdAtStart+` AND `+req.query.createdAtEnd+` ) ) __outeroffset__ WHERE __outeroffset__.__rownum__ > `+skipCount+` ORDER BY [id] DESC`;
+ 		(select top 1 partNumber from TestDatabase.dbo.partnumber where TestDatabase.dbo.partnumber.id = TestDatabase.dbo.productionschedulepartrelation.partNumberId) as PartNumber,
+ 		(select top 1 scheduleDate from TestDatabase.dbo.productionschedule where TestDatabase.dbo.productionschedule.id = TestDatabase.dbo.productionschedulepartrelation.scheduleId) as Date FROM TestDatabase.[dbo].[productionschedulepartrelation] WITH (NOLOCK) WHERE  ( [requestedQuantity]<>0 AND [isJobCardCreated]=0 AND [inductionDate]<>'NA' AND createdAt Between `+req.query.createdAtStart+` AND `+req.query.createdAtEnd+` ) ) __outeroffset__ WHERE __outeroffset__.__rownum__ > `+skipCount+` ORDER BY [id] DESC`;
  		console.log("sql",sql);
  		var pendingJobCardsList = await sails.sendNativeQuery(sql,[]);
  		console.log(pendingJobCardsList);

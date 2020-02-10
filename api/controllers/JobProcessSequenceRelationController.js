@@ -43,7 +43,7 @@ module.exports = {
             checkProcessSequence=1;
           }
           else{
-            checkProcessSequence = newSequenceNumber;
+            checkProcessSequence = parseInt(newSequenceNumber) + 1 ;
           }
           // //console.log(productionSchedulePartRelationId);
           if(productionSchedulePartRelationId!=null&&productionSchedulePartRelationId!=undefined){

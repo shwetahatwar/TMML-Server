@@ -124,29 +124,29 @@ module.exports = {
           var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1];
           console.log(resultData);
 
-          if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
-            var sapTransaction = await SapTransaction.update({
-              uniqueNumber:resultData["Zbktxt"]["_text"],
-              jobCard:getJobCardCompleted["jobCard"]
-            })
-            .set({
-              documentNumber:resultData["Zmblnr"]["_text"],
-              documentYear:resultData["Zmjahr"]["_text"],
-              remarks:resultData["Zremarks"]["_text"]
-            });
+          // if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
+          //   var sapTransaction = await SapTransaction.update({
+          //     uniqueNumber:resultData["Zbktxt"]["_text"],
+          //     jobCard:getJobCardCompleted["jobCard"]
+          //   })
+          //   .set({
+          //     documentNumber:resultData["Zmblnr"]["_text"],
+          //     documentYear:resultData["Zmjahr"]["_text"],
+          //     remarks:resultData["Zremarks"]["_text"]
+          //   });
 
-            await SapTransactionLog.create({
-              plant:"7002",
-              date:dateAdd,
-              material:materialAdd,
-              jobCard:jobcardAdd,
-              uniqueNumber:resultData["Zbktxt"]["_text"],
-              quantity:quantityAdd,
-              documentNumber:resultData["Zmblnr"]["_text"],
-              documentYear:resultData["Zmjahr"]["_text"],
-              remarks:resultData["Zremarks"]["_text"]
-            });
-          }
+          //   await SapTransactionLog.create({
+          //     plant:"7002",
+          //     date:dateAdd,
+          //     material:materialAdd,
+          //     jobCard:jobcardAdd,
+          //     uniqueNumber:resultData["Zbktxt"]["_text"],
+          //     quantity:quantityAdd,
+          //     documentNumber:resultData["Zmblnr"]["_text"],
+          //     documentYear:resultData["Zmjahr"]["_text"],
+          //     remarks:resultData["Zremarks"]["_text"]
+          //   });
+          // }
         }
       };
         // if(getJobCardCompleted[i] != null && getJobCardCompleted[i] != undefined){
@@ -177,29 +177,29 @@ module.exports = {
           var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1];
           console.log(resultData);
 
-          if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
-            var sapTransaction = await SapTransaction.update({
-              uniqueNumber:resultData["Zbktxt"]["_text"],
-              jobCard:getJobCardCompleted["jobCard"]
-            })
-            .set({
-              documentNumber:resultData["Zmblnr"]["_text"],
-              documentYear:resultData["Zmjahr"]["_text"],
-              remarks:resultData["Zremarks"]["_text"]
-            });
+          // if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
+          //   var sapTransaction = await SapTransaction.update({
+          //     uniqueNumber:resultData["Zbktxt"]["_text"],
+          //     jobCard:getJobCardCompleted["jobCard"]
+          //   })
+          //   .set({
+          //     documentNumber:resultData["Zmblnr"]["_text"],
+          //     documentYear:resultData["Zmjahr"]["_text"],
+          //     remarks:resultData["Zremarks"]["_text"]
+          //   });
 
-            await SapTransactionLog.create({
-              plant:"7002",
-              date:dateAdd,
-              material:materialAdd,
-              jobCard:jobcardAdd,
-              uniqueNumber:resultData["Zbktxt"]["_text"],
-              quantity:quantityAdd,
-              documentNumber:resultData["Zmblnr"]["_text"],
-              documentYear:resultData["Zmjahr"]["_text"],
-              remarks:resultData["Zremarks"]["_text"]
-            });
-          }
+          //   await SapTransactionLog.create({
+          //     plant:"7002",
+          //     date:dateAdd,
+          //     material:materialAdd,
+          //     jobCard:jobcardAdd,
+          //     uniqueNumber:resultData["Zbktxt"]["_text"],
+          //     quantity:quantityAdd,
+          //     documentNumber:resultData["Zmblnr"]["_text"],
+          //     documentYear:resultData["Zmjahr"]["_text"],
+          //     remarks:resultData["Zremarks"]["_text"]
+          //   });
+          // }
         }
       };
 

@@ -912,11 +912,11 @@ module.exports = {
       console.log('monthlySchedule: ', monthlySchedule);
       var sql = ` WITH mytable as ( select distinct partNumber,requiredInMonth,monthlyScheduleId from monthlyschedulepartrelation where monthlyScheduleId =  `+monthlySchedule[0]["id"]+`)
       SELECT distinct partNumberId,SUM([requestedQuantity]) as sumValue,
-      (select top 1 mytable.partNumber from mytable with (nolock) where ( mytable.monthlyScheduleId= `+monthlySchedule[0]["id"]+` AND [TestDatabase30122019].[dbo].[productionschedulepartrelation].partNumberId= mytable.partNumber  ) )
-      as partNumber,(select top 1  mytable.requiredInMonth from mytable with (nolock) where ( [TestDatabase30122019].[dbo].[productionschedulepartrelation].partNumberId = mytable.partNumber))
-      as requiredInMonth,(select top 1  partNumber from [TestDatabase30122019].[dbo].partnumber with (nolock) where ( [TestDatabase30122019].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase30122019].[dbo].partnumber.id))
+      (select top 1 mytable.partNumber from mytable with (nolock) where ( mytable.monthlyScheduleId= `+monthlySchedule[0]["id"]+` AND [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId= mytable.partNumber  ) )
+      as partNumber,(select top 1  mytable.requiredInMonth from mytable with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId = mytable.partNumber))
+      as requiredInMonth,(select top 1  partNumber from [TestDatabase].[dbo].partnumber with (nolock) where ( [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId =[TestDatabase].[dbo].partnumber.id))
       as PartNumber
-      FROM [TestDatabase30122019].[dbo].[productionschedulepartrelation] left outer join mytable as parts on parts.partNumber = [TestDatabase30122019].[dbo].[productionschedulepartrelation].partNumberId where [TestDatabase30122019].[dbo].[productionschedulepartrelation].updatedAt Between `+createdAtStart+` AND `+createdAtEnd+`  And isJobCardCreated=1 group by [TestDatabase30122019].[dbo].[productionschedulepartrelation].partNumberId  order by sumValue desc
+      FROM [TestDatabase].[dbo].[productionschedulepartrelation] left outer join mytable as parts on parts.partNumber = [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId where [TestDatabase].[dbo].[productionschedulepartrelation].updatedAt Between `+createdAtStart+` AND `+createdAtEnd+`  And isJobCardCreated=1 group by [TestDatabase].[dbo].[productionschedulepartrelation].partNumberId  order by sumValue desc
       `;
       console.log("sql",sql);
       var monthlyData = await sails.sendNativeQuery(sql,[]);

@@ -148,5 +148,19 @@ module.exports = {
       sails.log.info('Message sent: ' + info.response);
     }
   });
+},
+
+getSapDetailsForSelectedRange:async function(req,res){
+  var limitCount=200;
+  var skip=0;
+  if(req.query.createdAtStart != null && req.query.createdAtEnd != null ){
+    skip = req.query.skip;
+    var jobCardsList = await SapTransaction.find({
+      where:{ createdAt :{ '>=':req.query.createdAtStart,'<=':req.query.createdAtEnd}
+    },limit:limitCount,sort: [{ id: 'ASC'}],skip:skip});
+
+    res.send(jobCardsList);
+  }
 }
+
 };
