@@ -48,11 +48,13 @@ module.exports = {
       host: '128.9.24.24',
       port: 25
     };
-    var mailText = "Parts Not Added due to Jobcard block provision: ";
+    var mailText = "Daily Schedule Uploaded.\n Parts Not Added due to Jobcard block provision: ";
     var transporter = nodemailer.createTransport(selfSignedConfig);
       // console.log(req.body.dailySchedule[0].getOwnPropertyNames);
       var dailySchedule = JSON.parse(req.body.dailySchedule);
       console.log("Daily Upload Data",dailySchedule);
+      var deviationPartList = [];
+      var notInMonthlySchedulePartList = [];
       if(req.body.actions=="New"){
         var obj=Object.getOwnPropertyNames(dailySchedule[0]);
         console.log("obj",obj);
@@ -113,7 +115,8 @@ module.exports = {
                 monthlyScheduleId:getMonthlyScheduleId[0]["id"]
               })
               .fetch()
-              .catch(error => console.log(error));
+              .catch(error => sails.log.error("Some error occured - file either not saved or corrupted file saved."));
+
               for(var i=0;i<dailySchedule.length;i++){
                 console.log(dailySchedule[i]["partnumber"]);
                 console.log(dailySchedule[i]["inductionDate1"]);
@@ -122,20 +125,34 @@ module.exports = {
                   jcCreateStatus:1
                 });
                 console.log("Line 110", newPartNumberId);
+                var newPartNumberIdStatus;
                 if(newPartNumberId[0] ==null || newPartNumberId[0]==undefined){
-                  var newPartNumberIdStatus = await PartNumber.find({
+                  newPartNumberIdStatus = await PartNumber.find({
                     partNumber:dailySchedule[i]["partnumber"],
                     jcCreateStatus:0
                   });
-                  if(newPartNumberIdStatus[0]!=null && newPartNumberIdStatus[0]!=undefined){
+                  console.log("Line 132", newPartNumberIdStatus);
+                  if(newPartNumberIdStatus[0] ==null || newPartNumberIdStatus[0] ==undefined){
+                    console.log("Inside if");
+                  }
+                  else{
                     mailText = mailText + "\n" + newPartNumberIdStatus[0]["partNumber"] +"\n";
                   }
                 }
-                var canAddQty = parseInt(dailySchedule[i]["monthlyQty"]) - parseInt(dailySchedule[i]["producedQty"]);
-                //console.log("canAddQty1 :",canAddQty);
+                var canAddQty = 0;
+                if(dailySchedule[i]["monthlyQty"] ==0){
+                  var part = {
+                    "Part Number":dailySchedule[i]["partnumber"]
+                  }
+                  notInMonthlySchedulePartList.push(part);
+                }
+                else{
+                  canAddQty = parseInt(dailySchedule[i]["monthlyQty"]) - parseInt(dailySchedule[i]["producedQty"]);
+                }//console.log("canAddQty1 :",canAddQty);
                 var daviationQty = 0;
                 var requestedQty = 0;
                 var originalQuantity = 0;
+                console.log("Can Add")
                 if(canAddQty < dailySchedule[i][day1] && canAddQty > 0){
                   originalQuantity = dailySchedule[i][day1];
                   daviationQty = dailySchedule[i][day1] - canAddQty;
@@ -167,7 +184,21 @@ module.exports = {
                    .catch(error => console.log(error));
                  }
                }
+
                if(daviationQty != 0 && daviationQty != undefined){
+                 if(newPartNumberId[0]!=null && newPartNumberId[0]!=undefined){
+                   var singleDeviationPart = {
+                     "Production Schedule":newproductionScheduleId["productionScheduleId"],
+                     "Part Number": newPartNumberId[0]["partNumber"],
+                     "Requested Quantity": originalQuantity,
+                     "Produced Quantity": dailySchedule[i]["producedQty"],
+                     "Deviation Quantity": daviationQty,
+                     "Monthly Quantity": dailySchedule[i]["monthlyQty"],
+                     "Induction Date":dailySchedule[i]["inductionDate1"],
+                     "Plan For":dailySchedule[i]["planFor1"]
+                   }
+                 }
+                 deviationPartList.push(singleDeviationPart);
                  if(newPartNumberId[0]!=null && newPartNumberId[0]!=undefined){
                    await Deviation.create({
                      scheduleId: newproductionScheduleId["id"],
@@ -278,6 +309,17 @@ module.exports = {
              }
              if(daviationQty != 0 && daviationQty != undefined){
                if(newPartNumberId[0]!=null && newPartNumberId[0]!=undefined){
+                 var singleDeviationPart = {
+                   "Production Schedule":newproductionScheduleId["productionScheduleId"],
+                   "Part Number": newPartNumberId[0]["partNumber"],
+                   "Requested Quantity": originalQuantity,
+                   "Produced Quantity": dailySchedule[i]["producedQty"],
+                   "Deviation Quantity": daviationQty,
+                   "Monthly Quantity": dailySchedule[i]["monthlyQty"],
+                   "Induction Date":dailySchedule[i]["inductionDate1"],
+                   "Plan For":dailySchedule[i]["planFor1"]
+                 }
+                 deviationPartList.push(singleDeviationPart);
                  await Deviation.create({
                    scheduleId: newproductionScheduleId["id"],
                    partNumberId: newPartNumberId[0]["id"],
@@ -384,6 +426,17 @@ module.exports = {
              }
              if(daviationQty != 0 && daviationQty != undefined){
                if(newPartNumberId[0]!=null && newPartNumberId[0]!=undefined){
+                 var singleDeviationPart = {
+                   "Production Schedule":newproductionScheduleId["productionScheduleId"],
+                   "Part Number": newPartNumberId[0]["partNumber"],
+                   "Requested Quantity": originalQuantity,
+                   "Produced Quantity": dailySchedule[i]["producedQty"],
+                   "Deviation Quantity": daviationQty,
+                   "Monthly Quantity": dailySchedule[i]["monthlyQty"],
+                   "Induction Date":dailySchedule[i]["inductionDate1"],
+                   "Plan For":dailySchedule[i]["planFor1"]
+                 }
+                 deviationPartList.push(singleDeviationPart);
                  await Deviation.create({
                    scheduleId: newproductionScheduleId["id"],
                    partNumberId: newPartNumberId[0]["id"],
@@ -492,6 +545,17 @@ module.exports = {
              }
              if(daviationQty != 0 && daviationQty != undefined){
                if(newPartNumberId[0]!=null && newPartNumberId[0]!=undefined){
+                 var singleDeviationPart = {
+                   "Production Schedule":newproductionScheduleId["productionScheduleId"],
+                   "Part Number": newPartNumberId[0]["partNumber"],
+                   "Requested Quantity": originalQuantity,
+                   "Produced Quantity": dailySchedule[i]["producedQty"],
+                   "Deviation Quantity": daviationQty,
+                   "Monthly Quantity": dailySchedule[i]["monthlyQty"],
+                   "Induction Date":dailySchedule[i]["inductionDate1"],
+                   "Plan For":dailySchedule[i]["planFor1"]
+                 }
+                 deviationPartList.push(singleDeviationPart);
                  await Deviation.create({
                    scheduleId: newproductionScheduleId["id"],
                    partNumberId: newPartNumberId[0]["id"],
@@ -598,6 +662,17 @@ module.exports = {
              }
              if(daviationQty != 0 && daviationQty != undefined){
                if(newPartNumberId[0]!=null && newPartNumberId[0]!=undefined){
+                 var singleDeviationPart = {
+                   "Production Schedule":newproductionScheduleId["productionScheduleId"],
+                   "Part Number": newPartNumberId[0]["partNumber"],
+                   "Requested Quantity": originalQuantity,
+                   "Produced Quantity": dailySchedule[i]["producedQty"],
+                   "Deviation Quantity": daviationQty,
+                   "Monthly Quantity": dailySchedule[i]["monthlyQty"],
+                   "Induction Date":dailySchedule[i]["inductionDate1"],
+                   "Plan For":dailySchedule[i]["planFor1"]
+                 }
+                 deviationPartList.push(singleDeviationPart);
                  await Deviation.create({
                    scheduleId: newproductionScheduleId["id"],
                    partNumberId: newPartNumberId[0]["id"],
@@ -736,24 +811,26 @@ module.exports = {
             status:1
           }).populate('machineGroupId')
           .populate('partId');
-          if(productionSchedulePartRelationList[a]["requestedQuantity"]!=0){
-            for(var b=0;b<processSequenceList.length;b++){
-              cycletime = processSequenceList[b]["cycleTime"] * productionSchedulePartRelationList[a]["requestedQuantity"];
-              machineGroup = processSequenceList[b]["machineGroupId"]["name"];
+          if(processSequenceList[0] != null && processSequenceList[0] !=undefined){
+            if(productionSchedulePartRelationList[a]["requestedQuantity"]!=0){
+              for(var b=0;b<processSequenceList.length;b++){
+                cycletime = processSequenceList[b]["cycleTime"] * productionSchedulePartRelationList[a]["requestedQuantity"];
+                machineGroup = processSequenceList[b]["machineGroupId"]["name"];
 
-              var sequenceData = {
-                CycleTime:cycletime,
-                MachineGroup:machineGroup
+                var sequenceData = {
+                  CycleTime:cycletime,
+                  MachineGroup:machineGroup
+                }
+                cycleTimeList.push(sequenceData);
               }
-              cycleTimeList.push(sequenceData);
-            }
 
-            var partCycleTime = {
-              'PartNumber': processSequenceList[0]["partId"]["partNumber"],
-              'Part Description': processSequenceList[0]["partId"]["description"],
-              'Load Time (In minutes)' :Math.round(cycletime/60)
+              var partCycleTime = {
+                'PartNumber': processSequenceList[0]["partId"]["partNumber"],
+                'Part Description': processSequenceList[0]["partId"]["description"],
+                'Load Time (In minutes)' :Math.round(cycletime/60)
+              }
+              partList.push(partCycleTime);
             }
-            partList.push(partCycleTime);
           }
         }
       }
@@ -820,23 +897,47 @@ module.exports = {
       });
 
       if(newEmployeeList[0]!=null&&newEmployeeList[0]!=undefined){
-        mailText = mailText + "Daily Schedule Uploaded. \n  MachineGroup wise load for a Date: "+ day1 +" is as below :- ";
+        mailText = mailText + "\n  MachineGroup wise load for a Date: "+ day1 +" is as below :- ";
         for(var i=0;i<finalResult.length;i++){
           mailText = mailText + "\n" + "MachineGroup :"+ finalResult[i]["machineGroup"] +", & Load :"+finalResult[i]["load"]+ " minutes \n" ;
         }
+
+        mailText = mailText + "\n" +"Part Numbers not added in daily schedule due to not found in monthly schedule";
+        for(var a=0;a<notInMonthlySchedulePartList.length;a++){
+          mailText = mailText + "\n" +notInMonthlySchedulePartList[a]["Part Number"];
+        }
+
+        mailText = mailText + "\n" + "For deviation list please Please find attached file named Deviation Report";
+        var xls2 = json2xls(deviationPartList);
+        var filename2 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/ProductionSchedule/Deviation Report '+ dateTimeFormat +'.xlsx';
+        // var filename2 = 'E:/TMML-29-05/Server/Reports/ProductionSchedule/Deviation Report '+ dateTimeFormat +'.xlsx';
+        fs.writeFileSync(filename2, xls2, 'binary',function(err) {
+          if (err) {
+            console.log('Some error occured - file either not saved or corrupted file saved.');
+            sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+          } else {
+            console.log('It\'s saved!');
+          }
+        });
         console.log(mailText);
+        console.log(deviationPartList);
+
         for(var i=0;i<newEmployeeList.length;i++){
           {
             var mailOptions = {
               from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
-              // to: newEmployeeList[i].email, // list of receivers (who receives)
-              to:"santosh.adaki@tatamarcopolo.com",
+              to: newEmployeeList[i].email, // list of receivers (who receives)
+              // to:"santosh.adaki@tatamarcopolo.com",
               subject: "Daily Schedule Upload Status", // Subject line
               text: mailText,
               attachments :[
               {
                 'filename':'Daily-ProductionSchedule-Report '+dateTimeFormat+'.xlsx',
                 'path': filename1
+              },
+              {
+                'filename':'Deviation Report  '+dateTimeFormat+'.xlsx',
+                'path': filename2
               }
               ],
             };
@@ -938,7 +1039,21 @@ module.exports = {
           }
         }
       }
-      console.log(resTable);
+      var notYetCreated = `select distinct partNumber,requiredInMonth,monthlyScheduleId ,
+      (select partNumber from TestDatabase.dbo.partnumber where id=TestDatabase.dbo.monthlyschedulepartrelation.partNumber) as PartNumber from monthlyschedulepartrelation where monthlyScheduleId = `+monthlySchedule[0]["id"]+` and partNumber
+      NOT IN(select partnumberId from productionschedulepartrelation where createdAt Between `+createdAtStart+` AND `+createdAtEnd+` and monthlyschedulepartrelation.partNumber = productionschedulepartrelation.partNumberId and isJobCardCreated=1)`;
+      var monthlyData1 = await sails.sendNativeQuery(notYetCreated,[]);
+      if(monthlyData1["recordset"] != null && monthlyData1["recordset"] != undefined){
+        for(var i=0; i < monthlyData1["recordset"].length; i++){
+          var pushPartDetails = {
+            partNumberId: monthlyData1["recordset"][i]["partNumber"],
+            monthlyQuantity: monthlyData1["recordset"][i]["requiredInMonth"],
+            quantitiesInProduction: 0,
+            partNumber:monthlyData1["recordset"][i]["PartNumber"]
+          }
+          resTable.push(pushPartDetails);
+        }
+      }
       res.send(resTable);
     }
   };

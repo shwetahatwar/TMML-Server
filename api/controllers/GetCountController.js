@@ -929,9 +929,33 @@ module.exports = {
 				}
 			}
 		}
+		console.log("Second Query");
+		var notYetCreated = `select distinct partNumber,requiredInMonth,monthlyScheduleId ,
+		(select partNumber from TestDatabase.dbo.partnumber where id=TestDatabase.dbo.monthlyschedulepartrelation.partNumber) as PartNumber,
+		(select description from TestDatabase.dbo.partnumber where id=TestDatabase.dbo.monthlyschedulepartrelation.partNumber) as PartDesc from monthlyschedulepartrelation where monthlyScheduleId = `+monthlySchedule[0]["id"]+` and partNumber
+		NOT IN(select partnumberId from productionschedulepartrelation where createdAt Between `+createdAtStart+` AND `+createdAtEnd+` and monthlyschedulepartrelation.partNumber = productionschedulepartrelation.partNumberId)`;
+		var monthlyData1 = await sails.sendNativeQuery(notYetCreated,[]);
+
+		if(monthlyData1["recordset"] != null && monthlyData1["recordset"] != undefined){
+			for(var i=0; i < monthlyData1["recordset"].length; i++){
+				var pushPartDetails = {
+					'Part Number':monthlyData1["recordset"][i]["PartNumber"],
+					'Part No Description':monthlyData1["recordset"][i]["PartDesc"],
+					'Monthly Quantity': monthlyData1["recordset"][i]["requiredInMonth"],
+					'JC Generated Qty': 0,
+					'Qty Booked till date': 0,
+					'Qty Balance': 0,
+					'Month Total Produced Qty': 0,
+					'Net Monthly Requirement' : parseInt(monthlyData1["recordset"][i]["requiredInMonth"]),
+					'Remarks' : ""
+				}
+				resTable.push(pushPartDetails);
+			}
+		}
 		console.log(resTable);
 		var xls1 = json2xls(resTable);
 		var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/NetMonthlyReport/Net-Monthly-Report '+ dateTimeFormat +'.xlsx';
+		
 		fs.writeFileSync(filename1, xls1, 'binary',function(err) {
 			if (err) {
 				console.log('Some error occured - file either not saved or corrupted file saved.');
