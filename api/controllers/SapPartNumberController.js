@@ -6,6 +6,7 @@
 */
 
 var fs  = require('fs');
+var nodemailer = require ('nodemailer');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 // var xmlParser = require("xml2json");
 var convert = require('xml-js');
@@ -16,41 +17,251 @@ module.exports = {
 
   },
 
+  refreshPartData:async function(req,res){
+      var newDateTimeNow;
+      var toDateTimeNow;
+      var a = parseInt(req.query.fromDate);
+      var d = new Date(a);
+      var curr_date = d.getDate();
+      console.log("d",a,d);
+      if(curr_date.toString().length == 1){
+        curr_date = "0" + curr_date
+      }
+      var curr_month = parseInt(d.getMonth()) + 1;
+      curr_month = ""+curr_month;
+      if(curr_month.toString().length == 1){
+        curr_month = "0" + curr_month
+      }
+      var curr_year = d.getFullYear();
+      curr_year = curr_year.toString();
+      newDateTimeNow = curr_date + "." + curr_month + "." + curr_year;
+      a = parseInt(req.query.toDate);
+      d = new Date(a);
+      curr_date = d.getDate();
+      if(curr_date.toString().length == 1){
+        curr_date = "0" + curr_date
+      }
+      var curr_month = parseInt(d.getMonth()) + 1;
+      curr_month = ""+curr_month;
+      if(curr_month.toString().length == 1){
+        curr_month = "0" + curr_month
+      }
+      curr_year = d.getFullYear();
+      curr_year = curr_year.toString();
+      toDateTimeNow = curr_date + "." + curr_month + "." + curr_year;
+      console.log(newDateTimeNow,toDateTimeNow);
+      const xmlhttp = new XMLHttpRequest();
+      xmlhttp.open('POST', 'http://TDCSAPDAPPPRD.blr.telco.co.in:8001/sap/bc/srt/rfc/sap/zmppp_ws_comp_dtls/570/zmppp_ws_comp_dtls/zmppp_ws_comp_dtls', true,"TMML_BRIOT","tml!06TML");
+      xmlhttp.onreadystatechange = async function() {
+        if (xmlhttp.readyState == 4) {
+          var xml = xmlhttp.responseText;
+          var result = convert.xml2json(xml, {compact: true, spaces: 4});
+          var newJSON = JSON.parse(result);
+          console.log("Line 27",newJSON["_attributes"]);
+          var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZMPPP_COMP_DTL_WEBSERVICEResponse"]["ZCOMP_DTL"]["item"];
+
+          for(var i =1;i<resultData.length;i++){
+            sails.log.info("NEW part DATA received from SAP: ",resultData.length);
+            if(resultData[i]["ZSTATUS"]["_text"] == "N"){
+              var newPartNumber = await PartNumber.find({
+                partNumber : resultData[i]["ZIDNRK"]["_text"]
+              });
+              console.log("Line 72",newPartNumber);
+              if(newPartNumber[0] != undefined && newPartNumber[0] != null){
+              }
+              else{
+                console.log("Line 67", resultData[i]["ZMATNR"]["_text"]);
+                console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
+                var newRawMaterial = await RawMaterial.find({
+                  rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
+                });
+                console.log(newRawMaterial[0]);
+                if(newRawMaterial[0] != undefined && newRawMaterial[0] !=null){
+                  var newRawMaterial = await RawMaterial.find({
+                    rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
+                  });
+                  console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
+                  var newLocationId;
+                  var newLocation = await Location.find({
+                    name:resultData[i]["ZLGFSB"]["_text"]
+                  });
+                  if(newLocation[0] != null && newLocation[0] != undefined){
+                    console.log(newLocation);
+                    newLocationId = newLocation[0]["id"]
+                  }
+                  else {
+                    await Location.create({
+                      name:resultData[i]["ZLGFSB"]["_text"],
+                      barcodeSerial:Date.now(),
+                      locationType:'Kanban Location'
+                    });
+                    var newLocation1 = await Location.find({
+                      name:resultData[i]["ZLGFSB"]["_text"]
+                    });
+                    newLocationId = newLocation1[0]["id"]
+                  }
+                  var newPartNumber1 = await PartNumber.create({
+                    partNumber:resultData[i]["ZIDNRK"]["_text"],
+                    description:resultData[i]["ZMAKTX"]["_text"],
+                    partCreationDate:resultData[i]["ZANDAT1"]["_text"],
+                    partChangeDate:resultData[i]["ZAEDAT"]["_text"],
+                    partStatus:resultData[i]["ZSTATUS"]["_text"],
+                    uom:resultData[i]["ZMEINS"]["_text"],
+                    materialGroup:resultData[i]["ZMATKL"]["_text"],
+                    rawMaterialId : newRawMaterial[0]["id"],
+                    status : 1,
+                    kanbanLocation : newLocationId
+                  })
+                  .fetch();
+                  console.log("newPartNumber", newPartNumber1[0]);
+                  sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
+                // break;
+              }
+              else{
+                var newRawMaterialId = await RawMaterial.create({
+                  rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
+                  description: ["ZMAKTX1"]["_text"],
+                  uom: resultData[i]["ZMEINS"]["_text"],
+                  remarks: "",
+                  status:1,
+                  materialTypeId:1
+                })
+                .fetch();
+                console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
+                var newLocationId;
+                var newLocation = await Location.find({
+                  name:resultData[i]["ZLGFSB"]["_text"]
+                });
+                if(newLocation[0] != null && newLocation[0] != undefined){
+                  console.log(newLocation);
+                  newLocationId = newLocation[0]["id"]
+                }
+                else {
+                  await Location.create({
+                    name:resultData[i]["ZLGFSB"]["_text"],
+                    barcodeSerial:Date.now(),
+                    locationType:'Kanban Location'
+                  });
+                  var newLocation1 = await Location.find({
+                    name:resultData[i]["ZLGFSB"]["_text"]
+                  });
+                  newLocationId = newLocation1[0]["id"]
+                }
+                var newPartNumber1 = await PartNumber.create({
+                  partNumber:resultData[i]["ZIDNRK"]["_text"],
+                  description:resultData[i]["ZMAKTX"]["_text"],
+                  partCreationDate:resultData[i]["ZANDAT1"]["_text"],
+                  partChangeDate:resultData[i]["ZAEDAT"]["_text"],
+                  partStatus:resultData[i]["ZSTATUS"]["_text"],
+                  uom:resultData[i]["ZMEINS"]["_text"],
+                  materialGroup:resultData[i]["ZMATKL"]["_text"],
+                  rawMaterialId : newRawMaterialId["id"],
+                  status : 1,
+                  kanbanLocation : newLocationId
+                })
+                .fetch();
+                console.log("newPartNumber", newPartNumber1[0]);
+                sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
+              }
+            }
+          }
+          else if(resultData[i]["ZSTATUS"] == "C"){
+            var newRawMaterialIdUpdated;
+            var newRawMaterial = await RawMaterial.find({
+              rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
+            })
+            if(newRawMaterial[0] != null && newRawMaterial[0] != undefined){
+              newRawMaterialIdUpdated = newRawMaterial[0]["id"];
+              var newRawMaterial = await RawMaterial.update({
+                rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
+              }).set({
+                description: ["ZMAKTX1"]["_text"],
+              });
+            }
+            else{
+              var newRawMaterialId = await RawMaterial.create({
+                rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
+                description: ["ZMAKTX1"]["_text"],
+                uom: resultData[i]["ZMEINS"]["_text"],
+                remarks: "",
+                status:1,
+                materialTypeId:1
+              })
+              .fetch();
+              newRawMaterialIdUpdated = newRawMaterialId["id"];
+            }
+            var partNumber = PartNumber.update({
+              partNumber:resultData[i]["ZIDNRK"]["_text"]
+            })
+            .set({
+              description:resultData[i]["ZMAKTX"]["_text"],
+              partCreationDate:resultData[i]["ZANDAT1"]["_text"],
+              partChangeDate:resultData[i]["ZAEDAT"]["_text"],
+              partStatus:resultData[i]["ZSTATUS"]["_text"],
+              uom:resultData[i]["ZMEINS"]["_text"],
+              materialGroup:resultData[i]["ZMATKL"]["_text"],
+              rawMaterialId:newRawMaterialIdUpdated
+            });
+          }
+          else if(resultData[i]["ZSTATUS"] == "B"){
+            var partNumber = PartNumber.update({
+              partNumber:resultData[i]["ZIDNRK"]["_text"]
+            })
+            .set({
+              partStatus:resultData[i]["ZSTATUS"]["_text"],
+              status:0
+            });
+          }
+        }
+        // res.send();
+      }
+    }
+
+    xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
+    var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlTextFile.xml', 'utf-8');
+    xml = xml.replace("newDateNowAPI", newDateTimeNow);
+    xml = xml.replace("toDateNowAPI", toDateTimeNow);
+    console.log(xml);
+    sails.log.info("NEW part",xml);
+    xmlhttp.send(xml);
+    res.send('updated');
+  },
+
+
+  get313Status:async function(req,res){
+      var sap315Status = await SapTransaction.find({
+        jobCard: req.query.jobCard
+      });
+      if(sap315Status[0] != null && sap315Status[0] != undefined){
+        if(sap315Status[0]["remarks"] != "" && sap315Status[0]["remarks"] != undefined){
+          res.send(sap315Status[0]["remarks"]);
+        }
+        else{
+          res.send("Job Card is completed but 313 is not yet done");
+        }
+      }
+      else{
+        var jobCardStatus = await JobCard.find({
+          barcodeSerial: req.query.jobCard
+        });
+        if(jobCardStatus[0] != null && jobCardStatus[0] != undefined){
+          var status = "Job Card Status is "+jobCardStatus[0]["jobcardStatus"];
+          res.send(status);
+        }
+      }
+    },
   soapRequestGet:async function(req,res){
     var d = new Date();
     var newDay = d.getDate();
     if(newDay.toString().length == 1)
-      newDay = "0" + newDay;
+    newDay = "0" + newDay;
     var newMonth = d.getMonth();
     if(newMonth.toString().length == 1)
-      newMonth = "0" + newMonth;
+    newMonth = "0" + newMonth;
     var newYear = d.getFullYear();
-    var newDateTimeNow = newDay + "." + newMonth + "." + newYear;   
+    var newDateTimeNow = newDay + "." + newMonth + "." + newYear;
     await newSapTransactionEntry(newDateTimeNow);
     res.send();
-  },
-
-  get313Status:async function(req,res){
-    var sap315Status = await SapTransaction.find({
-      jobCard: req.query.jobCard
-    });
-    if(sap315Status[0] != null && sap315Status[0] != undefined){
-      if(sap315Status[0]["remarks"] != "" && sap315Status[0]["remarks"] != undefined){
-        res.send(sap315Status[0]["remarks"]);
-      }
-      else{
-        res.send("Job Card is completed but 313 is not yet done");
-      }
-    }
-    else{
-      var jobCardStatus = await JobCard.find({
-        barcodeSerial: req.query.jobCard
-      });
-      if(jobCardStatus[0] != null && jobCardStatus[0] != undefined){
-        var status = "Job Card Status is "+jobCardStatus[0]["jobcardStatus"];
-        res.send(status);
-      }
-    }
   },
 
   soapRequest1:async function(req,res){
@@ -64,170 +275,91 @@ module.exports = {
     var getJobCardCompleted = await SapTransaction.find({
       documentNumber: 0
     });
+    sails.log.info("getJobCardCompleted",getJobCardCompleted);
+    sails.log.info("getJobCardCompleted length",getJobCardCompleted.length);
     if(getJobCardCompleted[0] != null && getJobCardCompleted[0] != undefined){
-      var xml = "<ZwebInput>  <item> <Zwerks>Plant</Zwerks> <Zdate>Date</Zdate><Zmatnr>MaterialNumber</Zmatnr> <Zxblnr>JobCardNo</Zxblnr> <Zbktxt>UniqueNumber</Zbktxt> <Zmenge>ComponentquantityComponent</Zmenge> </item> </ZwebInput>";
-      for(var i=0; i < 50; i++){
-        if(i==0){
-          xml = xml.replace("Plant",getJobCardCompleted[0]["plant"]);
-          if(getJobCardCompleted[0]["date"]!= null && getJobCardCompleted[0]["date"]!=undefined){
-            xml = xml.replace("Date",getJobCardCompleted[0]["date"]);
-            if(getJobCardCompleted[0]["material"]!= null && getJobCardCompleted[0]["material"]!=undefined){
-              xml = xml.replace("MaterialNumber",getJobCardCompleted[0]["material"]);
-              if(getJobCardCompleted[0]["jobCard"]!= null && getJobCardCompleted[0]["jobCard"]!=undefined){
-                xml = xml.replace("JobCardNo",getJobCardCompleted[0]["jobCard"]);
-                if(getJobCardCompleted[0]["uniqueNumber"]!= null && getJobCardCompleted[0]["uniqueNumber"]!=undefined){
-                  xml = xml.replace("UniqueNumber",getJobCardCompleted[0]["uniqueNumber"]);
-                  if(getJobCardCompleted[0]["quantity"]!= null && getJobCardCompleted[0]["quantity"]!=undefined){
-                    xml = xml.replace("ComponentquantityComponent",getJobCardCompleted[0]["quantity"]);
-                    // console.log("Line 250",xml);
-                  }
-                }
-              }
-            }
-          }
+      for(var i=0; i < getJobCardCompleted.length; i++){
+        if(getJobCardCompleted[i] != null && getJobCardCompleted[i] != undefined){
+          await satTransactionEntry(getJobCardCompleted[i])
         }
-        else{
-          var xmlString = " <ZwebInput>  <item> <Zwerks>Plant</Zwerks> <Zdate>Date</Zdate><Zmatnr>MaterialNumber</Zmatnr> <Zxblnr>JobCardNo</Zxblnr> <Zbktxt>UniqueNumber</Zbktxt> <Zmenge>ComponentquantityComponent</Zmenge> </item> </ZwebInput>";   
-          xmlString = xmlString.replace("Plant",getJobCardCompleted[i]["plant"]);
-          if(getJobCardCompleted[i]["date"]!= null && getJobCardCompleted[i]["date"]!=undefined){
-            xmlString = xmlString.replace("Date",getJobCardCompleted[i]["date"]);
-            if(getJobCardCompleted[i]["material"]!= null && getJobCardCompleted[i]["material"]!=undefined){
-              xmlString = xmlString.replace("MaterialNumber",getJobCardCompleted[i]["material"]);
-              if(getJobCardCompleted[i]["jobCard"]!= null && getJobCardCompleted[i]["jobCard"]!=undefined){
-                xmlString = xmlString.replace("JobCardNo",getJobCardCompleted[i]["jobCard"]);
-                if(getJobCardCompleted[i]["uniqueNumber"]!= null && getJobCardCompleted[i]["uniqueNumber"]!=undefined){
-                  xmlString = xmlString.replace("UniqueNumber",getJobCardCompleted[i]["uniqueNumber"]);
-                  if(getJobCardCompleted[i]["quantity"]!= null && getJobCardCompleted[i]["quantity"]!=undefined){
-                    xmlString = xmlString.replace("ComponentquantityComponent",getJobCardCompleted[i]["quantity"]);
-                    // console.log("Line 250",xmlString);
-                  }
-                }
-              }
-            }
-          }
-          xml = xml.replace("</ZwebInput>",xmlString);
-        }
-
       }
-      console.log("xml",xml);
-      xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
-      xmlhttp.send(xml);
-      console.log("In Manual SAP");
-      const xmlhttp = new XMLHttpRequest();
-      xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
-      xmlhttp.onreadystatechange = async function() {
-        if (xmlhttp.readyState == 4) {
-          var xml = xmlhttp.responseText;
-          var result = convert.xml2json(xml, {compact: true, spaces: 4});
-          var newJSON = JSON.parse(result);
-          console.log("Line 214", newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1]);
-          var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1];
-          console.log(resultData);
+    }
 
-          // if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
-          //   var sapTransaction = await SapTransaction.update({
-          //     uniqueNumber:resultData["Zbktxt"]["_text"],
-          //     jobCard:getJobCardCompleted["jobCard"]
-          //   })
-          //   .set({
-          //     documentNumber:resultData["Zmblnr"]["_text"],
-          //     documentYear:resultData["Zmjahr"]["_text"],
-          //     remarks:resultData["Zremarks"]["_text"]
-          //   });
+  },
 
-          //   await SapTransactionLog.create({
-          //     plant:"7002",
-          //     date:dateAdd,
-          //     material:materialAdd,
-          //     jobCard:jobcardAdd,
-          //     uniqueNumber:resultData["Zbktxt"]["_text"],
-          //     quantity:quantityAdd,
-          //     documentNumber:resultData["Zmblnr"]["_text"],
-          //     documentYear:resultData["Zmjahr"]["_text"],
-          //     remarks:resultData["Zremarks"]["_text"]
-          //   });
-          // }
+  parseJson:async function(req,res){
+    var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\test.xml', 'utf-8');
+
+    var result = convert.xml2json(xml, {compact: true, spaces: 4});
+    var newJSON = JSON.parse(result);
+    console.log(newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZMPPP_COMP_DTL_WEBSERVICEResponse"]["ZCOMP_DTL"]["item"]);
+
+  },
+
+  manualSapTransaction:async function(plantAdd,dateAdd,materialAdd,jobcardAdd,uniqueNumberAdd,quantityAdd){
+    console.log("In Manual SAP");
+    const xmlhttp = new XMLHttpRequest();
+    xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
+    xmlhttp.onreadystatechange = async function() {
+      if (xmlhttp.readyState == 4) {
+        var xml = xmlhttp.responseText;
+        var result = convert.xml2json(xml, {compact: true, spaces: 4});
+        var newJSON = JSON.parse(result);
+        console.log("Line 214", newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1]);
+        var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1];
+        console.log(resultData);
+
+        if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
+          var sapTransaction = await SapTransaction.update({
+            uniqueNumber:resultData["Zbktxt"]["_text"],
+            jobCard:getJobCardCompleted["jobCard"]
+          })
+          .set({
+            documentNumber:resultData["Zmblnr"]["_text"],
+            documentYear:resultData["Zmjahr"]["_text"],
+            remarks:resultData["Zremarks"]["_text"]
+          });
+
+          await SapTransactionLog.create({
+            plant:"7002",
+            date:dateAdd,
+            material:materialAdd,
+            jobCard:jobcardAdd,
+            uniqueNumber:resultData["Zbktxt"]["_text"],
+            quantity:quantityAdd,
+            documentNumber:resultData["Zmblnr"]["_text"],
+            documentYear:resultData["Zmjahr"]["_text"],
+            remarks:resultData["Zremarks"]["_text"]
+          });
         }
-      };
-        // if(getJobCardCompleted[i] != null && getJobCardCompleted[i] != undefined){
-        //   await satTransactionEntry(getJobCardCompleted[i])
-        // }
       }
-    },
+    };
 
-    parseJson:async function(req,res){
-      var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\test.xml', 'utf-8');
+    xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
+    var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlPOSTTextFile.xml', 'utf-8');
 
-      var result = convert.xml2json(xml, {compact: true, spaces: 4});
-      var newJSON = JSON.parse(result);
-      console.log(newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZMPPP_COMP_DTL_WEBSERVICEResponse"]["ZCOMP_DTL"]["item"]);
-
-    },
-
-    manualSapTransaction:async function(plantAdd,dateAdd,materialAdd,jobcardAdd,uniqueNumberAdd,quantityAdd){
-      console.log("In Manual SAP");
-      const xmlhttp = new XMLHttpRequest();
-      xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
-      xmlhttp.onreadystatechange = async function() {
-        if (xmlhttp.readyState == 4) {
-          var xml = xmlhttp.responseText;
-          var result = convert.xml2json(xml, {compact: true, spaces: 4});
-          var newJSON = JSON.parse(result);
-          console.log("Line 214", newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1]);
-          var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZmpppProdBookingWebResponse"]["ZwebOutput"]["item"][1];
-          console.log(resultData);
-
-          // if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
-          //   var sapTransaction = await SapTransaction.update({
-          //     uniqueNumber:resultData["Zbktxt"]["_text"],
-          //     jobCard:getJobCardCompleted["jobCard"]
-          //   })
-          //   .set({
-          //     documentNumber:resultData["Zmblnr"]["_text"],
-          //     documentYear:resultData["Zmjahr"]["_text"],
-          //     remarks:resultData["Zremarks"]["_text"]
-          //   });
-
-          //   await SapTransactionLog.create({
-          //     plant:"7002",
-          //     date:dateAdd,
-          //     material:materialAdd,
-          //     jobCard:jobcardAdd,
-          //     uniqueNumber:resultData["Zbktxt"]["_text"],
-          //     quantity:quantityAdd,
-          //     documentNumber:resultData["Zmblnr"]["_text"],
-          //     documentYear:resultData["Zmjahr"]["_text"],
-          //     remarks:resultData["Zremarks"]["_text"]
-          //   });
-          // }
-        }
-      };
-
-      xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
-      var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlPOSTTextFile.xml', 'utf-8');
-
-      xml = xml.replace("Plant",getJobCardCompleted[0]["plant"]);
-      if(getJobCardCompleted[0]["date"]!= null && getJobCardCompleted[0]["date"]!=undefined){
-        xml = xml.replace("Date",getJobCardCompleted[0]["date"]);
-        if(getJobCardCompleted[0]["material"]!= null && getJobCardCompleted[0]["material"]!=undefined){
-          xml = xml.replace("MaterialNumber",getJobCardCompleted[0]["material"]);
-          if(getJobCardCompleted[0]["jobCard"]!= null && getJobCardCompleted[0]["jobCard"]!=undefined){
-            xml = xml.replace("JobCardNo",getJobCardCompleted[0]["jobCard"]);
-            if(getJobCardCompleted[0]["uniqueNumber"]!= null && getJobCardCompleted[0]["uniqueNumber"]!=undefined){
-              xml = xml.replace("UniqueNumber",getJobCardCompleted[0]["uniqueNumber"]);
-              if(getJobCardCompleted[0]["quantity"]!= null && getJobCardCompleted[0]["quantity"]!=undefined){
-                xml = xml.replace("ComponentquantityComponent",getJobCardCompleted[0]["quantity"]);
-                console.log("Line 250",xml);
-                xmlhttp.send(xml);
-              }
+    xml = xml.replace("Plant",getJobCardCompleted[0]["plant"]);
+    if(getJobCardCompleted[0]["date"]!= null && getJobCardCompleted[0]["date"]!=undefined){
+      xml = xml.replace("Date",getJobCardCompleted[0]["date"]);
+      if(getJobCardCompleted[0]["material"]!= null && getJobCardCompleted[0]["material"]!=undefined){
+        xml = xml.replace("MaterialNumber",getJobCardCompleted[0]["material"]);
+        if(getJobCardCompleted[0]["jobCard"]!= null && getJobCardCompleted[0]["jobCard"]!=undefined){
+          xml = xml.replace("JobCardNo",getJobCardCompleted[0]["jobCard"]);
+          if(getJobCardCompleted[0]["uniqueNumber"]!= null && getJobCardCompleted[0]["uniqueNumber"]!=undefined){
+            xml = xml.replace("UniqueNumber",getJobCardCompleted[0]["uniqueNumber"]);
+            if(getJobCardCompleted[0]["quantity"]!= null && getJobCardCompleted[0]["quantity"]!=undefined){
+              xml = xml.replace("ComponentquantityComponent",getJobCardCompleted[0]["quantity"]);
+              console.log("Line 250",xml);
+              xmlhttp.send(xml);
             }
           }
         }
       }
-      res.send();
-    },
+    }
+    res.send();
+  },
 
-    get313Data:async function(req,res){
+  get313Data:async function(req,res){
       console.log("req.body: ",req.body);
       var sap315 = await SapTransaction.find({
         jobCard: req.body.jobCard
@@ -236,7 +368,7 @@ module.exports = {
         console.log("Line 132",sap315[0]["documentNumber"]);
         if(sap315[0]["documentNumber"] != 0 && sap315[0]["documentNumber"] != 1)
         {
-          res.send(sap315);
+            res.send(sap315);
         }
         else
         {
@@ -260,9 +392,9 @@ module.exports = {
     }
   };
 
-  async function satTransactionEntry(getJobCardCompleted){
+async function satTransactionEntry(getJobCardCompleted){
 
-    const xmlhttp = new XMLHttpRequest();
+  const xmlhttp = new XMLHttpRequest();
   // xmlhttp.open('POST', 'http://eccauto.pune.telco.co.in:8000/sap/bc/srt/rfc/sap/zmp_web_prod_booking/170/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
   // xmlhttp.open('POST', 'http://TDCSAPDAPPPRD.blr.telco.co.in:8001/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
   xmlhttp.open('POST', 'http://TDCSAPDAPPPRD.blr.telco.co.in:8001/sap/bc/srt/rfc/sap/zmp_web_prod_booking/570/zmp_web_prod_booking/zmp_web_prod_booking', true,"TMML_BRIOT","tml!06TML");
@@ -278,26 +410,26 @@ module.exports = {
       sails.log.info(" \n resultData: ",resultData);
       if(resultData["Zmblnr"]["_text"] != null && resultData["Zmblnr"]["_text"] != undefined && resultData["Zmblnr"]["_text"] != 0){
         // for(var i =0;i<xmlItems.length;i++){
-          var sapTransaction = await SapTransaction.update({
-            uniqueNumber:resultData["Zbktxt"]["_text"],
-            jobCard:getJobCardCompleted["jobCard"]
-          })
-          .set({
-            documentNumber:resultData["Zmblnr"]["_text"],
-            documentYear:resultData["Zmjahr"]["_text"],
-            remarks:resultData["Zremarks"]["_text"]
-          });
-          await SapTransactionLog.create({
-            plant:"7002",
-            date:getJobCardCompleted["date"],
-            material:getJobCardCompleted["material"],
-            jobCard:getJobCardCompleted["jobCard"],
-            uniqueNumber:resultData["Zbktxt"]["_text"],
-            quantity:getJobCardCompleted["quantity"],
-            documentNumber:resultData["Zmblnr"]["_text"],
-            documentYear:resultData["Zmjahr"]["_text"],
-            remarks:resultData["Zremarks"]["_text"]
-          });
+        var sapTransaction = await SapTransaction.update({
+          uniqueNumber:resultData["Zbktxt"]["_text"],
+          jobCard:getJobCardCompleted["jobCard"]
+        })
+        .set({
+          documentNumber:resultData["Zmblnr"]["_text"],
+          documentYear:resultData["Zmjahr"]["_text"],
+          remarks:resultData["Zremarks"]["_text"]
+        });
+        await SapTransactionLog.create({
+          plant:"7002",
+          date:getJobCardCompleted["date"],
+          material:getJobCardCompleted["material"],
+          jobCard:getJobCardCompleted["jobCard"],
+          uniqueNumber:resultData["Zbktxt"]["_text"],
+          quantity:getJobCardCompleted["quantity"],
+          documentNumber:resultData["Zmblnr"]["_text"],
+          documentYear:resultData["Zmjahr"]["_text"],
+          remarks:resultData["Zremarks"]["_text"]
+        });
         // }
       }
       else if(resultData["Zremarks"]["_text"] == "Unique Number and Job Card already exists" || resultData["Zremarks"]["_text"] == "315 already done against this JC/ unique no combination"){
@@ -413,9 +545,6 @@ async function newSapTransactionEntry(newDateTimeNow){
             });
             console.log(newRawMaterial[0]);
             if(newRawMaterial[0] != undefined && newRawMaterial[0] !=null){
-              var newRawMaterial = await RawMaterial.find({
-                rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
-              });
               console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
               var newLocationId;
               var newLocation = await Location.find({
@@ -451,15 +580,15 @@ async function newSapTransactionEntry(newDateTimeNow){
               .fetch();
               console.log("newPartNumber", newPartNumber1[0]);
               if(newPartNumber1 [0] != null && newPartNumber1[0] != undefined){
-                var selfSignedConfig = {
-                  host: '128.9.24.24',
-                  port: 25
-                };
-                var transporter = nodemailer.createTransport(selfSignedConfig);
-                var mailText = "New Part Added into Software by SAP: ";
-                mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
-                mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
-                var mailOptions = {
+               var selfSignedConfig = {
+                 host: '128.9.24.24',
+                 port: 25
+               };
+               var transporter = nodemailer.createTransport(selfSignedConfig);
+               var mailText = "New Part Added into Software by SAP: ";
+               mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
+               mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
+               var mailOptions = {
                from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
                to:"santosh.adaki@tatamarcopolo.com;ashishm@tatamotors.com;santosh.arishinakar@tatamarcopolo.com",
                subject: "NEW part added by SAP", // Subject line
@@ -467,13 +596,13 @@ async function newSapTransactionEntry(newDateTimeNow){
              };
              transporter.sendMail(mailOptions, function(error, info) {
                if(error){
-                 sails.log.error("NewJobCards-Report mail not sent",error);
-               } else {
-                 sails.log.info('NewJobCards-Report Message sent: ' + info.response);
-               }
-             });
+                sails.log.error("NewJobCards-Report mail not sent",error);
+              } else {
+               sails.log.info('NewJobCards-Report Message sent: ' + info.response);
+             }
+           });
            }
-           sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
+              sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
               // break;
             }
             else{
@@ -483,7 +612,7 @@ async function newSapTransactionEntry(newDateTimeNow){
                 uom: resultData[i]["ZMEINS"]["_text"],
                 remarks: "",
                 status:1,
-                materialTypeId:1
+                materialTypeId:2
               })
               .fetch();
               console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
@@ -520,10 +649,33 @@ async function newSapTransactionEntry(newDateTimeNow){
               })
               .fetch();
               console.log("newPartNumber", newPartNumber1[0]);
+              if(newPartNumber1 [0] != null && newPartNumber1[0] != undefined){
+               var selfSignedConfig = {
+                 host: '128.9.24.24',
+                 port: 25
+               };
+               var transporter = nodemailer.createTransport(selfSignedConfig);
+               var mailText = "New Part Added into Software by SAP: ";
+               mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
+               mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
+               var mailOptions = {
+               from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
+               to:"santosh.adaki@tatamarcopolo.com;ashishm@tatamotors.com;santosh.arishinakar@tatamarcopolo.com",
+               subject: "NEW part added by SAP", // Subject line
+               text: mailText,
+             };
+             transporter.sendMail(mailOptions, function(error, info) {
+               if(error){
+                sails.log.error("NewJobCards-Report mail not sent",error);
+              } else {
+               sails.log.info('NewJobCards-Report Message sent: ' + info.response);
+             }
+           });
+           }
               sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
             }
           }
-        } 
+        }
         else if(resultData[i]["ZSTATUS"] == "C"){
           var newRawMaterialIdUpdated;
           var newRawMaterial = await RawMaterial.find({
@@ -561,7 +713,8 @@ async function newSapTransactionEntry(newDateTimeNow){
             materialGroup:resultData[i]["ZMATKL"]["_text"],
             rawMaterialId:newRawMaterialIdUpdated
           });
-        } 
+          sails.log.info("Part Updated by SAP: ",resultData[i]["ZIDNRK"]["_text"]);
+        }
         else if(resultData[i]["ZSTATUS"] == "B"){
           var partNumber = PartNumber.update({
             partNumber:resultData[i]["ZIDNRK"]["_text"]
@@ -578,6 +731,7 @@ async function newSapTransactionEntry(newDateTimeNow){
   xmlhttp.setRequestHeader('Content-Type', 'text/xml; charset=utf-8');
   var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlTextFile.xml', 'utf-8');
   xml = xml.replace("newDateNowAPI", newDateTimeNow);
+  xml = xml.replace("toDateNowAPI", "");
   console.log(xml);
   sails.log.info("NEW part",xml);
   xmlhttp.send(xml);
