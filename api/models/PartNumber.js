@@ -37,6 +37,12 @@ module.exports = {
     partStatus: { // coming from SAP
       type:'string' //N- New, C – Changed, B- Blocked
     },
+    rackLoc: { 
+      type:'string' 
+    },
+    prodLoc: { 
+      type:'string' 
+    },
     createdBy: {
       model:'User'
     },

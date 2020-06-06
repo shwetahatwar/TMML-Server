@@ -110,10 +110,35 @@ module.exports = {
                     materialGroup:resultData[i]["ZMATKL"]["_text"],
                     rawMaterialId : newRawMaterial[0]["id"],
                     status : 1,
+                    rackLoc :resultData[i]["ZRACKLOC"]["_text"],
+                    prodLoc :resultData[i]["ZLGPRO"]["_text"],
                     kanbanLocation : newLocationId
                   })
                   .fetch();
                   console.log("newPartNumber", newPartNumber1[0]);
+                  if(newPartNumber1 [0] != null && newPartNumber1[0] != undefined){
+                    var selfSignedConfig = {
+                      host: '128.9.24.24',
+                      port: 25
+                    };
+                    var transporter = nodemailer.createTransport(selfSignedConfig);
+                    var mailText = "New Part Added into Software by SAP, Please upload process sequence for the same. ";
+                    mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
+                    mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
+                    var mailOptions = {
+               from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
+               to:"santosh.adaki@tatamarcopolo.com;ashishm@tatamotors.com;santosh.arishinakar@tatamarcopolo.com",
+               subject: "NEW part added by SAP", // Subject line
+               text: mailText,
+             };
+             transporter.sendMail(mailOptions, function(error, info) {
+               if(error){
+                 sails.log.error("New Part mail not sent",error);
+               } else {
+                 sails.log.info('New Part Message sent: ' + info.response);
+               }
+             });
+           }
                   sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
                 // break;
               }
@@ -157,6 +182,8 @@ module.exports = {
                   materialGroup:resultData[i]["ZMATKL"]["_text"],
                   rawMaterialId : newRawMaterialId["id"],
                   status : 1,
+                  rackLoc :resultData[i]["ZRACKLOC"]["_text"],
+                  prodLoc :resultData[i]["ZLGPRO"]["_text"],
                   kanbanLocation : newLocationId
                 })
                 .fetch();
@@ -575,6 +602,8 @@ async function newSapTransactionEntry(newDateTimeNow){
                 materialGroup:resultData[i]["ZMATKL"]["_text"],
                 rawMaterialId : newRawMaterial[0]["id"],
                 status : 1,
+                rackLoc :resultData[i]["ZRACKLOC"]["_text"],
+                prodLoc :resultData[i]["ZLGPRO"]["_text"],
                 kanbanLocation : newLocationId
               })
               .fetch();
@@ -585,7 +614,7 @@ async function newSapTransactionEntry(newDateTimeNow){
                  port: 25
                };
                var transporter = nodemailer.createTransport(selfSignedConfig);
-               var mailText = "New Part Added into Software by SAP: ";
+               var mailText = "New Part Added into Software by SAP, Please upload process sequence for the same. ";
                mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
                mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
                var mailOptions = {
@@ -596,9 +625,9 @@ async function newSapTransactionEntry(newDateTimeNow){
              };
              transporter.sendMail(mailOptions, function(error, info) {
                if(error){
-                sails.log.error("NewJobCards-Report mail not sent",error);
+                sails.log.error("New Part mail not sent",error);
               } else {
-               sails.log.info('NewJobCards-Report Message sent: ' + info.response);
+               sails.log.info('New Part Message sent: ' + info.response);
              }
            });
            }
@@ -644,7 +673,10 @@ async function newSapTransactionEntry(newDateTimeNow){
                 uom:resultData[i]["ZMEINS"]["_text"],
                 materialGroup:resultData[i]["ZMATKL"]["_text"],
                 rawMaterialId : newRawMaterialId["id"],
+                rackLoc :resultData[i]["ZRACKLOC"]["_text"],
+                prodLoc :resultData[i]["ZLGPRO"]["_text"],
                 status : 1,
+
                 kanbanLocation : newLocationId
               })
               .fetch();
@@ -655,7 +687,7 @@ async function newSapTransactionEntry(newDateTimeNow){
                  port: 25
                };
                var transporter = nodemailer.createTransport(selfSignedConfig);
-               var mailText = "New Part Added into Software by SAP: ";
+               var mailText = "New Part Added into Software by SAP, Please upload process sequence for the same. ";
                mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
                mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
                var mailOptions = {

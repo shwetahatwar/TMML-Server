@@ -16,8 +16,9 @@ module.exports = {
       var productionSchedulePartRelation = await ProductionSchedulePartRelation.find({
         partNumberId:partNumberBulkUpload[0]["id"]
       });
-      console.log("Line 19", productionSchedulePartRelation);
-      if(productionSchedulePartRelation[0] != null && productionSchedulePartRelation != undefined){
+      console.log("Line 19", productionSchedulePartRelation[0]);
+      if(productionSchedulePartRelation[0] != null && productionSchedulePartRelation[0] != undefined){
+        console.log("Line 21")
         var activeJobCard = await JobCard.find({
           productionSchedulePartRelationId:productionSchedulePartRelation[0]["id"],
           jobcardStatus : { '!=' : ['In Progress', 'New'] }
@@ -31,12 +32,17 @@ module.exports = {
           console.log("Line 30 else part");
           var manPower = req.body.manPower;
           var SMH = req.body.SMH;
+          var rackLoc = req.body.rackLoc;
+          var prodLoc = req.body.prodLoc;
+          console.log("Line 36",req.body.rackLoc,req.body.prodLoc)
           await PartNumber.update({
             partNumber:req.body.partNumber
           })
           .set({
             manPower:req.body.manPower,
-            SMH:req.body.SMH
+            SMH:req.body.SMH,
+            rackLoc : req.body.rackLoc,
+            prodLoc : req.body.prodLoc
           });
 
           await ProcessSequence.update({
@@ -160,16 +166,22 @@ module.exports = {
         }
       }
       else{
+        console.log("Line 167",req.body.rackLoc,req.body.prodLoc)
+       
         var manPower = req.body.manPower;
         var SMH = req.body.SMH;
-        await PartNumber.update({
+        var rackLoc = req.body.rackLoc;
+        var prodLoc = req.body.prodLoc;
+         await PartNumber.update({
           partNumber:req.body.partNumber
         })
         .set({
           manPower:req.body.manPower,
-          SMH:req.body.SMH
+          SMH:req.body.SMH,
+          rackLoc: req.body.rackLoc,
+          prodLoc: req.body.prodLoc
         });
-
+        console.log("Line 184")
         await ProcessSequence.update({
           partId:partNumberBulkUpload[0]["id"]
         })

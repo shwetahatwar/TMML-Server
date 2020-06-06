@@ -25,6 +25,8 @@ module.exports = {
       SMH:req.body.smh,
       rawMaterialId:rawMaterialNameIdValue,
       kanbanLocation:kanbanLocationId,
+      rackLoc:req.body.rackLoc,
+      prodLoc:req.body.prodLoc,
       status:1
     })
     .fetch()
@@ -133,6 +135,8 @@ module.exports = {
       manPower:req.body.manpower,
       SMH:smh,
       rawMaterialId:req.body.rawMaterial.id,
+      rackLoc:req.body.rackLoc,
+      prodLoc:req.body.prodLoc,
       status:req.body.status
     })
     .fetch()
@@ -352,6 +356,8 @@ module.exports = {
                 description: partNumberBulkUpload[i].partDescription,
                 rawMaterialId: rawMaterial[0]["id"],
                 status: 1,
+                rackLoc:partNumberBulkUpload[i].rackLoc,
+                prodLoc:partNumberBulkUpload[i].prodLoc,
                 materialGroup: partNumberBulkUpload[i].MaterialGroup,
                 kanbanLocation: kanbanLocationId["id"],
                 uom:partNumberBulkUpload[i].UOM
@@ -410,6 +416,8 @@ module.exports = {
               description: partNumberBulkUpload[i].partDescription,
               rawMaterialId: newRawMaterial["id"],
               status: 1,
+              rackLoc:partNumberBulkUpload[i].rackLoc,
+              prodLoc:partNumberBulkUpload[i].prodLoc,
               materialGroup: partNumberBulkUpload[i].MaterialGroup,
               kanbanLocation: kanbanLocationId["id"],
               uom:partNumberBulkUpload[i].UOM
