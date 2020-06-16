@@ -89,7 +89,11 @@ module.exports = {
     if(jobCardId[0] != null && jobCardId[0] != undefined){
       jobLocationRelationNew = await Joblocationrelation.find({
         jobcardId: jobCardId[0]["id"],
-        processStatus: { '!=' : ['Complete', 'Final Location'] }
+        // processStatus: { '!=' : ['Pending', 'Picked'] }
+        or : [
+        { processStatus: 'Pending' },
+        { processStatus: 'Picked' }
+        ]
       })
       .populate('sourceLocation')
       .populate('jobcardId')
