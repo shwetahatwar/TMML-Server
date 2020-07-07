@@ -70,6 +70,65 @@ module.exports = {
               });
               console.log("Line 72",newPartNumber);
               if(newPartNumber[0] != undefined && newPartNumber[0] != null){
+                var newRawMaterialIdUpdated;
+            var newRawMaterial = await RawMaterial.find({
+              rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
+            })
+            if(newRawMaterial[0] != null && newRawMaterial[0] != undefined){
+              newRawMaterialIdUpdated = newRawMaterial[0]["id"];
+              var newRawMaterial = await RawMaterial.update({
+                rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
+              }).set({
+                description: resultData[i]["ZMAKTX1"]["_text"],
+              });
+            }
+            else{
+              var newRawMaterialId = await RawMaterial.create({
+                rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
+                description: resultData[i]["ZMAKTX1"]["_text"],
+                uom: resultData[i]["ZMEINS"]["_text"],
+                remarks: "",
+                status:1,
+                materialTypeId:1
+              })
+              .fetch();
+              newRawMaterialIdUpdated = newRawMaterialId["id"];
+            }
+            var newLocationId;
+            var newLocation = await Location.find({
+              name:resultData[i]["ZLGFSB"]["_text"]
+            });
+            if(newLocation[0] != null && newLocation[0] != undefined){
+              console.log(newLocation);
+              newLocationId = newLocation[0]["id"]
+            }
+            else {
+              await Location.create({
+                name:resultData[i]["ZLGFSB"]["_text"],
+                barcodeSerial:Date.now(),
+                locationType:'Kanban Location'
+              });
+              var newLocation1 = await Location.find({
+                name:resultData[i]["ZLGFSB"]["_text"]
+              });
+              newLocationId = newLocation1[0]["id"]
+            }
+            // console.log("newRawMaterialIdUpdated",newRawMaterialIdUpdated);
+            var partNumber = await PartNumber.update({
+              partNumber:resultData[i]["ZIDNRK"]["_text"]
+            })
+            .set({
+              description:resultData[i]["ZMAKTX"]["_text"],
+              partCreationDate:resultData[i]["ZANDAT1"]["_text"],
+              partChangeDate:resultData[i]["ZAEDAT"]["_text"],
+              partStatus:resultData[i]["ZSTATUS"]["_text"],
+              uom:resultData[i]["ZMEINS"]["_text"],
+              materialGroup:resultData[i]["ZMATKL"]["_text"],
+              rawMaterialId:newRawMaterialIdUpdated,   
+              kanbanLocation : newLocationId,           
+              rackLoc :resultData[i]["ZRACKLOC"]["_text"],
+              prodLoc :resultData[i]["ZLGPRO"]["_text"]
+            });
               }
               else{
                 console.log("Line 67", resultData[i]["ZMATNR"]["_text"]);
@@ -119,15 +178,15 @@ module.exports = {
                   .fetch();
                   console.log("newPartNumber", newPartNumber1[0]);
                   console.log("newPartNumber", newPartNumber1[0]);
-                  if(newPartNumber1[0] != null && newPartNumber1[0] != undefined){
+                  if(newPartNumber1){
                    var selfSignedConfig = {
                      host: '128.9.24.24',
                      port: 25
                    };
                    var transporter = nodemailer.createTransport(selfSignedConfig);
                    var mailText = "New Part Added into Software by SAP, Please upload process sequence for the same. ";
-                   mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
-                   mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
+                   mailText = mailText + "\n Part Number: " + newPartNumber1["partNumber"];
+                   mailText = mailText + "\n Part Description: " + newPartNumber1["description"];
                    var mailOptions = {
                    from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
                    to:"santosh.adaki@tatamarcopolo.com;ashishm@tatamotors.com;santosh.arishinakar@tatamarcopolo.com",
@@ -192,15 +251,15 @@ module.exports = {
                 .fetch();
                 console.log("newPartNumber", newPartNumber1[0]);
                 console.log("newPartNumber", newPartNumber1[0]);
-                if(newPartNumber1[0] != null && newPartNumber1[0] != undefined){
+                if(newPartNumber1){
                  var selfSignedConfig = {
                    host: '128.9.24.24',
                    port: 25
                  };
                  var transporter = nodemailer.createTransport(selfSignedConfig);
                  var mailText = "New Part Added into Software by SAP, Please upload process sequence for the same. ";
-                 mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
-                 mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
+                 mailText = mailText + "\n Part Number: " + newPartNumber1["partNumber"];
+                 mailText = mailText + "\n Part Description: " + newPartNumber1["description"];
                  var mailOptions = {
                  from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
                  to:"santosh.adaki@tatamarcopolo.com;ashishm@tatamotors.com;santosh.arishinakar@tatamarcopolo.com",
@@ -592,6 +651,65 @@ async function newSapTransactionEntry(newDateTimeNow){
           });
           console.log("Line 72",newPartNumber);
           if(newPartNumber[0] != undefined && newPartNumber[0] != null){
+             var newRawMaterialIdUpdated;
+            var newRawMaterial = await RawMaterial.find({
+              rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
+            })
+            if(newRawMaterial[0] != null && newRawMaterial[0] != undefined){
+              newRawMaterialIdUpdated = newRawMaterial[0]["id"];
+              var newRawMaterial = await RawMaterial.update({
+                rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
+              }).set({
+                description: resultData[i]["ZMAKTX1"]["_text"],
+              });
+            }
+            else{
+              var newRawMaterialId = await RawMaterial.create({
+                rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
+                description: resultData[i]["ZMAKTX1"]["_text"],
+                uom: resultData[i]["ZMEINS"]["_text"],
+                remarks: "",
+                status:1,
+                materialTypeId:1
+              })
+              .fetch();
+              newRawMaterialIdUpdated = newRawMaterialId["id"];
+            }
+            var newLocationId;
+            var newLocation = await Location.find({
+              name:resultData[i]["ZLGFSB"]["_text"]
+            });
+            if(newLocation[0] != null && newLocation[0] != undefined){
+              console.log(newLocation);
+              newLocationId = newLocation[0]["id"]
+            }
+            else {
+              await Location.create({
+                name:resultData[i]["ZLGFSB"]["_text"],
+                barcodeSerial:Date.now(),
+                locationType:'Kanban Location'
+              });
+              var newLocation1 = await Location.find({
+                name:resultData[i]["ZLGFSB"]["_text"]
+              });
+              newLocationId = newLocation1[0]["id"]
+            }
+            // console.log("newRawMaterialIdUpdated",newRawMaterialIdUpdated);
+            var partNumber = await PartNumber.update({
+              partNumber:resultData[i]["ZIDNRK"]["_text"]
+            })
+            .set({
+              description:resultData[i]["ZMAKTX"]["_text"],
+              partCreationDate:resultData[i]["ZANDAT1"]["_text"],
+              partChangeDate:resultData[i]["ZAEDAT"]["_text"],
+              partStatus:resultData[i]["ZSTATUS"]["_text"],
+              uom:resultData[i]["ZMEINS"]["_text"],
+              materialGroup:resultData[i]["ZMATKL"]["_text"],
+              rawMaterialId:newRawMaterialIdUpdated,   
+              kanbanLocation : newLocationId,           
+              rackLoc :resultData[i]["ZRACKLOC"]["_text"],
+              prodLoc :resultData[i]["ZLGPRO"]["_text"]
+            });
           }
           else{
             console.log("Line 67", resultData[i]["ZMATNR"]["_text"]);
@@ -637,15 +755,15 @@ async function newSapTransactionEntry(newDateTimeNow){
               })
               .fetch();
               console.log("newPartNumber", newPartNumber1[0]);
-              if(newPartNumber1[0] != null && newPartNumber1[0] != undefined){
+              if(newPartNumber1){
                var selfSignedConfig = {
                  host: '128.9.24.24',
                  port: 25
                };
                var transporter = nodemailer.createTransport(selfSignedConfig);
                var mailText = "New Part Added into Software by SAP, Please upload process sequence for the same. ";
-               mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
-               mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
+               mailText = mailText + "\n Part Number: " + newPartNumber1["partNumber"];
+               mailText = mailText + "\n Part Description: " + newPartNumber1["description"];
                var mailOptions = {
                from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
                to:"santosh.adaki@tatamarcopolo.com;ashishm@tatamotors.com;santosh.arishinakar@tatamarcopolo.com",
@@ -709,15 +827,15 @@ async function newSapTransactionEntry(newDateTimeNow){
               })
               .fetch();
               console.log("newPartNumber", newPartNumber1[0]);
-              if(newPartNumber1[0] != null && newPartNumber1[0] != undefined){
+              if(newPartNumber1){
                var selfSignedConfig = {
                  host: '128.9.24.24',
                  port: 25
                };
                var transporter = nodemailer.createTransport(selfSignedConfig);
                var mailText = "New Part Added into Software by SAP, Please upload process sequence for the same. ";
-               mailText += mailText + "\n Part Number: " + newPartNumber1[0]["partNumber"];
-               mailText += mailText + "\n Part Description: " + newPartNumber1[0]["description"];
+               mailText = mailText + "\n Part Number: " + newPartNumber1["partNumber"];
+               mailText = mailText + "\n Part Description: " + newPartNumber1["description"];
                var mailOptions = {
                from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
                to:"santosh.adaki@tatamarcopolo.com;ashishm@tatamotors.com;santosh.arishinakar@tatamarcopolo.com",
