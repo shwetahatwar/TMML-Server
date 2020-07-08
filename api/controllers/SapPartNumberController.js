@@ -82,6 +82,9 @@ module.exports = {
                 description: resultData[i]["ZMAKTX1"]["_text"],
               });
             }
+            else if(!resultData[i]["ZMATNR"]["_text"]){
+              newRawMaterialIdUpdated = 757;
+            }
             else{
               var newRawMaterialId = await RawMaterial.create({
                 rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
@@ -204,6 +207,10 @@ module.exports = {
                   sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
                 // break;
               }
+              var newRawMaterialIdUpdated;
+              else if(!resultData[i]["ZMATNR"]["_text"]){
+                newRawMaterialIdUpdated = 757;
+              }
               else{
                 var newRawMaterialId = await RawMaterial.create({
                   rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
@@ -216,6 +223,7 @@ module.exports = {
                 .fetch();
                 console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
                 var newLocationId;
+                newRawMaterialIdUpdated = newRawMaterialId["id"];
                 var newLocation = await Location.find({
                   name:resultData[i]["ZLGFSB"]["_text"]
                 });
@@ -242,7 +250,7 @@ module.exports = {
                   partStatus:resultData[i]["ZSTATUS"]["_text"],
                   uom:resultData[i]["ZMEINS"]["_text"],
                   materialGroup:resultData[i]["ZMATKL"]["_text"],
-                  rawMaterialId : newRawMaterialId["id"],
+                  rawMaterialId : newRawMaterialIdUpdated,
                   status : 1,
                   rackLoc :resultData[i]["ZRACKLOC"]["_text"],
                   prodLoc :resultData[i]["ZLGPRO"]["_text"],
@@ -291,7 +299,10 @@ module.exports = {
                 description: resultData[i]["ZMAKTX1"]["_text"],
               });
             }
-            else{
+            else if(!resultData[i]["ZMATNR"]["_text"]){
+                newRawMaterialIdUpdated = 757;
+              }
+              else{
               var newRawMaterialId = await RawMaterial.create({
                 rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
                 description: resultData[i]["ZMAKTX1"]["_text"],
@@ -663,7 +674,10 @@ async function newSapTransactionEntry(newDateTimeNow){
                 description: resultData[i]["ZMAKTX1"]["_text"],
               });
             }
-            else{
+            else if(!resultData[i]["ZMATNR"]["_text"]){
+                newRawMaterialIdUpdated = 757;
+              }
+              else{
               var newRawMaterialId = await RawMaterial.create({
                 rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
                 description: resultData[i]["ZMAKTX1"]["_text"],
@@ -781,7 +795,11 @@ async function newSapTransactionEntry(newDateTimeNow){
               sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
               // break;
             }
-            else{
+            var newRawMaterialIdUpdated;
+            else if(!resultData[i]["ZMATNR"]["_text"]){
+                newRawMaterialIdUpdated = 757;
+              }
+              else{
               var newRawMaterialId = await RawMaterial.create({
                 rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
                 description: resultData[i]["ZMAKTX1"]["_text"],
@@ -793,6 +811,7 @@ async function newSapTransactionEntry(newDateTimeNow){
               .fetch();
               console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
               var newLocationId;
+              newRawMaterialIdUpdated = newRawMaterialId["id"]
               var newLocation = await Location.find({
                 name:resultData[i]["ZLGFSB"]["_text"]
               });
@@ -819,7 +838,7 @@ async function newSapTransactionEntry(newDateTimeNow){
                 partStatus:resultData[i]["ZSTATUS"]["_text"],
                 uom:resultData[i]["ZMEINS"]["_text"],
                 materialGroup:resultData[i]["ZMATKL"]["_text"],
-                rawMaterialId : newRawMaterialId["id"],
+                rawMaterialId : ,
                 status : 1,
                 rackLoc :resultData[i]["ZRACKLOC"]["_text"],
                 prodLoc :resultData[i]["ZLGPRO"]["_text"],
@@ -867,7 +886,10 @@ async function newSapTransactionEntry(newDateTimeNow){
               description: resultData[i]["ZMAKTX1"]["_text"],
             });
           }
-          else{
+          else if(!resultData[i]["ZMATNR"]["_text"]){
+                newRawMaterialIdUpdated = 757;
+              }
+              else{
             var newRawMaterialId = await RawMaterial.create({
               rawMaterialNumber: resultData[i]["ZMATNR"]["_text"],
               description:resultData[i]["ZMAKTX1"]["_text"],
