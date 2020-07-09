@@ -56,6 +56,7 @@ module.exports = {
       var deviationPartList = [];
       var notInMonthlySchedulePartList = [];
       if(req.body.actions=="New"){
+        console.log("dailySchedule",dailySchedule[0])
         var obj=Object.getOwnPropertyNames(dailySchedule[0]);
         console.log("obj",obj);
         var day1=obj[2];
@@ -63,7 +64,7 @@ module.exports = {
         var day3=obj[8];
         var day4=obj[11];
         var day5=obj[14];
-        console.log(day1);
+        console.log(day1,day2,day3,day4,day5);
         console.log(dailySchedule[0][day1],dailySchedule[0][day2],dailySchedule[0][day2],dailySchedule[0][day4],dailySchedule[0][day5]);
         var day;
         for(var counter=0;counter<5;counter++)
@@ -97,11 +98,12 @@ module.exports = {
             currentMonth = currentMonth.substr(3,2);
             currentYear = currentYear.substr(6,4);
             console.log(currentYear,currentMonth);
+
             var getMonthlyScheduleId = await MonthlySchedule.find({
               year:currentYear,
               month:currentMonth
             });
-            console.log(getMonthlyScheduleId);
+            console.log("getMonthlyScheduleId",getMonthlyScheduleId);
             if(getMonthlyScheduleId[0]!=null&&getMonthlyScheduleId[0]!=undefined){
               var newproductionScheduleId = await ProductionSchedule.create({
                 productionScheduleId: postProductionScheduleId,
@@ -243,15 +245,16 @@ module.exports = {
             postProductionScheduleId = "Machine Shop Daily Plan " +day+"-001"
           }
           var currentMonth = day;
-          var currentYear = day;
-          currentMonth = currentMonth.substr(3,2);
-          currentYear = currentYear.substr(6,4);
-          console.log(currentYear,currentMonth);
+            var currentYear = day;
+            currentMonth = currentMonth.substr(3,2);
+            currentYear = currentYear.substr(6,4);
+            console.log(currentYear,currentMonth);
+
           var getMonthlyScheduleId = await MonthlySchedule.find({
             year:currentYear,
             month:currentMonth
           });
-          console.log(getMonthlyScheduleId);
+          console.log("getMonthlyScheduleId 2",getMonthlyScheduleId);
           if(getMonthlyScheduleId[0]!=null&&getMonthlyScheduleId[0]!=undefined){
             var newproductionScheduleId = await ProductionSchedule.create({
               productionScheduleId: postProductionScheduleId,
@@ -360,10 +363,11 @@ module.exports = {
            postProductionScheduleId = "Machine Shop Daily Plan " +day+"-001"
          }
          var currentMonth = day;
-         var currentYear = day;
-         currentMonth = currentMonth.substr(3,2);
-         currentYear = currentYear.substr(6,4);
-         console.log(currentYear,currentMonth);
+            var currentYear = day;
+            currentMonth = currentMonth.substr(3,2);
+            currentYear = currentYear.substr(6,4);
+            console.log(currentYear,currentMonth);
+
          var getMonthlyScheduleId = await MonthlySchedule.find({
            year:currentYear,
            month:currentMonth
@@ -477,10 +481,11 @@ module.exports = {
            postProductionScheduleId = "Machine Shop Daily Plan " +day+"-001"
          }
          var currentMonth = day;
-         var currentYear = day;
-         currentMonth = currentMonth.substr(3,2);
-         currentYear = currentYear.substr(6,4);
-         console.log(currentYear,currentMonth);
+            var currentYear = day;
+            currentMonth = currentMonth.substr(3,2);
+            currentYear = currentYear.substr(6,4);
+            console.log(currentYear,currentMonth);
+
          var getMonthlyScheduleId = await MonthlySchedule.find({
            year:currentYear,
            month:currentMonth
@@ -596,10 +601,11 @@ module.exports = {
            postProductionScheduleId = "Machine Shop Daily Plan " +day+"-001"
          }
          var currentMonth = day;
-         var currentYear = day;
-         currentMonth = currentMonth.substr(3,2);
-         currentYear = currentYear.substr(6,4);
-         console.log(currentYear,currentMonth);
+            var currentYear = day;
+            currentMonth = currentMonth.substr(3,2);
+            currentYear = currentYear.substr(6,4);
+            console.log(currentYear,currentMonth);
+
          var getMonthlyScheduleId = await MonthlySchedule.find({
            year:currentYear,
            month:currentMonth
@@ -688,93 +694,149 @@ module.exports = {
            }
          }
        }
-       res.send();
+       res.send("updated successfully");
      }
      else{
        console.log("Line 406",req.body.productionScheduleId);
        var getProductionScheduleId = await ProductionSchedule.find({id:req.body.productionScheduleId});
        if(getProductionScheduleId[0]!=null&&getProductionScheduleId[0]!=undefined){
-         console.log("Line 408", getProductionScheduleId);
-         if(getProductionScheduleId[0]["scheduleStatus"]=="New"){
+         var jobCardsCreated = await ProductionSchedulePartRelation.find({
+           where:{ isJobCardCreated : true,
+             scheduleId:req.body.productionScheduleId
+           },limit:1
+         })
+         console.log("line 693",jobCardsCreated[0])
+         if(!jobCardsCreated[0]){
            await ProductionSchedulePartRelation.destroy({scheduleId:req.body.productionScheduleId});
            var obj=Object.getOwnPropertyNames(dailySchedule[0]);
            var day1=obj[2];
-           var day2=obj[3];
-           var day3=obj[4];
-           var day4=obj[5];
-           var day5=obj[6];
            var day;
            var productionScheduleDate = getProductionScheduleId[0]["productionScheduleId"];
            productionScheduleDate = productionScheduleDate.substr(24,10)
-           console.log("Line 420", productionScheduleDate);
-           if(productionScheduleDate == day1){
-             day = day1
-           }
-           else if(productionScheduleDate == day2){
-             day = day2
-           }
-           else if(productionScheduleDate == day3){
-             day = day3
-           }
-           else if(productionScheduleDate == day4){
-             day = day4
-           }
-           else if(productionScheduleDate == day5){
-             day = day5
-           }
-           console.log("Line 437",dailySchedule.length);
-           for(var i=0;i<dailySchedule.length;i++){
-             console.log("Line 439", dailySchedule[i]["Part Number"]);
-             var newPartNumberId = await PartNumber.find({
-               partNumber:dailySchedule[i]["Part Number"],
-               jcCreateStatus:1
-             });
-             console.log("Line 440", newPartNumberId);
-             console.log("Line 442", dailySchedule[i]);
-             
-             var quantity = dailySchedule[i][day];
-             var remarks = dailySchedule[i]["Remarks for first date in column"];
-             if(newPartNumberId[0] != null && newPartNumberId[0]!= undefined){
-               console.log("Line 448",newPartNumberId);
-               for(var j=0;j<newPartNumberId.length;j++){
-                 await ProductionSchedulePartRelation.create({
-                   scheduleId: req.body.productionScheduleId,
-                   partNumberId: newPartNumberId[j]["id"],
-                   requestedQuantity: quantity,
-                   estimatedCompletionDate: 0,
-                   isJobCardCreated: false,
-                   partRemark: remarks,
-                   scheduleStatus:"New",
-                   inductionDate:dailySchedule[i]["inductionDate1"],
-                   planFor:dailySchedule[i]["planFor1"]
-                 })
-                 .then()
-                 .catch(error => console.log(error));
+           
+          for(var i=0;i<dailySchedule.length;i++){
+                console.log(dailySchedule[i]["partnumber"]);
+                console.log(dailySchedule[i]["inductionDate1"]);
+                var newPartNumberId = await PartNumber.find({
+                  partNumber:dailySchedule[i]["partnumber"],
+                  jcCreateStatus:1
+                });
+                console.log("Line 110", newPartNumberId);
+                var newPartNumberIdStatus;
+                if(newPartNumberId[0] ==null || newPartNumberId[0]==undefined){
+                  newPartNumberIdStatus = await PartNumber.find({
+                    partNumber:dailySchedule[i]["partnumber"],
+                    jcCreateStatus:0
+                  });
+                  console.log("Line 132", newPartNumberIdStatus);
+                  if(newPartNumberIdStatus[0] ==null || newPartNumberIdStatus[0] ==undefined){
+                    console.log("Inside if");
+                  }
+                  else{
+                    mailText = mailText + "\n" + newPartNumberIdStatus[0]["partNumber"] +"\n";
+                  }
+                }
+                var canAddQty = 0;
+                if(dailySchedule[i]["monthlyQty"] ==0){
+                  var part = {
+                    "Part Number":dailySchedule[i]["partnumber"]
+                  }
+                  notInMonthlySchedulePartList.push(part);
+                }
+                else{
+                  canAddQty = parseInt(dailySchedule[i]["monthlyQty"]) - parseInt(dailySchedule[i]["producedQty"]);
+                }//console.log("canAddQty1 :",canAddQty);
+                var daviationQty = 0;
+                var requestedQty = 0;
+                var originalQuantity = 0;
+                console.log("Can Add")
+                if(canAddQty < dailySchedule[i][day1] && canAddQty > 0){
+                  originalQuantity = dailySchedule[i][day1];
+                  daviationQty = dailySchedule[i][day1] - canAddQty;
+                  requestedQty = canAddQty;
+                }
+                else if(canAddQty > dailySchedule[i][day1]){
+                  requestedQty = dailySchedule[i][day1];
+                }
+                else{
+                  daviationQty = dailySchedule[i][day1];
+                  originalQuantity = dailySchedule[i][day1];
+                }
+
+                console.log("requestedQty",requestedQty);
+               // console.log("part",newPartNumberId);
+               if(requestedQty != 0 && requestedQty != undefined){
+                 if(newPartNumberId[0]!=null && newPartNumberId[0]!=undefined){
+                   await ProductionSchedulePartRelation.create({
+                     scheduleId: getProductionScheduleId[0]["id"],
+                     partNumberId: newPartNumberId[0]["id"],
+                     requestedQuantity: requestedQty,
+                     estimatedCompletionDate: 0,
+                     isJobCardCreated: false,
+                     partRemark: dailySchedule[i].remarks,
+                     scheduleStatus:"New",
+                     inductionDate:dailySchedule[i]["inductionDate1"],
+                     planFor:dailySchedule[i]["planFor1"]
+                   })
+                   .then()
+                   .catch(error => console.log(error));
+                 }
+               }
+               console.log("daviationQty",daviationQty)
+               if(daviationQty != 0 && daviationQty != undefined){
+                 if(newPartNumberId[0]!=null && newPartNumberId[0]!=undefined){
+                   var singleDeviationPart = {
+                     "Production Schedule":getProductionScheduleId[0]["productionScheduleId"],
+                     "Part Number": newPartNumberId[0]["partNumber"],
+                     "Requested Quantity": originalQuantity,
+                     "Produced Quantity": dailySchedule[i]["producedQty"],
+                     "Deviation Quantity": daviationQty,
+                     "Monthly Quantity": dailySchedule[i]["monthlyQty"],
+                     "Induction Date":dailySchedule[i]["inductionDate1"],
+                     "Plan For":dailySchedule[i]["planFor1"]
+                   }
+                 }
+                 deviationPartList.push(singleDeviationPart);
+                 if(newPartNumberId[0]!=null && newPartNumberId[0]!=undefined){
+                   await Deviation.create({
+                     scheduleId: getProductionScheduleId[0]["id"],
+                     partNumberId: newPartNumberId[0]["id"],
+                     originalQuantity: originalQuantity,
+                     deviationQuantity: daviationQty,
+                     inductionDate:dailySchedule[i]["inductionDate1"],
+                     planFor:dailySchedule[i]["planFor1"]
+                   })
+                   .then()
+                   .catch(error => console.log(error));
+                 }
                }
              }
-              // break;
-            }
-            res.send();
+            res.send("updated successfully");
           }
           else{
-            res.send("Already Started");
+            console.log("Already Started");            
+            res.send("You cannot update sschedule,Jobcard's for seleted schedule are already created");
+            return 0;
           }
         }
         else{
           res.send("Not Found");
         }
       }
-      
+
+      console.log("line 747",dailySchedule[0])
       var obj=Object.getOwnPropertyNames(dailySchedule[0]);
-      var day1=new Date(obj[2]);
+      console.log("line 749",obj[2])
+      var day=obj[2];
       // console.log("Date",new Date(day1));
 
       // var currentMonth = day1.getUTCMonth() + 1;
+      var currentMonth = day;
+      var currentYear = day;
+      currentMonth = currentMonth.substr(3,2);
+      currentYear = currentYear.substr(6,4);
+      console.log(currentYear,currentMonth);
 
-      var currentMonth = ('0' + (day1.getMonth() + 1)).slice(-2);
-      var currentYear = day1.getFullYear();
-      console.log(currentMonth,currentYear)
-      
       var cycleTimeList = [];
       var finalResult = [];
       var machineGroup ={};
