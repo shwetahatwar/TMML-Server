@@ -105,7 +105,7 @@ module.exports = {
                     newRawMaterialIdUpdated = newRawMaterial[0]["id"];
                   }
                 }
-                
+
                 var newLocationId;
                 var newLocation = await Location.find({
                   name:resultData[i]["ZLGFSB"]["_text"]
@@ -125,6 +125,15 @@ module.exports = {
                   });
                   newLocationId = newLocation1[0]["id"]
                 }
+
+                let rackLoc = "";
+                if(resultData[i]["ZRACKLOC"]["_text"]){
+                  rackLoc = resultData[i]["ZRACKLOC"]["_text"]
+                }
+                let prodLoc = "";
+                if(resultData[i]["ZLGPRO"]["_text"]){
+                  prodLoc = resultData[i]["ZLGPRO"]["_text"]
+                }
             // console.log("newRawMaterialIdUpdated",newRawMaterialIdUpdated);
             var partNumber = await PartNumber.update({
               partNumber:resultData[i]["ZIDNRK"]["_text"]
@@ -136,10 +145,10 @@ module.exports = {
               partStatus:resultData[i]["ZSTATUS"]["_text"],
               uom:resultData[i]["ZMEINS"]["_text"],
               materialGroup:resultData[i]["ZMATKL"]["_text"],
-              rawMaterialId:newRawMaterialIdUpdated,   
-              kanbanLocation : newLocationId,           
-              rackLoc :resultData[i]["ZRACKLOC"]["_text"],
-              prodLoc :resultData[i]["ZLGPRO"]["_text"]
+              rawMaterialId:newRawMaterialIdUpdated,
+              kanbanLocation : newLocationId,
+              rackLoc :rackLoc,
+              prodLoc :prodLoc
             });
           }
           else{
@@ -214,7 +223,7 @@ module.exports = {
                }
                sails.log.info("NEW part added by SAP: ",newPartNumber1[0]);
                 // break;
-              }              
+              }
               else{
                 var newRawMaterialIdUpdated;
                 if(!resultData[i]["ZMATNR"]["_text"]){
@@ -358,6 +367,14 @@ module.exports = {
            });
            newLocationId = newLocation1[0]["id"]
          }
+         let rackLoc = "";
+         if(resultData[i]["ZRACKLOC"]["_text"]){
+           rackLoc = resultData[i]["ZRACKLOC"]["_text"]
+         }
+         let prodLoc = "";
+         if(resultData[i]["ZLGPRO"]["_text"]){
+           prodLoc = resultData[i]["ZLGPRO"]["_text"]
+         }
             // console.log("newRawMaterialIdUpdated",newRawMaterialIdUpdated);
             var partNumber = await PartNumber.update({
               partNumber:resultData[i]["ZIDNRK"]["_text"]
@@ -370,9 +387,9 @@ module.exports = {
               uom:resultData[i]["ZMEINS"]["_text"],
               materialGroup:resultData[i]["ZMATKL"]["_text"],
               rawMaterialId:newRawMaterialIdUpdated,
-              kanbanLocation : newLocationId,           
-              rackLoc :resultData[i]["ZRACKLOC"]["_text"],
-              prodLoc :resultData[i]["ZLGPRO"]["_text"]
+              kanbanLocation : newLocationId,
+              rackLoc :rackLoc,
+              prodLoc :prodLoc
             });
           }
           else if(resultData[i]["ZSTATUS"]["_text"] == "B"){
@@ -763,6 +780,14 @@ async function newSapTransactionEntry(newDateTimeNow){
               });
               newLocationId = newLocation1[0]["id"]
             }
+            let rackLoc = "";
+            if(resultData[i]["ZRACKLOC"]["_text"]){
+              rackLoc = resultData[i]["ZRACKLOC"]["_text"]
+            }
+            let prodLoc = "";
+            if(resultData[i]["ZLGPRO"]["_text"]){
+              prodLoc = resultData[i]["ZLGPRO"]["_text"]
+            }
             // console.log("newRawMaterialIdUpdated",newRawMaterialIdUpdated);
             var partNumber = await PartNumber.update({
               partNumber:resultData[i]["ZIDNRK"]["_text"]
@@ -774,10 +799,10 @@ async function newSapTransactionEntry(newDateTimeNow){
               partStatus:resultData[i]["ZSTATUS"]["_text"],
               uom:resultData[i]["ZMEINS"]["_text"],
               materialGroup:resultData[i]["ZMATKL"]["_text"],
-              rawMaterialId:newRawMaterialIdUpdated,   
-              kanbanLocation : newLocationId,           
-              rackLoc :resultData[i]["ZRACKLOC"]["_text"],
-              prodLoc :resultData[i]["ZLGPRO"]["_text"]
+              rawMaterialId:newRawMaterialIdUpdated,
+              kanbanLocation : newLocationId,
+              rackLoc :rackLoc,
+              prodLoc :prodLoc
             });
           }
           else{
@@ -995,6 +1020,14 @@ async function newSapTransactionEntry(newDateTimeNow){
          });
          newLocationId = newLocation1[0]["id"]
        }
+       let rackLoc = "";
+       if(resultData[i]["ZRACKLOC"]["_text"]){
+         rackLoc = resultData[i]["ZRACKLOC"]["_text"]
+       }
+       let prodLoc = "";
+       if(resultData[i]["ZLGPRO"]["_text"]){
+         prodLoc = resultData[i]["ZLGPRO"]["_text"]
+       }
        var partNumber =await PartNumber.update({
          partNumber:resultData[i]["ZIDNRK"]["_text"]
        })
@@ -1006,9 +1039,9 @@ async function newSapTransactionEntry(newDateTimeNow){
          uom:resultData[i]["ZMEINS"]["_text"],
          materialGroup:resultData[i]["ZMATKL"]["_text"],
          rawMaterialId:newRawMaterialIdUpdated,
-         kanbanLocation : newLocationId,           
-         rackLoc :resultData[i]["ZRACKLOC"]["_text"],
-         prodLoc :resultData[i]["ZLGPRO"]["_text"]
+         kanbanLocation : newLocationId,
+         rackLoc :rackLoc,
+         prodLoc :prodLoc
        });
        sails.log.info("Part Updated by SAP: ",resultData[i]["ZIDNRK"]["_text"]);
      }
