@@ -124,14 +124,16 @@ module.exports = {
                 console.log(dailySchedule[i]["inductionDate1"]);
                 var newPartNumberId = await PartNumber.find({
                   partNumber:dailySchedule[i]["partnumber"],
-                  jcCreateStatus:1
+                  jcCreateStatus:1,
+                  status:1
                 });
                 console.log("Line 110", newPartNumberId);
                 var newPartNumberIdStatus;
                 if(newPartNumberId[0] ==null || newPartNumberId[0]==undefined){
                   newPartNumberIdStatus = await PartNumber.find({
                     partNumber:dailySchedule[i]["partnumber"],
-                    jcCreateStatus:0
+                    jcCreateStatus:0,
+                    status:1
                   });
                   console.log("Line 132", newPartNumberIdStatus);
                   if(newPartNumberIdStatus[0] ==null || newPartNumberIdStatus[0] ==undefined){
@@ -160,7 +162,7 @@ module.exports = {
                   daviationQty = dailySchedule[i][day1] - canAddQty;
                   requestedQty = canAddQty;
                 }
-                else if(canAddQty > dailySchedule[i][day1]){
+                else if(canAddQty >= dailySchedule[i][day1]){
                   requestedQty = dailySchedule[i][day1];
                 }
                 else{
@@ -272,7 +274,8 @@ module.exports = {
             for(var i=0;i<dailySchedule.length;i++){
               var newPartNumberId = await PartNumber.find({
                 partNumber:dailySchedule[i]["partnumber"],
-                jcCreateStatus:1
+                jcCreateStatus:1,
+                status:1
               });
               var canAddQty = parseInt(dailySchedule[i]["monthlyQty"]) - (parseInt(dailySchedule[i]["producedQty"]) + parseInt(dailySchedule[i][day1]));
               console.log("canAddQty2 :",canAddQty);
@@ -284,7 +287,7 @@ module.exports = {
                 daviationQty = dailySchedule[i][day2] - canAddQty;
                 requestedQty = canAddQty;
               }
-              else if(canAddQty > dailySchedule[i][day2]){
+              else if(canAddQty >= dailySchedule[i][day2]){
                 requestedQty = dailySchedule[i][day2];
               }
               else{
@@ -390,7 +393,8 @@ module.exports = {
            for(var i=0;i<dailySchedule.length;i++){
              var newPartNumberId = await PartNumber.find({
                partNumber:dailySchedule[i]["partnumber"],
-               jcCreateStatus:1
+               jcCreateStatus:1,
+               status:1
              });
              var canAddQty = parseInt(dailySchedule[i]["monthlyQty"]) - (parseInt(dailySchedule[i]["producedQty"]) + parseInt(dailySchedule[i][day1]) + parseInt(dailySchedule[i][day2]));
              console.log("canAddQty3 :",canAddQty);
@@ -402,7 +406,7 @@ module.exports = {
                daviationQty = dailySchedule[i][day3] - canAddQty;
                requestedQty = canAddQty;
              }
-             else if(canAddQty > dailySchedule[i][day3]){
+             else if(canAddQty >= dailySchedule[i][day3]){
                requestedQty = dailySchedule[i][day3];
              }
              else{
@@ -508,7 +512,8 @@ module.exports = {
            for(var i=0;i<dailySchedule.length;i++){
              var newPartNumberId = await PartNumber.find({
                partNumber:dailySchedule[i]["partnumber"],
-               jcCreateStatus:1
+               jcCreateStatus:1,
+               status:1
              });
              dayQty = parseInt(dailySchedule[i]["producedQty"]) + parseInt(dailySchedule[i][day1]) + parseInt(dailySchedule[i][day2]) + parseInt(dailySchedule[i][day3]);
 
@@ -522,7 +527,7 @@ module.exports = {
                daviationQty = dailySchedule[i][day4] - canAddQty;
                requestedQty = canAddQty;
              }
-             else if(canAddQty > dailySchedule[i][day4]){
+             else if(canAddQty >= dailySchedule[i][day4]){
                requestedQty = dailySchedule[i][day4];
              }
              else{
@@ -628,7 +633,8 @@ module.exports = {
            for(var i=0;i<dailySchedule.length;i++){
              var newPartNumberId = await PartNumber.find({
                partNumber:dailySchedule[i]["partnumber"],
-               jcCreateStatus:1
+               jcCreateStatus:1,
+               status:1
              });
              var canAddQty = parseInt(dailySchedule[i]["monthlyQty"]) - (parseInt(dailySchedule[i]["producedQty"]) + parseInt(dailySchedule[i][day1]) + parseInt(dailySchedule[i][day2]) + parseInt(dailySchedule[i][day3]) + parseInt(dailySchedule[i][day4]));
              console.log("canAddQty5 :",canAddQty);
@@ -640,7 +646,7 @@ module.exports = {
                daviationQty = dailySchedule[i][day5] - canAddQty;
                requestedQty = canAddQty;
              }
-             else if(canAddQty > dailySchedule[i][day5]){
+             else if(canAddQty >= dailySchedule[i][day5]){
                requestedQty = dailySchedule[i][day5];
              }
              else{
@@ -719,7 +725,8 @@ module.exports = {
                 console.log(dailySchedule[i]["inductionDate1"]);
                 var newPartNumberId = await PartNumber.find({
                   partNumber:dailySchedule[i]["partnumber"],
-                  jcCreateStatus:1
+                  jcCreateStatus:1,
+                  status:1
                 });
                 console.log("Line 110", newPartNumberId);
                 var newPartNumberIdStatus;
@@ -755,7 +762,7 @@ module.exports = {
                   daviationQty = dailySchedule[i][day1] - canAddQty;
                   requestedQty = canAddQty;
                 }
-                else if(canAddQty > dailySchedule[i][day1]){
+                else if(canAddQty >= dailySchedule[i][day1]){
                   requestedQty = dailySchedule[i][day1];
                 }
                 else{

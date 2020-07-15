@@ -923,6 +923,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 				console.log("Shift",Shift);
 				var SMH=roundTo((jobCards[b]["processSequenceId"]["cycleTime"] * manPower)/3600,4);
 				console.log("SMH",SMH);
+				SMH = SMH * jobCards[b]["jobId"]["requestedQuantity"];
 				var AMH=((parseInt(jobCards[b]["endTime"]) - parseInt(jobCards[b]["startTime"])) / 3.6e+6) * jobCards[b]["jobId"]["requestedQuantity"];
 				AMH=roundTo(AMH,4);
 				var GAP=roundTo(AMH - SMH,4);
