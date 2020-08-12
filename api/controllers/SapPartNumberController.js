@@ -153,14 +153,14 @@ module.exports = {
           }
           else{
             var newRawMaterial;
+            console.log("Desc",resultData[i]["ZMATNR"]["_text"])
             if(resultData[i]["ZMATNR"]["_text"]){
               newRawMaterial = await RawMaterial.find({
                 rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
               });
             }
-            console.log(newRawMaterial[0]);
-            if(newRawMaterial[0] != undefined && newRawMaterial[0] !=null){
-
+            console.log("RawMaterial",newRawMaterial[0]);
+            if(newRawMaterial[0]){
               console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
               var newLocationId;
               var newLocation = await Location.find({
@@ -814,8 +814,8 @@ async function newSapTransactionEntry(newDateTimeNow){
                 rawMaterialNumber : resultData[i]["ZMATNR"]["_text"]
               });
             }
-            console.log(newRawMaterial[0]);
-            if(newRawMaterial[0] != undefined && newRawMaterial[0] !=null){
+            // console.log(newRawMaterial[0]);
+            if(newRawMaterial[0]){
               console.log("Part Number is :-", resultData[i]["ZIDNRK"]);
               var newLocationId;
               var newLocation = await Location.find({

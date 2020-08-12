@@ -21,7 +21,7 @@ module.exports = {
         console.log("Line 21")
         var activeJobCard = await JobCard.find({
           productionSchedulePartRelationId:productionSchedulePartRelation[0]["id"],
-          jobcardStatus : { '!=' : ['In Progress', 'New'] }
+          jobcardStatus : ['In Progress', 'New']
         });
         console.log("Line 25", activeJobCard);
         if(activeJobCard[0] != null && activeJobCard[0] != null){
@@ -34,7 +34,6 @@ module.exports = {
           var SMH = req.body.SMH;
           var rackLoc = req.body.rackLoc;
           var prodLoc = req.body.prodLoc;
-          console.log("Line 36",req.body.rackLoc,req.body.prodLoc)
           await PartNumber.update({
             partNumber:req.body.partNumber
           })
@@ -339,7 +338,7 @@ module.exports = {
           if(productionSchedulePartRelation[0] != null && productionSchedulePartRelation != undefined){
             var activeJobCard = await JobCard.find({
               productionSchedulePartRelationId:productionSchedulePartRelation[0]["id"],
-              jobcardStatus : { '!=' : ['In Progress', 'New'] }
+              jobcardStatus : ['In Progress', 'New'] 
             });
             if(activeJobCard[0] != null && activeJobCard[0] != null){
               actionJobCardPartNumbers.push(partNumberProcessSequenceBulkUpload[i].partNumber);
