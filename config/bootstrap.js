@@ -15,6 +15,7 @@ var sapPartNumber = require('../api/controllers/SapPartNumberController');
 var sapTransaction = require('../api/controllers/SapTransactionController');
 var getCountReport = require('../api/controllers/GetCountController');
 var dailyReports = require('../api/controllers/ReportsController');
+var partNumber = require('../api/controllers/PartNumberController');
 var globalVar = 1;
 //
 // var activeStrockOne = true;
@@ -88,6 +89,9 @@ module.exports.bootstrap = async function() {
     }
     else if(time =="0:2"){
       await dailyReports.dailyJobCardsCountMail();
+    }
+    else if(time =="0:5"){
+      await partNumber.dailyUpdatedParts();
     }
   },60000);
 

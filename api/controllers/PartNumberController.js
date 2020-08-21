@@ -4,7 +4,9 @@
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-
+var nodemailer = require ('nodemailer');
+var json2xls = require('json2xls');
+var fs = require('fs');
 var request = require('request');
 module.exports = {
   create: async function(req,res){
@@ -427,5 +429,101 @@ module.exports = {
       }
     }
     res.send();
+  },
+
+  dailyUpdatedParts :async function(req,res){
+    var selfSignedConfig = {
+      host: '128.9.24.24',
+      port: 25
+    };
+    var transporter = nodemailer.createTransport(selfSignedConfig);
+    var d = new Date();
+    var startTime =  (parseInt(d.getMonth()) + 1) +"-"+ (parseInt(d.getDate()) - 1) +"-"+ d.getFullYear()+ " " +"00:00:01";
+    var dt = new Date(startTime);
+    updatedAtStart=dt.setSeconds( dt.getSeconds());
+    var EndTime =  (parseInt(d.getMonth()) + 1) +"-"+ (parseInt(d.getDate()) - 1) +"-"+ d.getFullYear()+ " " +"23:59:00";
+    dt = new Date(EndTime);
+    updatedAtEnd=dt.setSeconds( dt.getSeconds());
+    console.log(startTime,EndTime);
+    console.log("TimeStamps: ",updatedAtStart,updatedAtEnd);
+
+    var parts = await PartNumber.find({
+      where: {
+        updatedAt :{ '>=':updatedAtStart,'<=':updatedAtEnd}
+      }}).populate('rawMaterialId')
+    .populate('kanbanLocation')
+    console.log("parts",parts)
+    var partNumberDataList = [];
+    if(parts.length!=0){
+      for(var i=0;i<parts.length;i++){
+        var kanbanLocation = "";
+        var rawMaterialNumber = "";
+        var rawMaterialDesc="";
+        if(parts[i]["rawMaterialId"]){
+          rawMaterialNumber = parts[i]["rawMaterialId"]["rawMaterialNumber"];
+          rawMaterialDesc = parts[i]["rawMaterialId"]["description"];
+        }
+        if(parts[i]["kanbanLocation"]){
+          kanbanLocation = parts[i]["kanbanLocation"]["name"];        
+        }
+        var partNumberData = {
+          'Part Number': parts[i]["partNumber"],
+          'Description' : parts[i]["description"],
+          'Rack Location' : parts[i]["rackLoc"],
+          'Production Location': parts[i]["prodLoc"],
+          'Part Status': parts[i]["partStatus"],
+          'Raw Material Number':rawMaterialNumber,
+          'Raw Material Description':rawMaterialDesc,
+          'SAP Location':kanbanLocation
+          }
+        partNumberDataList.push(partNumberData);
+      }
+      console.log(partNumberDataList);
+      var xls1 = json2xls(partNumberDataList);
+      var curr_date = d.getDate();
+      if(curr_date.toString().length == 1){
+        curr_date = "0" + curr_date
+      }
+      var curr_month = parseInt(d.getMonth()) + 1;
+      curr_month = ""+curr_month;
+      if(curr_month.toString().length == 1){
+        curr_month = "0" + curr_month
+      }
+      var curr_year = d.getFullYear();
+      curr_year = curr_year.toString();
+      curr_year = curr_year.substring(2,4);
+      dateTimeFormat = curr_date + "-" + curr_month + "-" + curr_year;
+      console.log("dateTimeFormat",dateTimeFormat)
+      var filename1 = 'D:/TMML/BRiOT-TMML-Machine-Shop-Solution/server/Reports/PartNumber-Data/Parts-Updated '+dateTimeFormat+'.xlsx';
+      fs.writeFileSync(filename1, xls1, 'binary',function(err) {
+        if (err) {
+          console.log('Some error occured - file either not saved or corrupted file saved.');
+          sails.log.error("Some error occured - file either not saved or corrupted file saved.");
+        } else {
+          console.log('It\'s saved!');
+        }
+      });
+      var mailText = "Please find parts updated by SAP from "+startTime+" to "+EndTime+" in attached file.";
+      console.log(mailText);
+      var mailOptions = {
+        from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
+        to:"santosh.adaki@tatamarcopolo.com;divyah.ttl@tatamotors.com;nikhil.kamble@briot.in;sagar@briot.in",
+        subject: "Part Number list updated by SAP", // Subject line
+        text: mailText,
+        attachments :[
+        {
+          'filename':'Parts-Updated '+dateTimeFormat+'.xlsx',
+          'path': filename1
+        }
+        ],
+      };
+      transporter.sendMail(mailOptions, function(error, info) {
+        if(error){
+          sails.log.error("parts report mail not sent",error);
+        } else {
+          sails.log.info('parts Message sent: ' + info.response);
+        }
+      });
+    }
   }
 };
