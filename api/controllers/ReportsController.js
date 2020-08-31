@@ -1913,7 +1913,7 @@ dailyVsPlanVsReceivedReport:async function(req,res){
 			};
 			var transporter = nodemailer.createTransport(selfSignedConfig);
 			var dateArray = [];
-			var d = new Date(1568803712907);
+			var d = new Date();
 			console.log("d: ",d);
 			var dateToday = d.getDate();
 

@@ -135,22 +135,22 @@ module.exports = {
                  }
              }
              console.log(mailText);
-            //  for(var i=0;i<newEmployeeList.length;i++){
-            //      var mailOptions = {
-          		// 		from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
-         			// 	to: newEmployeeList[i].email, // list of receivers (who receives)
-          		// 		subject: "Monthly Schedule Upload Status", // Subject line
-          		// 		text: mailText
-          		// 	};
-          		// 	transporter.sendMail(mailOptions, function(error, info) {
-          		// 		if(error){
-          		// 			sails.log.error("Error while Sending monthly schedule mail",error);
-          		// 		}
-          		// 		else {
-          		// 			sails.log.info('Message sent: ' + info.response);
-          		// 		}
-          		// 	});
-          		// }
+             for(var i=0;i<newEmployeeList.length;i++){
+                 var mailOptions = {
+          				from: "MachineShop_WIP@tatamarcopolo.com", // sender address (who sends)
+         				to: newEmployeeList[i].email, // list of receivers (who receives)
+          				subject: "Monthly Schedule Upload Status", // Subject line
+          				text: mailText
+          			};
+          			transporter.sendMail(mailOptions, function(error, info) {
+          				if(error){
+          					sails.log.error("Error while Sending monthly schedule mail",error);
+          				}
+          				else {
+          					sails.log.info('Message sent: ' + info.response);
+          				}
+          			});
+          		}
           	}
 
           	sails.config.myGlobalVariables.globalOne =1;

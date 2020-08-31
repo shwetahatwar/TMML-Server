@@ -59,11 +59,11 @@ module.exports = {
         var newJSON = JSON.parse(result);
         console.log("Line 27",newJSON["_attributes"]);
         var resultData = newJSON["soap-env:Envelope"]["soap-env:Body"]["n0:ZMPPP_COMP_DTL_WEBSERVICEResponse"]["ZCOMP_DTL"]["item"];
-
+        console.log("resultData",resultData);
         for(var i =1;i<resultData.length;i++){
           console.log("resultData",resultData[i]["ZSTATUS"]["_text"])
 
-            // sails.log.info("NEW part DATA received from SAP: ",resultData.length);
+            sails.log.info("NEW part DATA received from SAP: ",resultData.length);
             if(resultData[i]["ZSTATUS"]["_text"] == "N"){
               var newPartNumber = await PartNumber.find({
                 partNumber : resultData[i]["ZIDNRK"]["_text"]
@@ -150,6 +150,7 @@ module.exports = {
               rackLoc :rackLoc,
               prodLoc :prodLoc
             });
+            sails.log.info("Updated Data By SAP ",partNumber);
           }
           else{
             var newRawMaterial;
@@ -391,6 +392,7 @@ module.exports = {
               rackLoc :rackLoc,
               prodLoc :prodLoc
             });
+            sails.log.info("Updated Data By SAP ",partNumber);
           }
           else if(resultData[i]["ZSTATUS"]["_text"] == "B"){
             var partNumber =await PartNumber.update({
@@ -400,7 +402,9 @@ module.exports = {
               partStatus:resultData[i]["ZSTATUS"]["_text"],
               status:0
             });
+            sails.log.info("Updated Data By SAP Blocked",partNumber);
           }
+          sails.log.info("SAP PARt",resultData[i]);
         }
         // res.send();
       }
@@ -410,7 +414,7 @@ module.exports = {
     var xml = fs.readFileSync('D:\\TMML\\BRiOT-TMML-Machine-Shop-Solution\\server\\v1.0.7\\api\\test\\xmlTextFile.xml', 'utf-8');
     xml = xml.replace("newDateNowAPI", newDateTimeNow);
     xml = xml.replace("toDateNowAPI", toDateTimeNow);
-    console.log(xml);
+    console.log("xml 417",xml);
     sails.log.info("NEW part",xml);
     xmlhttp.send(xml);
     res.send('updated');
@@ -804,6 +808,7 @@ async function newSapTransactionEntry(newDateTimeNow){
               rackLoc :rackLoc,
               prodLoc :prodLoc
             });
+            sails.log.info("Updated Data By SAP",partNumber);
           }
           else{
             console.log("Line 67", resultData[i]["ZMATNR"]["_text"]);
@@ -1043,6 +1048,7 @@ async function newSapTransactionEntry(newDateTimeNow){
          rackLoc :rackLoc,
          prodLoc :prodLoc
        });
+       sails.log.info("Updated Data By SAP",partNumber);
        sails.log.info("Part Updated by SAP: ",resultData[i]["ZIDNRK"]["_text"]);
      }
      else if(resultData[i]["ZSTATUS"]["_text"] == "B"){
@@ -1053,6 +1059,7 @@ async function newSapTransactionEntry(newDateTimeNow){
          partStatus:resultData[i]["ZSTATUS"]["_text"],
          status:0
        });
+       sails.log.info("Updated Data By SAP Blocked",partNumber);
      }
    }
       // res.send();
