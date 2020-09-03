@@ -86,7 +86,7 @@ module.exports = {
                              monthlyScheduleId:monthlyScheduleId,
                              partNumber:newPartNumber[0]["id"]
                          }).set({
-                             requiredInMonth:monthlySchedule[i].RequiredInMonth
+                             requiredInMonth:parseInt(monthlySchedule[i].RequiredInMonth)
                          });
                          updatedParts.push(newPartNumber[0]["partNumber"]);
                      }
@@ -99,7 +99,7 @@ module.exports = {
                              proc:monthlySchedule[i].Proc,
                              EP:monthlySchedule[i].EPStoreLocation,
                              issueLoc:monthlySchedule[i].IssueLocChessie,
-                             requiredInMonth:monthlySchedule[i].RequiredInMonth,
+                             requiredInMonth:parseInt(monthlySchedule[i].RequiredInMonth),
                              CAT:monthlySchedule[i].CAT
                          })
                          .catch(error=>{console.log(error)});

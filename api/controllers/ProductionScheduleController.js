@@ -1109,7 +1109,7 @@ module.exports = {
             }
             var pushPartDetails = {
               partNumberId: monthlyData["recordset"][i]["partNumberId"],
-              monthlyQuantity: monthlyData["recordset"][i]["requiredInMonth"],
+              monthlyQuantity: parseInt(monthlyData["recordset"][i]["requiredInMonth"]),
               quantitiesInProduction: monthlyData["recordset"][i]["sumValue"],
               partNumber:monthlyData["recordset"][i]["PartNumber"],
             }
