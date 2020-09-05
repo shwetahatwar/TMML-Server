@@ -116,7 +116,7 @@
   'GET /cancelJobCards' : 'JobCard.cancelJobCards',
   'GET /getSapDetailsForSelectedRange' : 'SapTransaction.getSapDetailsForSelectedRange',
   'GET /refreshPartData': 'SapPartNumberController.refreshPartData',
-    // 'GET  /logout': 'AuthController.logout',
+  'POST /updatePartNumberData': 'SapPartNumberUpdateController.updateParts',  // 'GET  /logout': 'AuthController.logout',
   // 'GET  /logout': 'AuthController.logout',refreshPartData
 
   /***************************************************************************
