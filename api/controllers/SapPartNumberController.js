@@ -192,6 +192,7 @@ module.exports = {
                 materialGroup:resultData[i]["ZMATKL"]["_text"],
                 rawMaterialId : newRawMaterial[0]["id"],
                 status : 1,
+                jcCreateStatus:1,
                 rackLoc :resultData[i]["ZRACKLOC"]["_text"],
                 prodLoc :resultData[i]["ZLGPRO"]["_text"],
                 kanbanLocation : newLocationId
@@ -279,6 +280,7 @@ module.exports = {
                   materialGroup:resultData[i]["ZMATKL"]["_text"],
                   rawMaterialId : newRawMaterialIdUpdated,
                   status : 1,
+                  jcCreateStatus:1,
                   rackLoc :resultData[i]["ZRACKLOC"]["_text"],
                   prodLoc :resultData[i]["ZLGPRO"]["_text"],
                   kanbanLocation : newLocationId
@@ -851,6 +853,7 @@ async function newSapTransactionEntry(newDateTimeNow){
                 materialGroup:resultData[i]["ZMATKL"]["_text"],
                 rawMaterialId : newRawMaterial[0]["id"],
                 status : 1,
+                jcCreateStatus:1,
                 rackLoc :resultData[i]["ZRACKLOC"]["_text"],
                 prodLoc :resultData[i]["ZLGPRO"]["_text"],
                 kanbanLocation : newLocationId
@@ -937,6 +940,7 @@ async function newSapTransactionEntry(newDateTimeNow){
                 materialGroup:resultData[i]["ZMATKL"]["_text"],
                 rawMaterialId :newRawMaterialId ,
                 status : 1,
+                jcCreateStatus:1,
                 rackLoc :resultData[i]["ZRACKLOC"]["_text"],
                 prodLoc :resultData[i]["ZLGPRO"]["_text"],
                 kanbanLocation : newLocationId
