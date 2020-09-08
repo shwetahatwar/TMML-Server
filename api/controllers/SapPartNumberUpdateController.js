@@ -53,7 +53,7 @@ module.exports = {
 					});
 				}
 				else{
-					var newRawMaterialId = await RawMaterial.create({
+					var rawMaterialId = await RawMaterial.create({
 						rawMaterialNumber: rawMaterialNumber,
 						description: rawMaterialDescription,
 						uom: rmUOM,
@@ -62,7 +62,7 @@ module.exports = {
 						materialTypeId:1
 					})
 					.fetch();
-					newRawMaterialId = newRawMaterialId["id"];
+					newRawMaterialId = rawMaterialId["id"];
 				}
 				var partNumberData = await PartNumber.find({partNumber:partNumber});
 				if(partNumberData[0] != null && partNumberData[0] != undefined){
