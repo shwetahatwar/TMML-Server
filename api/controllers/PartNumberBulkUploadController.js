@@ -51,7 +51,8 @@ module.exports={
               description:descriptionValue['v'],
               manPower:manPowerValue['v'],
               SMH:newSMHValue['v'],
-              rawMaterialId:rawMaterialNameIdValue
+              rawMaterialId:rawMaterialNameIdValue,
+              jcCreateStatus:1
             })
             .fetch()
             .catch(error=>{rejectedPart.push(partNumberValue['v'])});

@@ -148,6 +148,7 @@ module.exports = {
               rawMaterialId:newRawMaterialIdUpdated,
               kanbanLocation : newLocationId,
               rackLoc :rackLoc,
+              status:1,
               prodLoc :prodLoc
             });
             sails.log.info("Updated Data By SAP ",partNumber);
@@ -392,7 +393,8 @@ module.exports = {
               rawMaterialId:newRawMaterialIdUpdated,
               kanbanLocation : newLocationId,
               rackLoc :rackLoc,
-              prodLoc :prodLoc
+              prodLoc :prodLoc,
+              status:1
             });
             sails.log.info("Updated Data By SAP ",partNumber);
           }
@@ -808,7 +810,8 @@ async function newSapTransactionEntry(newDateTimeNow){
               rawMaterialId:newRawMaterialIdUpdated,
               kanbanLocation : newLocationId,
               rackLoc :rackLoc,
-              prodLoc :prodLoc
+              prodLoc :prodLoc,
+              status:1
             });
             sails.log.info("Updated Data By SAP",partNumber);
           }
@@ -1050,7 +1053,8 @@ async function newSapTransactionEntry(newDateTimeNow){
          rawMaterialId:newRawMaterialIdUpdated,
          kanbanLocation : newLocationId,
          rackLoc :rackLoc,
-         prodLoc :prodLoc
+         prodLoc :prodLoc,
+         status:1
        });
        sails.log.info("Updated Data By SAP",partNumber);
        sails.log.info("Part Updated by SAP: ",resultData[i]["ZIDNRK"]["_text"]);

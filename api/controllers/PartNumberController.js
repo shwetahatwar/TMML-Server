@@ -29,7 +29,8 @@ module.exports = {
       kanbanLocation:kanbanLocationId,
       rackLoc:req.body.rackLoc,
       prodLoc:req.body.prodLoc,
-      status:1
+      status:1,
+      jcCreateStatus:1
     })
     .fetch()
     .catch(error=>{
@@ -139,7 +140,8 @@ module.exports = {
       rawMaterialId:req.body.rawMaterial.id,
       rackLoc:req.body.rackLoc,
       prodLoc:req.body.prodLoc,
-      status:req.body.status
+      status:req.body.status,
+      jcCreateStatus:1
     })
     .fetch()
     .catch(error=>{
@@ -362,7 +364,8 @@ module.exports = {
                 prodLoc:partNumberBulkUpload[i].prodLoc,
                 materialGroup: partNumberBulkUpload[i].MaterialGroup,
                 kanbanLocation: kanbanLocationId["id"],
-                uom:partNumberBulkUpload[i].UOM
+                uom:partNumberBulkUpload[i].UOM,
+                jcCreateStatus:1
               });
           }
           else{
@@ -422,7 +425,8 @@ module.exports = {
               prodLoc:partNumberBulkUpload[i].prodLoc,
               materialGroup: partNumberBulkUpload[i].MaterialGroup,
               kanbanLocation: kanbanLocationId["id"],
-              uom:partNumberBulkUpload[i].UOM
+              uom:partNumberBulkUpload[i].UOM,
+              jcCreateStatus:1
             });
           }
         }
